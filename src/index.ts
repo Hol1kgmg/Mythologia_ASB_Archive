@@ -19,13 +19,16 @@ function initializeDatabase() {
   if (platform === 'vercel') {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
-      throw new Error('DATABASE_URL environment variable is required for Vercel platform');
+      // Development mode: provide mock adapter
+      console.warn('⚠️  DATABASE_URL not set - running in development mode without database');
+      return null;
     }
     return createDatabaseAdapter({ platform, connectionString });
   } else {
     // For Cloudflare, D1 database would be injected via bindings
     // This is a placeholder for development
-    throw new Error('Cloudflare D1 setup not yet implemented for development environment');
+    console.warn('⚠️  Cloudflare D1 setup not yet implemented for development environment');
+    return null;
   }
 }
 
@@ -52,7 +55,17 @@ app.get('/api/health', (c) => {
   });
 });
 
-// Mount API routes
-app.route('/api', createAPIRouter(db));
+// Mount API routes (only if database is available)
+if (db) {
+  app.route('/api', createAPIRouter(db));
+} else {
+  app.get('/api/*', (c) => {
+    return c.json({
+      success: false,
+      error: 'Database not configured',
+      message: 'Please set DATABASE_URL environment variable',
+    }, 503);
+  });
+}
 
 export default app;

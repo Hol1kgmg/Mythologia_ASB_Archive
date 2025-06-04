@@ -5,9 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc && tsx src/build.ts",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext .ts,.tsx",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "hono": "^4.0.0",
+    "@hono/node-server": "^1.8.0",
     "@hono/zod-validator": "^0.2.0",
     "zod": "^3.22.0",
     "drizzle-orm": "^0.29.0",
