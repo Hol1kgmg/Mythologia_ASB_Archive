@@ -67,20 +67,9 @@ Thumbs.db
 /uploads/
 /public/uploads/
 
-# Cloudflare Workers
-.wrangler/
-wrangler.toml
-
-# Vercel
-.vercel/
-
-# Drizzle ORM
-drizzle/
-
 # Local development
 .local/
 settings.local.json
-database.config.local.ts
 
 # Documentation build
 docs/.vitepress/dist/
