@@ -73,11 +73,134 @@ npm run clean            # node_modules削除
 - `GET /api/card-sets` - カードセット一覧
 - `POST /api/card-sets` - カードセット作成
 
-## 🧪 テスト結果
+## 🧪 テスト・品質管理
 
-**バックエンド**: 25/25 テスト成功 ✅
-- 単体テスト: バリデーション、アダプター
-- 統合テスト: API エンドポイント
+### テスト実行
+
+#### 全体テスト実行
+```bash
+npm run test             # 全パッケージのテスト実行
+npm run test:backend     # バックエンドのみ
+npm run test:frontend    # フロントエンドのみ（実装後）
+```
+
+#### バックエンドテスト詳細
+```bash
+cd apps/backend
+npm run test            # 全テスト実行
+npm run test:coverage   # カバレッジ付きテスト
+```
+
+**現在のテスト結果**: 39/39 テスト成功 ✅
+```
+✓ tests/unit/adapters.test.ts        (6 tests)
+✓ tests/unit/validation.test.ts      (13 tests)  
+✓ tests/integration/api-basic.test.ts (6 tests)
+✓ tests/integration/api.test.ts      (14 tests)
+
+Test Files  4 passed (4)
+Tests      39 passed (39)
+Duration    1.42s
+```
+
+### コード品質チェック
+
+#### 型チェック
+```bash
+npm run typecheck        # 全パッケージの型チェック
+npm run typecheck:backend # バックエンドのみ
+```
+
+#### リント
+```bash
+npm run lint             # 全パッケージのリント
+npm run lint:backend     # バックエンドのみ
+npm run lint:fix         # 自動修正
+```
+
+### API動作確認
+
+#### 1. 開発サーバー起動
+```bash
+npm run dev:backend
+```
+
+出力例:
+```
+🚀 Server is running on port 3000
+📖 API Documentation: http://localhost:3000/api
+💚 Health Check: http://localhost:3000/api/health
+```
+
+#### 2. 基本エンドポイント確認
+```bash
+# アプリケーション情報
+curl http://localhost:3000
+
+# ヘルスチェック
+curl http://localhost:3000/api/health
+
+# API情報
+curl http://localhost:3000/api
+```
+
+#### 3. データベース未設定時の動作確認
+```bash
+# 503エラーの確認
+curl http://localhost:3000/api/tribes
+```
+
+期待されるレスポンス:
+```json
+{
+  "success": false,
+  "error": "Database not configured",
+  "message": "Please set DATABASE_URL environment variable"
+}
+```
+
+### 品質基準
+
+- **型チェック**: TypeScript厳密モード + exactOptionalPropertyTypes
+- **テストカバレッジ**: 単体テスト・統合テスト完備
+- **コード品質**: ESLintエラー0件
+- **API設計**: RESTful + 適切なエラーハンドリング
+
+### トラブルシューティング
+
+#### テスト実行エラー
+```bash
+# 依存関係の再インストール
+npm run clean && npm run install-all
+
+# 特定のテストのみ実行
+npm run test --workspace=@mythologia/backend -- --run
+```
+
+#### 型チェックエラー
+```bash
+# TypeScriptキャッシュクリア
+rm -rf apps/backend/node_modules/.cache
+npm run typecheck:backend
+```
+
+#### 開発サーバー起動エラー
+```bash
+# ポート確認
+lsof -i :3000
+
+# 別ポートで起動
+PORT=3001 npm run dev:backend
+```
+
+#### モノレポ関連エラー
+```bash
+# ワークスペース確認
+npm ls --workspaces
+
+# 各パッケージの依存関係確認
+npm ls --workspace=@mythologia/backend
+```
 
 ## 🌍 デプロイメント
 
