@@ -6,6 +6,7 @@ import {
   UpdateCardSetSchema, 
   CardSetParamsSchema 
 } from '@/types/validation';
+import { transformCardSetForDb, transformCardSetUpdateForDb } from '@/utils/transform';
 
 export function createCardSetsAPI(db: DatabaseAdapter): Hono {
   const app = new Hono();
@@ -58,7 +59,7 @@ export function createCardSetsAPI(db: DatabaseAdapter): Hono {
   app.post('/', zValidator('json', CreateCardSetSchema), async (c) => {
     try {
       const cardSetData = c.req.valid('json');
-      const cardSet = await db.createCardSet(cardSetData);
+      const cardSet = await db.createCardSet(transformCardSetForDb(cardSetData));
       
       return c.json({
         success: true,
@@ -92,7 +93,7 @@ export function createCardSetsAPI(db: DatabaseAdapter): Hono {
           }, 404);
         }
 
-        const updatedCardSet = await db.updateCardSet(id, updateData);
+        const updatedCardSet = await db.updateCardSet(id, transformCardSetUpdateForDb(updateData));
         
         return c.json({
           success: true,
