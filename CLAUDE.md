@@ -56,83 +56,51 @@ CREATE TABLE tribes (
 - `TribeDomain`インターフェース実装済み
 - リーダーとの関連性を数値IDで管理
 
-## プロジェクト構造（モノレポ）
+## プロジェクト構造
 
 ```
 /
 ├── README.md                    # プロジェクト概要
 ├── CLAUDE.md                   # このファイル
-├── package.json                # ワークスペース管理
-├── apps/                       # アプリケーション
-│   ├── backend/               # バックエンドAPI 🚀
-│   │   ├── src/              # バックエンドソースコード
-│   │   ├── tests/            # バックエンドテスト
-│   │   ├── package.json      # バックエンド依存関係
-│   │   └── tsconfig.json     # バックエンドTS設定
-│   └── frontend/             # フロントエンドUI 🎨
-│       ├── src/              # フロントエンドソースコード
-│       ├── public/           # 静的ファイル
-│       └── package.json      # フロントエンド依存関係
-├── packages/                  # 共有パッケージ
-│   └── shared/               # 共通型定義・ユーティリティ 📦
-│       ├── src/              # 共有ソースコード
-│       └── package.json      # 共有パッケージ設定
-├── system-design/            # 設計ドキュメント（完成済み）
-│   ├── README.md            # 設計ドキュメント索引
-│   ├── database-design/     # データベース設計
-│   │   ├── card/           # カードシステム設計 ✅
-│   │   └── deck/           # デッキシステム設計 ✅
+├── system-design/              # 設計ドキュメント（完成済み）
+│   ├── README.md              # 設計ドキュメント索引
+│   ├── database-design/       # データベース設計
+│   │   ├── card/             # カードシステム設計 ✅
+│   │   └── deck/             # デッキシステム設計 ✅
 │   └── [その他設計ファイル]
-└── docs/                     # プロジェクトドキュメント
+└── [実装予定ディレクトリ]
 ```
 
-## 開発コマンド（モノレポ対応）
+## 開発コマンド（実装後）
 
 ```bash
-# 全体の依存関係インストール
-npm run install-all
-
 # 開発サーバー起動
-npm run dev              # バックエンドのみ起動
-npm run dev:backend      # バックエンドAPI起動
-npm run dev:frontend     # フロントエンドUI起動
+npm run dev
 
 # ビルド
-npm run build            # 全てビルド
-npm run build:backend    # バックエンドのみビルド
-npm run build:frontend   # フロントエンドのみビルド
+npm run build
 
 # テスト実行
-npm run test             # 全てテスト
-npm run test:backend     # バックエンドのみテスト
-npm run test:frontend    # フロントエンドのみテスト
+npm run test
 
 # リント・型チェック
-npm run lint             # 全てリント
-npm run typecheck        # 全て型チェック
-
-# 環境クリーンアップ
-npm run clean            # node_modules削除
+npm run lint
+npm run typecheck
 ```
 
 ## 設計原則・開発方針
 
-### 1. モノレポアーキテクチャ
-- **明確な責任分離**: バックエンド/フロントエンド/共有パッケージ
-- **型共有**: 共通型定義による型安全性確保
-- **ワークスペース管理**: npm workspacesによる依存関係管理
-
-### 2. プラットフォーム非依存（バックエンド）
+### 1. プラットフォーム非依存
 - **アダプターパターン**: PostgreSQL/D1両対応
 - **統一インターフェース**: 環境に依存しない実装
 - **環境抽象化**: データベース固有機能の隠蔽
 
-### 3. ドメイン駆動設計
+### 2. ドメイン駆動設計
 - **ビジネスロジック分離**: 純粋なドメインモデル
 - **動的データ管理**: 拡張性を重視した種族システム
 - **型安全性**: TypeScript + Zodによる厳密な型管理
 
-### 4. データ最小化戦略
+### 3. データ最小化戦略
 - **既存構造維持**: データベーステーブルはそのまま
 - **API最適化**: レスポンスサイズの最小化
 - **効率的キャッシュ**: 階層的キャッシュ戦略
