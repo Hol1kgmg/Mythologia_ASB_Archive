@@ -1,0 +1,16 @@
+{
+  "name": "mythologia-admiral-ship-bridge-maintenance",
+  "version": "0.0.1",
+  "description": "Mythologia Admiral Ship Bridge - 神託のメソロギア ファンサイト - メンテナンス中",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static maintenance page - no build required'"
+  },
+  "keywords": [
+    "mythologia",
+    "maintenance",
+    "unofficial"
+  ],
+  "author": "Community Contributors",
+  "license": "MIT"
+}
