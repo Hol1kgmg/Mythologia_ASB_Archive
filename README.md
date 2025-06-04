@@ -208,10 +208,18 @@ npm ls --workspace=@mythologia/backend
 - Vercel (PostgreSQL)
 - Cloudflare Workers (D1)
 
+### Vercel デプロイメント
+Vercelへのデプロイメント手順は [デプロイメントガイド](./docs/vercel-deployment.md) を参照してください。
+
+**クイックスタート**:
+1. [Vercel Dashboard](https://vercel.com/dashboard) でGitHubリポジトリを接続
+2. 環境変数 `DATABASE_URL` を設定
+3. 自動デプロイメント完了
+
 ## 📚 ドキュメント
 
 - [設計ドキュメント](./system-design/README.md)
-- [開発ポリシー](./development-policy/README.md)
+- [Vercelデプロイメント](./docs/vercel-deployment.md)
 - [Claude設定](./CLAUDE.md)
 
 ## ⚠️ 免責事項
