@@ -8,8 +8,10 @@
 docs/
 ├── README.md                    # このファイル
 ├── development-milestones/      # 開発マイルストーン・ロードマップ
+├── development-policy/          # 開発方針・原則・ガイドライン
 ├── gamewiki/                    # ゲームルール・戦略・世界観
-└── system-design/               # システム設計・アーキテクチャ
+├── system-design/               # システム設計・アーキテクチャ
+└── vercel-deployment.md         # Vercelデプロイメント手順
 ```
 
 ## ディレクトリ概要
@@ -21,6 +23,13 @@ docs/
 - 管理認証システム設計
 - カード管理システム設計  
 - デッキ構築システム設計
+
+### 📝 development-policy/
+開発方針・原則・品質基準の体系化
+- コア開発原則とセキュリティガイドライン
+- アーキテクチャ・技術選定方針
+- フロントエンド開発ガイドライン
+- 運用・インフラ方針
 
 ### 🎮 gamewiki/
 ゲーム「神託のメソロギア」の仕様とルール
@@ -41,9 +50,10 @@ Webアプリケーションの技術設計
 ## ドキュメント活用方法
 
 ### 開発者向け
-1. **system-design/** で技術仕様を確認
-2. **development-milestones/** で開発スケジュールを把握
-3. **gamewiki/** でゲームルールを理解
+1. **development-policy/** で開発方針・原則を確認
+2. **system-design/** で技術仕様を確認
+3. **development-milestones/** で開発スケジュールを把握
+4. **gamewiki/** でゲームルールを理解
 
 ### プロジェクト管理者向け
 1. **development-milestones/roadmap.md** で全体進捗を管理
