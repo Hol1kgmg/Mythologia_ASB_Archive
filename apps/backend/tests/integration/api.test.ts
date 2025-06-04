@@ -159,7 +159,11 @@ describe('API Integration Tests', () => {
         success: true,
         data: newTribe,
       });
-      expect(mockDb.createTribe).toHaveBeenCalledWith(newTribe);
+      expect(mockDb.createTribe).toHaveBeenCalledWith({
+        ...newTribe,
+        thematic: null,
+        masterCardId: null,
+      });
     });
 
     it('should validate tribe data on creation', async () => {

@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import postgres from 'postgres';
 import { tribes, cardSets, cards } from '@/db/schema';
 import type {
@@ -112,32 +112,28 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     return this.db
       .select()
       .from(cards)
-      .where(eq(cards.leaderId, leaderId))
-      .where(eq(cards.isActive, true));
+      .where(and(eq(cards.leaderId, leaderId), eq(cards.isActive, true)));
   }
 
   async getCardsByTribe(tribeId: number): Promise<SelectCard[]> {
     return this.db
       .select()
       .from(cards)
-      .where(eq(cards.tribeId, tribeId))
-      .where(eq(cards.isActive, true));
+      .where(and(eq(cards.tribeId, tribeId), eq(cards.isActive, true)));
   }
 
   async getCardsByRarity(rarityId: number): Promise<SelectCard[]> {
     return this.db
       .select()
       .from(cards)
-      .where(eq(cards.rarityId, rarityId))
-      .where(eq(cards.isActive, true));
+      .where(and(eq(cards.rarityId, rarityId), eq(cards.isActive, true)));
   }
 
   async getCardsByType(cardTypeId: number): Promise<SelectCard[]> {
     return this.db
       .select()
       .from(cards)
-      .where(eq(cards.cardTypeId, cardTypeId))
-      .where(eq(cards.isActive, true));
+      .where(and(eq(cards.cardTypeId, cardTypeId), eq(cards.isActive, true)));
   }
 
   async createCard(card: InsertCard): Promise<SelectCard> {

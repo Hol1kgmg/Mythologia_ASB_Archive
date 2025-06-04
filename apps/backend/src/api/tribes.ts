@@ -6,6 +6,7 @@ import {
   UpdateTribeSchema, 
   TribeParamsSchema 
 } from '@/types/validation';
+import { transformTribeForDb, transformTribeUpdateForDb } from '@/utils/transform';
 
 export function createTribesAPI(db: DatabaseAdapter): Hono {
   const app = new Hono();
@@ -58,7 +59,7 @@ export function createTribesAPI(db: DatabaseAdapter): Hono {
   app.post('/', zValidator('json', CreateTribeSchema), async (c) => {
     try {
       const tribeData = c.req.valid('json');
-      const tribe = await db.createTribe(tribeData);
+      const tribe = await db.createTribe(transformTribeForDb(tribeData));
       
       return c.json({
         success: true,
@@ -92,7 +93,7 @@ export function createTribesAPI(db: DatabaseAdapter): Hono {
           }, 404);
         }
 
-        const updatedTribe = await db.updateTribe(id, updateData);
+        const updatedTribe = await db.updateTribe(id, transformTribeUpdateForDb(updateData));
         
         return c.json({
           success: true,

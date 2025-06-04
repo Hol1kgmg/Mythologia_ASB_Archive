@@ -5,10 +5,10 @@ import { Rarity, CardType, Leader } from './enums';
 export const CreateTribeSchema = z.object({
   id: z.number().int().positive(),
   name: z.string().min(1).max(50),
-  leaderId: z.number().int().min(1).max(5).optional(),
-  thematic: z.string().max(100).optional(),
-  description: z.string().optional(),
-  masterCardId: z.string().uuid().optional(),
+  leaderId: z.number().int().min(1).max(5).nullish(),
+  thematic: z.string().max(100).nullish(),
+  description: z.string().nullish(),
+  masterCardId: z.string().uuid().nullish(),
 });
 
 export const UpdateTribeSchema = CreateTribeSchema.partial().omit({ id: true });
@@ -20,7 +20,7 @@ export const CreateCardSetSchema = z.object({
   code: z.string().min(1).max(20),
   releaseDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   cardCount: z.number().int().min(0).default(0),
-  description: z.string().optional(),
+  description: z.string().nullish(),
 });
 
 export const UpdateCardSetSchema = CreateCardSetSchema.partial().omit({ id: true });
@@ -48,16 +48,16 @@ export const CreateCardSchema = z.object({
   id: z.string().uuid(),
   cardNumber: z.string().min(1).max(20),
   name: z.string().min(1).max(100),
-  leaderId: z.nativeEnum(Leader).optional(),
-  tribeId: z.number().int().positive().optional(),
+  leaderId: z.nativeEnum(Leader).nullish(),
+  tribeId: z.number().int().positive().nullish(),
   rarityId: z.nativeEnum(Rarity),
   cardTypeId: z.nativeEnum(CardType),
   cost: z.number().int().min(0),
   power: z.number().int().min(0),
   effects: CardEffectSchema,
-  flavorText: z.string().optional(),
+  flavorText: z.string().nullish(),
   imageUrl: z.string().url().max(500),
-  artist: z.string().max(100).optional(),
+  artist: z.string().max(100).nullish(),
   cardSetId: z.string().uuid(),
 });
 

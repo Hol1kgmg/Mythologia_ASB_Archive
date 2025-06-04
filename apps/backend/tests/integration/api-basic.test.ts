@@ -55,7 +55,7 @@ describe('API Basic Integration Tests', () => {
       const healthRes = await app.request('/api/health');
       expect(healthRes.status).toBe(200);
       
-      const healthData = await healthRes.json();
+      const healthData = await healthRes.json() as { status: string };
       expect(healthData.status).toBe('ok');
 
       // Test database not configured
@@ -132,7 +132,7 @@ describe('API Basic Integration Tests', () => {
 
       expect(res.status).toBe(200);
       
-      const data = await res.json();
+      const data = await res.json() as { received: any };
       expect(data.received).toEqual(testData);
     });
   });
@@ -150,7 +150,7 @@ describe('API Basic Integration Tests', () => {
     it('should handle errors in route handlers', async () => {
       const app = new Hono();
       
-      app.get('/error', (c) => {
+      app.get('/error', (_c) => {
         throw new Error('Test error');
       });
 

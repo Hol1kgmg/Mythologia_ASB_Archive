@@ -31,8 +31,8 @@ export function createCardsAPI(db: DatabaseAdapter): Hono {
       }
 
       // Apply pagination
-      const offset = parseInt(query.offset);
-      const limit = parseInt(query.limit);
+      const offset = query.offset;
+      const limit = query.limit;
       const paginatedCards = cards.slice(offset, offset + limit);
 
       return c.json({
