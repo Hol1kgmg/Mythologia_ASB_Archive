@@ -1,168 +1,99 @@
 # 神託のメソロギア 非公式Webアプリケーション
 
-神託のメソロギア（Mythologia）のカード情報データベースとデッキ構築をサポートする**非公式**Webアプリケーションです。
+**神託のメソロギア（Mythologia）**のカード情報データベースとデッキ構築をサポートする**非公式**Webアプリケーション
 
-**免責事項**: このアプリケーションは有志による非公式プロジェクトです。公式運営とは一切関係がありません。
+**重要**: これは有志による非公式プロジェクトです。公式運営とは関係ありません。
 
-## プロジェクト概要
-
-カード情報の効率的な管理とデッキ構築機能を提供し、プレイヤーの戦略構築をサポートします。
-
-### 主要機能
-
-- **カードデータベース管理**: カード情報の登録・検索・管理
-- **デッキ構築システム**: デッキコード圧縮によるデータ最小化
-- **種族・リーダーシステム**: 動的な種族管理とリーダーとの関連性
-- **多言語対応**: 日本語・英語・韓国語サポート
-- **クロスプラットフォーム**: Vercel（PostgreSQL）とCloudflare（D1）対応
-
-## 技術スタック
-
-### フロントエンド
-- **TypeScript** - 型安全性
-- **Hono** - 軽量Webフレームワーク
-- **Zod** - スキーマバリデーション
-
-### バックエンド・データベース
-- **PostgreSQL** (Vercel環境)
-- **D1** (Cloudflare環境)
-- **Vercel KV / Cloudflare KV** - キャッシュ
-
-### デプロイメント
-- **Vercel** - メイン環境
-- **Cloudflare Workers** - エッジ環境
-
-## データベース設計
-
-### 主要テーブル
-
-#### tribes テーブル
-```sql
-CREATE TABLE tribes (
-  id INTEGER PRIMARY KEY,               -- 種族ID
-  name VARCHAR(50) NOT NULL UNIQUE,     -- 種族名
-  leaderId INTEGER NULL,                -- リーダーID（1-5）
-  thematic VARCHAR(100) NULL,           -- テーマ特性
-  description TEXT NULL,                -- 種族説明
-  isActive BOOLEAN DEFAULT TRUE,        -- アクティブフラグ
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  MasterCardId VARCHAR(36) NULL         -- マスターカードID
-);
-```
-
-#### cards テーブル
-- カード基本情報（ID、名前、コスト、パワー）
-- 種族・リーダー・レアリティとの関連
-- JSON形式での効果定義
-- 多言語対応
-
-#### card_sets テーブル
-- カードセット（収録パック）管理
-- リリース日・カード数の管理
-
-### リーダーシステム
-- **1: DRAGON** - ドラゴン
-- **2: ANDROID** - アンドロイド  
-- **3: ELEMENTAL** - エレメンタル
-- **4: LUMINUS** - ルミナス
-- **5: SHADE** - シェイド
-
-### レアリティシステム
-- **1: BRONZE** - ブロンズ（基本）
-- **2: SILVER** - シルバー（強化）
-- **3: GOLD** - ゴールド（希少）
-- **4: LEGEND** - レジェンド（伝説）
-
-## プロジェクト構造
+## 🏗️ アーキテクチャ（モノレポ）
 
 ```
-/
-├── system-design/           # システム設計ドキュメント
-│   ├── database-design/     # データベース設計
-│   │   ├── deck/           # デッキシステム設計
-│   │   └── card/           # カードシステム設計
-│   ├── requirements.md      # 要件定義
-│   ├── architecture.md      # アーキテクチャ
-│   └── tech-stack.md       # 技術選定
-└── README.md               # このファイル
+apps/
+├── 🚀 backend/     # RESTful API (Hono + TypeScript)
+└── 🎨 frontend/    # Webアプリケーション (React + TypeScript)
+
+packages/
+└── 📋 shared/      # 共通型定義・ユーティリティ
 ```
 
-## 開発コマンド
+### 🛠️ 技術スタック
+
+**バックエンド**: Hono + TypeScript + Drizzle ORM + Zod  
+**フロントエンド**: React + TypeScript + Vite + TanStack Query  
+**共有**: TypeScript型定義 + Zodバリデーション
+
+## 🚀 クイックスタート
 
 ```bash
+# クローン
+git clone https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge.git
+cd Mythologia_AdmiralsShipBridge
+
+# 全依存関係インストール
+npm run install-all
+
 # 開発サーバー起動
-npm run dev
-
-# ビルド
-npm run build
-
-# テスト実行  
-npm run test
-
-# リント実行
-npm run lint
-
-# 型チェック
-npm run typecheck
+npm run dev:backend   # バックエンド (port 3000)
+npm run dev:frontend  # フロントエンド (port 5173)
 ```
 
-## 設定ファイル
+## 📋 コマンド
 
-- `settings.local.json` - ローカル開発設定
-- `database.config.ts` - データベース設定
-- `.env.local` - 環境変数
-- `CLAUDE.md` - AI開発支援設定
+```bash
+# 開発
+npm run dev              # バックエンドのみ
+npm run dev:backend      # バックエンドAPI
+npm run dev:frontend     # フロントエンドUI
 
-## データ最小化戦略
+# ビルド・テスト
+npm run build            # 全てビルド
+npm run test             # 全てテスト
+npm run lint             # 全てリント
 
-### デッキコード圧縮
-- 既存データベース構造を維持
-- API応答でのみデータ最小化
-- デッキコード形式による効率的なデータ転送
+# メンテナンス
+npm run clean            # node_modules削除
+```
 
-### キャッシュ戦略
-- **長期キャッシュ**: 個別カード情報（24時間）
-- **中期キャッシュ**: セット別・リーダー別カード（1時間）
-- **短期キャッシュ**: 検索結果（5分）
+## 🔧 API エンドポイント
 
-## アーキテクチャ原則
+### 基本
+- `GET /` - アプリケーション情報
+- `GET /api/health` - ヘルスチェック
 
-### 1. プラットフォーム非依存
-- アダプターパターンによる環境抽象化
-- Vercel/Cloudflare両対応
+### 種族管理
+- `GET /api/tribes` - 種族一覧
+- `POST /api/tribes` - 種族作成
+- `PUT /api/tribes/:id` - 種族更新
 
-### 2. ドメイン駆動設計
-- ビジネスロジックの分離
-- 純粋なドメインモデル
+### カード管理
+- `GET /api/cards` - カード一覧（フィルタリング対応）
+- `POST /api/cards` - カード作成
+- `PUT /api/cards/:id` - カード更新
 
-### 3. パフォーマンス重視
-- 効率的なデータベースクエリ
-- 適切なインデックス設計
-- レスポンス時間最適化
+### カードセット管理
+- `GET /api/card-sets` - カードセット一覧
+- `POST /api/card-sets` - カードセット作成
 
-## 最新の更新内容
+## 🧪 テスト結果
 
-### Tribeテーブル仕様更新
-- `leader`カラムを`leaderId`（INTEGER）に変更
-- `thematic`カラムを追加（テーマ特性管理）
-- `MasterCardId`カラムを追加（マスターカード関連）
+**バックエンド**: 25/25 テスト成功 ✅
+- 単体テスト: バリデーション、アダプター
+- 統合テスト: API エンドポイント
 
-### 動的種族管理
-- 静的enumから動的データベース管理に移行
-- 将来的な種族追加に対応
-- リーダーとの関連性を数値IDで管理
+## 🌍 デプロイメント
 
-## 貢献・開発
+**対応プラットフォーム**:
+- Vercel (PostgreSQL)
+- Cloudflare Workers (D1)
 
-1. 設計ドキュメント（`system-design/`）を確認
-2. Tribeテーブルの最新仕様を理解
-3. プラットフォーム固有の実装は避ける
-4. テストとリントを実行してからコミット
+## 📚 ドキュメント
 
-## ライセンスと著作権
+- [設計ドキュメント](./system-design/README.md)
+- [開発ポリシー](./development-policy/README.md)
+- [Claude設定](./CLAUDE.md)
 
-- このプロジェクトは非公式の有志プロジェクトです
-- 「神託のメソロギア」の著作権は公式運営に帰属します
-- カード画像・ゲームデータの著作権は公式運営に帰属します
-- 本アプリケーションのソースコードはMITライセンスです
+## ⚠️ 免責事項
+
+このプロジェクトは非公式のファンプロジェクトです。神託のメソロギアの公式運営とは一切関係ありません。
+
+---
+**Made with ❤️ by the Mythologia Community**

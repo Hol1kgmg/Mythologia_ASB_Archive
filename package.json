@@ -4,40 +4,28 @@
   "description": "神託のメソロギア非公式カード情報データベース・デッキ構築Webアプリケーション",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc && tsx src/build.ts",
-    "start": "node dist/server.js",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "typecheck": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate.ts",
-    "db:studio": "drizzle-kit studio"
-  },
-  "dependencies": {
-    "hono": "^4.0.0",
-    "@hono/node-server": "^1.8.0",
-    "@hono/zod-validator": "^0.2.0",
-    "zod": "^3.22.0",
-    "drizzle-orm": "^0.29.0",
-    "@libsql/client": "^0.4.0",
-    "postgres": "^3.4.0",
-    "@vercel/kv": "^1.0.0"
+    "dev": "npm run dev --workspace=apps/backend",
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=apps/backend",
+    "build:frontend": "npm run build --workspace=apps/frontend",
+    "test": "npm run test --workspaces",
+    "test:backend": "npm run test --workspace=apps/backend",
+    "test:frontend": "npm run test --workspace=apps/frontend",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "install-all": "npm install && npm install --workspaces"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@cloudflare/workers-types": "^4.20230518.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "drizzle-kit": "^0.20.0",
-    "eslint": "^8.50.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.2.0",
-    "vitest": "^1.0.0",
-    "@vitest/coverage-v8": "^1.0.0"
+    "typescript": "^5.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -47,7 +35,8 @@
     "card-game",
     "deck-builder",
     "unofficial",
-    "web-app"
+    "web-app",
+    "monorepo"
   ],
   "author": "Community Contributors",
   "license": "MIT"
