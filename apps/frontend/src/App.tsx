@@ -35,6 +35,17 @@ function App() {
         }
       } catch (error) {
         console.error('API接続エラー:', error);
+        // API接続失敗時はモックデータを表示
+        setHealthStatus({
+          status: 'development',
+          timestamp: new Date().toISOString(),
+          environment: 'frontend-only'
+        });
+        setApiInfo({
+          name: '神託のメソロギア非公式API',
+          version: '0.1.0',
+          description: 'カード情報データベース・デッキ構築API'
+        });
       } finally {
         setLoading(false);
       }
@@ -91,9 +102,12 @@ function App() {
                   <span className={`px-3 py-1 rounded-full text-sm ${
                     healthStatus.status === 'healthy' 
                       ? 'bg-green-100 text-green-800' 
+                      : healthStatus.status === 'development'
+                      ? 'bg-blue-100 text-blue-800'
                       : 'bg-red-100 text-red-800'
                   }`}>
-                    {healthStatus.status === 'healthy' ? '正常' : 'エラー'}
+                    {healthStatus.status === 'healthy' ? '正常' : 
+                     healthStatus.status === 'development' ? '開発中' : 'エラー'}
                   </span>
                 </div>
                 <p><span className="font-medium">更新時刻:</span> {new Date(healthStatus.timestamp).toLocaleString('ja-JP')}</p>
