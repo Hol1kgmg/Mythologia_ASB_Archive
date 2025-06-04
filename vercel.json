@@ -1,7 +1,12 @@
 {
   "buildCommand": "npm run build:frontend",
   "outputDirectory": "apps/frontend/dist",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "devCommand": "npm run dev:frontend",
-  "framework": null
+  "framework": null,
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
