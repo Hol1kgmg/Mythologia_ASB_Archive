@@ -78,14 +78,29 @@ CREATE TABLE tribes (
 
 ```
 /
-├── system-design/           # システム設計ドキュメント
-│   ├── database-design/     # データベース設計
-│   │   ├── deck/           # デッキシステム設計
-│   │   └── card/           # カードシステム設計
-│   ├── requirements.md      # 要件定義
-│   ├── architecture.md      # アーキテクチャ
-│   └── tech-stack.md       # 技術選定
-└── README.md               # このファイル
+├── docs/                            # ドキュメント管理
+│   ├── development-milestones/      # 開発マイルストーン
+│   │   ├── roadmap.md              # 全体ロードマップ
+│   │   ├── milestone-1-admin-auth.md    # 管理認証システム
+│   │   ├── milestone-2-card-admin.md    # カード管理システム
+│   │   └── milestone-3-deck-builder.md  # デッキ構築システム
+│   ├── gamewiki/                    # ゲームルール・戦略
+│   │   ├── overview.md             # ゲーム概要
+│   │   ├── game-rules-facts.md     # 基本ルール
+│   │   ├── battle-rules.md         # バトルシステム
+│   │   ├── deck-building-rules.md  # デッキ構築ルール
+│   │   ├── deck_format_analysis.md # デッキフォーマット分析
+│   │   ├── strategy-guide.md       # 戦略ガイド
+│   │   └── world-lore.md           # 世界観
+│   └── system-design/               # システム設計
+│       ├── requirements.md         # 要件定義
+│       ├── architecture.md         # アーキテクチャ
+│       ├── tech-stack.md           # 技術選定
+│       └── database-design/        # データベース設計
+│           ├── deck/               # デッキシステム設計
+│           └── card/               # カードシステム設計
+├── CLAUDE.md                        # AI開発支援設定
+└── README.md                        # このファイル
 ```
 
 ## 開発コマンド

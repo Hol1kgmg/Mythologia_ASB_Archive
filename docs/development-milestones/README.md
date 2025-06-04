@@ -5,15 +5,12 @@
 ## ディレクトリ構造
 
 ```
-development-milestones/
+docs/development-milestones/
 ├── README.md                   # このファイル
 ├── roadmap.md                  # 全体ロードマップ
-├── milestone-1-foundation.md   # マイルストーン1: 基盤構築
-├── milestone-2-core.md         # マイルストーン2: コア機能実装
-├── milestone-3-ui.md           # マイルストーン3: UI/UX実装
-├── milestone-4-production.md   # マイルストーン4: 本番環境準備
-└── release-notes/              # リリースノート
-    └── v1.0.0.md              # バージョン1.0.0リリースノート
+├── milestone-1-admin-auth.md   # マイルストーン1: 管理認証システム
+├── milestone-2-card-admin.md   # マイルストーン2: カード管理システム
+└── milestone-3-deck-builder.md # マイルストーン3: デッキ構築システム
 ```
 
 ## 概要
