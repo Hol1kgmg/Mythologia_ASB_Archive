@@ -1,31 +1,39 @@
 {
   "version": 2,
   "framework": null,
-  "functions": {
-    "webapp/backend/dist/index.js": {
-      "runtime": "@vercel/node@3.0.0",
-      "maxDuration": 30
+  "builds": [
+    {
+      "src": "webapp/backend/src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    },
+    {
+      "src": "webapp/frontend/package.json",
+      "use": "@vercel/next"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/webapp/backend/dist/index.js"
+      "src": "/api/(.*)",
+      "dest": "/webapp/backend/src/index.ts"
     },
     {
-      "source": "/debug/:path*",
-      "destination": "/webapp/backend/dist/index.js"
+      "src": "/debug/(.*)",
+      "dest": "/webapp/backend/src/index.ts"
     },
     {
-      "source": "/health",
-      "destination": "/webapp/backend/dist/index.js"
+      "src": "/health",
+      "dest": "/webapp/backend/src/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/webapp/frontend/$1"
     }
   ],
   "env": {
     "DATABASE_TYPE": "postgresql",
     "ENVIRONMENT": "production"
-  },
-  "buildCommand": "cd webapp && npm install && npm run build",
-  "outputDirectory": "webapp/frontend/.next",
-  "installCommand": "cd webapp && npm install"
+  }
 }
