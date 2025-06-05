@@ -29,6 +29,14 @@ Mythologia Admiral Ship Bridgeプロジェクトの開発環境セットアッ�
 - **UIコンポーネント**: TailwindCSS + shadcn/ui
 - **パフォーマンス最適化**: 画像・コード分割
 
+### [database-local-setup.md](database-local-setup.md)
+**ローカルデータベース操作ガイド**
+- **PostgreSQL接続**: 本番環境に近いローカル開発環境
+- **D1ローカル**: Cloudflare Workers環境テスト
+- **マイグレーション**: 初期スキーマとデータの投入
+- **DB操作確認**: API経由でのデータベース動作テスト
+- **トラブルシューティング**: 接続問題・設定エラーの解決
+
 ## 技術スタック概要
 
 ```
