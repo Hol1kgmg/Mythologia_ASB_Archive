@@ -3,20 +3,16 @@
  * マイルストーン1: システム管理者認証基盤
  */
 
-export interface AdminPermission {
-  resource: string;
-  actions: string[];
-}
+import type { AdminRole, AdminPermissionDTO } from '@mythologia/shared';
 
-export type AdminRole = 'admin' | 'super_admin';
-
+// ドメインエンティティ（内部表現）
 export interface Admin {
   id: string;
   username: string;
   email: string;
   passwordHash: string;
   role: AdminRole;
-  permissions: AdminPermission[];
+  permissions: AdminPermissionDTO[];
   isActive: boolean;
   isSuperAdmin: boolean;
   createdBy: string | null;
@@ -113,7 +109,7 @@ export class AdminFactory {
     email: string;
     password: string;
     role?: AdminRole;
-    permissions?: AdminPermission[];
+    permissions?: AdminPermissionDTO[];
     createdBy?: string;
     isSuperAdmin?: boolean;
   }): Omit<Admin, 'id' | 'createdAt' | 'updatedAt'> {
@@ -135,9 +131,9 @@ export class AdminFactory {
     };
   }
 
-  static validatePermissions(permissions: AdminPermission[]): boolean {
-    const validResources = ['cards', 'users', 'admins', 'system'];
-    const validActions = ['create', 'read', 'update', 'delete'];
+  static validatePermissions(permissions: AdminPermissionDTO[]): boolean {
+    const validResources: AdminPermissionDTO['resource'][] = ['cards', 'users', 'admins', 'system'];
+    const validActions: AdminPermissionDTO['actions'][number][] = ['create', 'read', 'update', 'delete'];
 
     return permissions.every(permission => 
       validResources.includes(permission.resource) &&

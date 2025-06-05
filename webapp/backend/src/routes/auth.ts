@@ -5,29 +5,13 @@
 
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
+import { 
+  LoginSchema,
+  ChangePasswordSchema,
+  UpdateProfileSchema
+} from '@mythologia/shared';
 
 const app = new Hono();
-
-// ログインスキーマ
-const LoginSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
-  rememberMe: z.boolean().default(false)
-});
-
-// パスワード変更スキーマ
-const ChangePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, 
-    'Password must contain at least one lowercase letter, one uppercase letter, and one number')
-});
-
-// プロフィール更新スキーマ
-const UpdateProfileSchema = z.object({
-  username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_-]+$/).optional(),
-  email: z.string().email().optional()
-});
 
 // POST /auth/login - 管理者ログイン
 app.post(

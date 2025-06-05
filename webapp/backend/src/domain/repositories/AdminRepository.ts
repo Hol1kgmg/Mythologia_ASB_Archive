@@ -4,12 +4,13 @@
  */
 
 import type { Admin, AdminSession, AdminActivityLog } from '../models/Admin';
+import type { AdminRole } from '@mythologia/shared';
 
 export interface CreateAdminParams {
   username: string;
   email: string;
   passwordHash: string;
-  role: 'admin' | 'super_admin';
+  role: AdminRole;
   permissions: string; // JSON string
   isSuperAdmin: boolean;
   createdBy: string | null;
@@ -19,7 +20,7 @@ export interface UpdateAdminParams {
   username?: string;
   email?: string;
   passwordHash?: string;
-  role?: 'admin' | 'super_admin';
+  role?: AdminRole;
   permissions?: string; // JSON string
   isActive?: boolean;
   isSuperAdmin?: boolean;
@@ -28,7 +29,7 @@ export interface UpdateAdminParams {
 
 export interface AdminFilters {
   isActive?: boolean;
-  role?: 'admin' | 'super_admin';
+  role?: AdminRole;
   createdBy?: string;
   limit?: number;
   offset?: number;

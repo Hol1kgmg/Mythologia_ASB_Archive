@@ -6,37 +6,15 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { 
+  CreateAdminSchema,
+  UpdateAdminSchema,
+  AdminListFiltersSchema
+} from '@mythologia/shared';
 
 const app = new Hono();
 
-// 管理者作成用スキーマ
-const CreateAdminSchema = z.object({
-  username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_-]+$/),
-  email: z.string().email(),
-  password: z.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/),
-  role: z.enum(['admin', 'super_admin']).default('admin'),
-  permissions: z.array(z.object({
-    resource: z.enum(['cards', 'users', 'admins', 'system']),
-    actions: z.array(z.enum(['create', 'read', 'update', 'delete']))
-  })).default([]),
-  isSuperAdmin: z.boolean().default(false)
-});
-
-// 管理者更新用スキーマ
-const UpdateAdminSchema = z.object({
-  username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_-]+$/).optional(),
-  email: z.string().email().optional(),
-  password: z.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/).optional(),
-  role: z.enum(['admin', 'super_admin']).optional(),
-  permissions: z.array(z.object({
-    resource: z.enum(['cards', 'users', 'admins', 'system']),
-    actions: z.array(z.enum(['create', 'read', 'update', 'delete']))
-  })).optional(),
-  isActive: z.boolean().optional(),
-  isSuperAdmin: z.boolean().optional()
-});
-
-// クエリパラメータスキーマ
+// クエリパラメータ用のスキーマ（文字列からの変換を含む）
 const AdminListQuerySchema = z.object({
   page: z.string().transform(Number).pipe(z.number().min(1)).default('1'),
   limit: z.string().transform(Number).pipe(z.number().min(1).max(100)).default('20'),
