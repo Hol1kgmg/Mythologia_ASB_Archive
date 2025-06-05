@@ -112,6 +112,7 @@ export interface CardDto {
   tribeId: number | null;      // 動的種族ID（tribes.id）
   rarityId: number;            // 1:BRONZE, 2:SILVER, 3:GOLD, 4:LEGEND
   cardTypeId: number;          // 1:ATTACKER, 2:BLOCKER, 3:CHARGER
+  archetypeId?: number;        // 1:EARLY_GAME, 2:MID_GAME, 3:LATE_GAME, 4:UTILITY, 5:REMOVAL, 6:ENGINE
   cardSetId: string;           // カードセットID
   // 表示用の計算済みプロパティ
   displayName: string;         // レアリティプレフィックス付き名前
@@ -350,23 +351,38 @@ export const RARITIES = {
 } as const;
 
 // shared/src/constants/card-types.ts
+export enum CardType {
+  ATTACKER = 1,
+  BLOCKER = 2,
+  CHARGER = 3,
+}
+
+export enum CardArchetype {
+  EARLY_GAME = 1,
+  MID_GAME = 2,
+  LATE_GAME = 3,
+  UTILITY = 4,
+  REMOVAL = 5,
+  ENGINE = 6,
+}
+
 export const CARD_TYPES = {
-  ATTACKER: {
-    id: 1,
+  [CardType.ATTACKER]: {
+    id: CardType.ATTACKER,
     name: 'アタッカー',
     nameEn: 'Attacker',
     description: '攻撃に特化したカード',
     icon: '⚔️',
   },
-  BLOCKER: {
-    id: 2,
+  [CardType.BLOCKER]: {
+    id: CardType.BLOCKER,
     name: 'ブロッカー',
     nameEn: 'Blocker',
     description: '防御に特化したカード',
     icon: '🛡️',
   },
-  CHARGER: {
-    id: 3,
+  [CardType.CHARGER]: {
+    id: CardType.CHARGER,
     name: 'チャージャー',
     nameEn: 'Charger',
     description: 'サポート効果を持つカード',
@@ -374,10 +390,56 @@ export const CARD_TYPES = {
   },
 } as const;
 
+export const ARCHETYPES = {
+  [CardArchetype.EARLY_GAME]: {
+    id: CardArchetype.EARLY_GAME,
+    name: '序盤型',
+    nameEn: 'Early Game',
+    description: 'ゲーム開始直後にプレイされる低コストカード',
+    costRange: [1, 3],
+  },
+  [CardArchetype.MID_GAME]: {
+    id: CardArchetype.MID_GAME,
+    name: '中盤型',
+    nameEn: 'Mid Game',
+    description: 'ゲーム中盤の主力となるバランス型カード',
+    costRange: [4, 6],
+  },
+  [CardArchetype.LATE_GAME]: {
+    id: CardArchetype.LATE_GAME,
+    name: '終盤型',
+    nameEn: 'Late Game',
+    description: 'ゲーム終盤の勝負を決する高コストカード',
+    costRange: [7, 10],
+  },
+  [CardArchetype.UTILITY]: {
+    id: CardArchetype.UTILITY,
+    name: 'ユーティリティ',
+    nameEn: 'Utility',
+    description: '特殊な効果やサポート機能を持つカード',
+    costRange: [1, 8],
+  },
+  [CardArchetype.REMOVAL]: {
+    id: CardArchetype.REMOVAL,
+    name: '除去',
+    nameEn: 'Removal',
+    description: '相手のカードや脅威を除去するカード',
+    costRange: [2, 6],
+  },
+  [CardArchetype.ENGINE]: {
+    id: CardArchetype.ENGINE,
+    name: 'エンジン',
+    nameEn: 'Engine',
+    description: '継続的なアドバンテージを生み出すカード',
+    costRange: [3, 7],
+  },
+} as const;
+
 // 型ヘルパー
-export type LeaderId = typeof LEADERS[keyof typeof LEADERS]['id'];
+export type LeaderId = typeof LEADER_IDS[keyof typeof LEADER_IDS];
 export type RarityId = typeof RARITIES[keyof typeof RARITIES]['id'];
-export type CardTypeId = typeof CARD_TYPES[keyof typeof CARD_TYPES]['id'];
+export type CardTypeId = CardType;
+export type ArchetypeId = CardArchetype;
 
 // ユーティリティ関数
 export const getLeaderById = (id: LeaderId) => {
@@ -389,7 +451,11 @@ export const getRarityById = (id: RarityId) => {
 };
 
 export const getCardTypeById = (id: CardTypeId) => {
-  return Object.values(CARD_TYPES).find(type => type.id === id);
+  return CARD_TYPES[id];
+};
+
+export const getArchetypeById = (id: ArchetypeId) => {
+  return ARCHETYPES[id];
 };
 ```
 

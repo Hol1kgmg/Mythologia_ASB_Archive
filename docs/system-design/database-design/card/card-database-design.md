@@ -187,6 +187,15 @@ export enum CardType {
   CHARGER = 3      // チャージャー
 }
 
+export enum CardArchetype {
+  EARLY_GAME = 1,  // 序盤型
+  MID_GAME = 2,    // 中盤型
+  LATE_GAME = 3,   // 終盤型
+  UTILITY = 4,     // ユーティリティ
+  REMOVAL = 5,     // 除去
+  ENGINE = 6       // エンジン
+}
+
 // リーダーは動的なleadersテーブルから取得
 // 固定enumは使用せず、データベースベースの管理に移行済み
 export interface Leader {

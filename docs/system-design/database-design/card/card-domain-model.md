@@ -29,6 +29,7 @@
 
 #### レアリティシステム
 ```typescript
+// データベースのrarity_idに対応する数値ID
 enum Rarity {
   BRONZE = 1,     // 基本カード - 最も入手しやすい
   SILVER = 2,     // 強化カード - 中程度の希少性
@@ -63,6 +64,7 @@ interface RarityExpectation {
 
 #### カードタイプシステム
 ```typescript
+// データベースのcard_type_idに対応する数値ID
 enum CardType {
   ATTACKER = 1,   // 攻撃特化 - 高パワー、攻撃的効果
   BLOCKER = 2,    // 防御特化 - 防御効果、味方保護
@@ -345,54 +347,159 @@ const EFFECT_BALANCE = {
 
 #### アーキタイプ分類
 ```typescript
-// カードの基本的な役割分類
+// カードの基本的な役割分類（アーキタイプID付き）
 enum CardArchetype {
-  EARLY_GAME = "EARLY_GAME",    // 序盤用カード（コスト1-3）
-  MID_GAME = "MID_GAME",        // 中盤用カード（コスト4-6）  
-  LATE_GAME = "LATE_GAME",      // 終盤用カード（コスト7+）
-  UTILITY = "UTILITY",          // ユーティリティカード
-  REMOVAL = "REMOVAL",          // 除去カード
-  ENGINE = "ENGINE"             // エンジンカード（リソース生成）
+  EARLY_GAME = 1,    // 序盤用カード（コスト1-3）
+  MID_GAME = 2,      // 中盤用カード（コスト4-6）  
+  LATE_GAME = 3,     // 終盤用カード（コスト7+）
+  UTILITY = 4,       // ユーティリティカード
+  REMOVAL = 5,       // 除去カード
+  ENGINE = 6         // エンジンカード（リソース生成）
 }
 
+// アーキタイプ詳細情報
+interface ArchetypeInfo {
+  id: CardArchetype;
+  name: string;
+  nameEn: string;
+  description: string;
+  costRange: [number, number];
+  typicalEffects: string[];
+  strategicRole: string;
+}
+
+const ARCHETYPE_INFO: Record<CardArchetype, ArchetypeInfo> = {
+  [CardArchetype.EARLY_GAME]: {
+    id: CardArchetype.EARLY_GAME,
+    name: '序盤型',
+    nameEn: 'Early Game',
+    description: 'ゲーム開始直後にプレイされる低コストカード',
+    costRange: [1, 3],
+    typicalEffects: ['quick_deploy', 'early_pressure', 'board_presence'],
+    strategicRole: '盤面形成・初期圧力'
+  },
+  [CardArchetype.MID_GAME]: {
+    id: CardArchetype.MID_GAME,
+    name: '中盤型',
+    nameEn: 'Mid Game',
+    description: 'ゲーム中盤の主力となるバランス型カード',
+    costRange: [4, 6],
+    typicalEffects: ['value_trade', 'board_control', 'tempo_swing'],
+    strategicRole: '盤面コントロール・交換'
+  },
+  [CardArchetype.LATE_GAME]: {
+    id: CardArchetype.LATE_GAME,
+    name: '終盤型',
+    nameEn: 'Late Game',
+    description: 'ゲーム終盤の勝負を決する高コストカード',
+    costRange: [7, 10],
+    typicalEffects: ['game_ending', 'massive_impact', 'win_condition'],
+    strategicRole: 'フィニッシャー・勝利条件'
+  },
+  [CardArchetype.UTILITY]: {
+    id: CardArchetype.UTILITY,
+    name: 'ユーティリティ',
+    nameEn: 'Utility',
+    description: '特殊な効果やサポート機能を持つカード',
+    costRange: [1, 8],
+    typicalEffects: ['card_draw', 'search', 'resource_generation'],
+    strategicRole: 'サポート・リソース管理'
+  },
+  [CardArchetype.REMOVAL]: {
+    id: CardArchetype.REMOVAL,
+    name: '除去',
+    nameEn: 'Removal',
+    description: '相手のカードや脇威を除去するカード',
+    costRange: [2, 6],
+    typicalEffects: ['destroy', 'damage', 'debuff', 'exile'],
+    strategicRole: '脇威処理・盤面クリア'
+  },
+  [CardArchetype.ENGINE]: {
+    id: CardArchetype.ENGINE,
+    name: 'エンジン',
+    nameEn: 'Engine',
+    description: '継続的なアドバンテージを生み出すカード',
+    costRange: [3, 7],
+    typicalEffects: ['recurring_value', 'synergy_enabler', 'combo_piece'],
+    strategicRole: 'アドバンテージエンジン・コンボ'
+  }
+};
+
 // 基本的な判定ロジック
+// アーキタイプ判定ロジック
 function getCardArchetype(card: Card): CardArchetype {
-  if (card.cost <= 3) return CardArchetype.EARLY_GAME;
-  if (card.cost <= 6) return CardArchetype.MID_GAME;
-  if (card.cost >= 7) return CardArchetype.LATE_GAME;
-  
-  // 効果による特殊分類
+  // 効果優先判定
   const hasDrawEffect = card.effects.some(e => 
-    e.abilities?.some(a => a.type === 'draw')
+    e.abilities?.some(a => ['draw', 'search', 'resource'].includes(a.type))
   );
   if (hasDrawEffect) return CardArchetype.ENGINE;
   
   const hasDestroyEffect = card.effects.some(e => 
-    e.abilities?.some(a => a.type === 'destroy')
+    e.abilities?.some(a => ['destroy', 'damage', 'debuff', 'exile'].includes(a.type))
   );
   if (hasDestroyEffect) return CardArchetype.REMOVAL;
+  
+  // コストベース判定
+  if (card.cost <= 3) return CardArchetype.EARLY_GAME;
+  if (card.cost <= 6) return CardArchetype.MID_GAME;
+  if (card.cost >= 7) return CardArchetype.LATE_GAME;
   
   return CardArchetype.UTILITY;
 }
 
-// レアリティ・カードタイプのヘルパー関数
-function getRarityName(rarityId: number): string {
-  const names = {
-    1: 'ブロンズ',
-    2: 'シルバー', 
-    3: 'ゴールド',
-    4: 'レジェンド'
+// アーキタイプ情報取得
+function getArchetypeInfo(archetype: CardArchetype): ArchetypeInfo {
+  return ARCHETYPE_INFO[archetype];
+}
+
+function getArchetypeName(archetype: CardArchetype): string {
+  return ARCHETYPE_INFO[archetype].name;
+}
+
+function getArchetypeNameEn(archetype: CardArchetype): string {
+  return ARCHETYPE_INFO[archetype].nameEn;
+}
+
+// enumベースのヘルパー関数（ID付き）
+function getRarityName(rarityId: Rarity): string {
+  const names: Record<Rarity, string> = {
+    [Rarity.BRONZE]: 'ブロンズ',
+    [Rarity.SILVER]: 'シルバー',
+    [Rarity.GOLD]: 'ゴールド',
+    [Rarity.LEGEND]: 'レジェンド'
   };
   return names[rarityId] || '不明';
 }
 
-function getCardTypeName(cardTypeId: number): string {
-  const names = {
-    1: 'アタッカー',
-    2: 'ブロッカー',
-    3: 'チャージャー'
+function getCardTypeName(cardTypeId: CardType): string {
+  const names: Record<CardType, string> = {
+    [CardType.ATTACKER]: 'アタッカー',
+    [CardType.BLOCKER]: 'ブロッカー',
+    [CardType.CHARGER]: 'チャージャー'
   };
   return names[cardTypeId] || '不明';
+}
+
+// 新たに追加：アーキタイプ関連ヘルパー
+function getArchetypeById(archetypeId: CardArchetype): ArchetypeInfo {
+  return ARCHETYPE_INFO[archetypeId];
+}
+
+// 全enumの一覧取得
+function getAllRarities(): Array<{id: Rarity, name: string}> {
+  return Object.values(Rarity)
+    .filter(value => typeof value === 'number')
+    .map(id => ({ id: id as Rarity, name: getRarityName(id as Rarity) }));
+}
+
+function getAllCardTypes(): Array<{id: CardType, name: string}> {
+  return Object.values(CardType)
+    .filter(value => typeof value === 'number')
+    .map(id => ({ id: id as CardType, name: getCardTypeName(id as CardType) }));
+}
+
+function getAllArchetypes(): Array<ArchetypeInfo> {
+  return Object.values(ARCHETYPE_INFO);
 }
 
 // 動的種族データ取得関数（実際の実装ではデータベースから取得）
