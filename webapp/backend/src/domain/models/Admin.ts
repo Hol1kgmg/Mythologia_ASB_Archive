@@ -156,7 +156,7 @@ export class AdminPermissionChecker {
            );
   }
 
-  static canViewResource(admin: Admin, resource: string): boolean {
+  static canViewResource(admin: Admin, resource: AdminPermissionDTO['resource']): boolean {
     return admin.isSuperAdmin ||
            admin.permissions.some(p => 
              p.resource === resource && 
@@ -164,7 +164,11 @@ export class AdminPermissionChecker {
            );
   }
 
-  static canPerformAction(admin: Admin, resource: string, action: string): boolean {
+  static canPerformAction(
+    admin: Admin, 
+    resource: AdminPermissionDTO['resource'], 
+    action: AdminPermissionDTO['actions'][number]
+  ): boolean {
     return admin.isSuperAdmin ||
            admin.permissions.some(p => 
              p.resource === resource && 
