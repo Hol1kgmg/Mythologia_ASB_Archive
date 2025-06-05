@@ -42,14 +42,14 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
         const result = await this.transactionClient.query(sql, params);
         return {
           rows: result.rows as T[],
-          rowCount: result.rowCount
+          rowCount: result.rowCount || 0
         };
       } else if (this.pool) {
         // 通常のクエリ
         const result = await this.pool.query(sql, params);
         return {
           rows: result.rows as T[],
-          rowCount: result.rowCount
+          rowCount: result.rowCount || 0
         };
       } else {
         throw new Error('PostgreSQL connection not initialized');

@@ -7,7 +7,7 @@ import type { CloudflareEnv } from './config/env';
 // Honoアプリケーションの型定義
 type Bindings = {
   DB?: D1Database;
-  CACHE?: KVNamespace;
+  CACHE?: any; // KVNamespace型定義を一時的にanyに変更
   DATABASE_TYPE?: string;
   ENVIRONMENT?: string;
   DATABASE_URL?: string;
@@ -15,7 +15,7 @@ type Bindings = {
 
 type Variables = {
   db?: D1Database;
-  cache?: KVNamespace;
+  cache?: any; // KVNamespace型定義を一時的にanyに変更
 };
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();

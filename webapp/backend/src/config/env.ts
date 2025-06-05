@@ -54,7 +54,7 @@ export const isD1 = env.DATABASE_TYPE === 'd1';
 // Cloudflare Workers環境の型定義
 export interface CloudflareEnv {
   DB?: D1Database;
-  CACHE?: KVNamespace;
+  CACHE?: any; // KVNamespace型定義を一時的にanyに変更
   DATABASE_TYPE?: string;
   ENVIRONMENT?: string;
 }
