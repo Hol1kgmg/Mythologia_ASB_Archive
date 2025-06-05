@@ -24,72 +24,78 @@
 ### 3. ディレクトリ構造
 ```
 webapp/
+├── package.json                 # ワークスペース設定
+├── README.md                   # WebApp専用セットアップガイド
+├── TESTING.md                  # 動作確認手順
+├── test-api.sh                 # 自動APIテストスクリプト
+│
 ├── shared/                      # 共有パッケージ (@mythologia/shared)
 │   ├── src/
 │   │   ├── types/              # 共有型定義
 │   │   │   ├── dto/            # データ転送オブジェクト
 │   │   │   │   ├── card.dto.ts          # カード情報DTO
-│   │   │   │   ├── deck.dto.ts          # デッキ情報DTO
-│   │   │   │   ├── tribe.dto.ts         # 種族情報DTO
-│   │   │   │   ├── card-set.dto.ts      # カードセットDTO
-│   │   │   │   └── user.dto.ts          # ユーザー情報DTO
-│   │   │   ├── api/            # APIレスポンス型
-│   │   │   │   ├── responses.ts         # 統一レスポンス型
-│   │   │   │   ├── errors.ts            # エラーレスポンス型
-│   │   │   │   └── filters.ts           # 検索・フィルター型
-│   │   │   └── common/         # 共通型定義
-│   │   │       ├── pagination.ts       # ページネーション
-│   │   │       ├── enums.ts            # 共通Enum
-│   │   │       └── utils.ts            # ユーティリティ型
+│   │   │   │   ├── leader.dto.ts        # リーダー情報DTO（動的管理）
+│   │   │   │   └── tribe.dto.ts         # 種族情報DTO（動的管理）
+│   │   │   └── api/            # APIレスポンス型
+│   │   │       └── responses.ts         # 統一レスポンス型
 │   │   ├── schemas/            # Zodバリデーションスキーマ
-│   │   │   ├── card.schema.ts          # カード検証スキーマ
-│   │   │   ├── deck.schema.ts          # デッキ検証スキーマ
-│   │   │   ├── tribe.schema.ts         # 種族検証スキーマ
-│   │   │   └── auth.schema.ts          # 認証検証スキーマ
+│   │   │   └── card.schema.ts          # カード検証スキーマ
 │   │   ├── constants/          # 共通定数
 │   │   │   ├── game-rules.ts           # ゲームルール定数
-│   │   │   ├── leaders.ts              # リーダー定数
-│   │   │   ├── rarities.ts             # レアリティ定数
-│   │   │   └── card-types.ts           # カードタイプ定数
-│   │   └── adapters/           # プラットフォーム抽象化
-│   │       ├── database.adapter.ts     # DB統一インターフェース
-│   │       └── cache.adapter.ts        # キャッシュ統一インターフェース
+│   │   │   ├── rarities.ts             # レアリティ定数（ID付き）
+│   │   │   └── card-types.ts           # カードタイプ定数（ID付き）
+│   │   └── index.ts            # エクスポート設定
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── exports.json            # エクスポート設定
+│   └── .gitignore              # ビルド成果物除外
 │
 ├── backend/                     # Honoバックエンド
 │   ├── src/
 │   │   ├── domain/             # ドメインモデル（非共有）
-│   │   │   ├── card.domain.ts           # カードドメインロジック
-│   │   │   ├── deck.domain.ts           # デッキドメインロジック
-│   │   │   └── tribe.domain.ts          # 種族ドメインロジック
+│   │   │   ├── models/         # ドメインモデル
+│   │   │   │   ├── Card.ts              # カードドメインモデル
+│   │   │   │   ├── Leader.ts            # リーダードメインモデル
+│   │   │   │   ├── Tribe.ts             # 種族ドメインモデル
+│   │   │   │   └── index.ts             # エクスポート
+│   │   │   └── repositories/   # リポジトリインターフェース
+│   │   │       ├── CardRepository.ts    # カードリポジトリ
+│   │   │       ├── LeaderRepository.ts  # リーダーリポジトリ
+│   │   │       ├── TribeRepository.ts   # 種族リポジトリ
+│   │   │       └── index.ts             # エクスポート
 │   │   ├── application/        # アプリケーション層
 │   │   │   ├── services/               # ビジネスロジック
 │   │   │   └── use-cases/              # ユースケース
 │   │   ├── infrastructure/     # インフラ層
 │   │   │   ├── database/               # データベース実装
-│   │   │   ├── cache/                  # キャッシュ実装
-│   │   │   └── adapters/               # プラットフォームアダプター
-│   │   └── api/                # API層（Hono）
-│   │       ├── routes/                 # ルート定義
-│   │       ├── middleware/             # ミドルウェア
-│   │       └── controllers/            # コントローラー
+│   │   │   │   ├── DatabaseAdapter.ts  # DB統一インターフェース
+│   │   │   │   ├── PostgreSQLAdapter.ts # PostgreSQL実装
+│   │   │   │   ├── D1Adapter.ts         # Cloudflare D1実装
+│   │   │   │   ├── DatabaseAdapterFactory.ts # ファクトリー
+│   │   │   │   └── index.ts             # エクスポート
+│   │   │   └── cache/                  # キャッシュ実装
+│   │   ├── routes/             # API層（Hono）
+│   │   │   ├── cards.ts                # カードAPI
+│   │   │   ├── leaders.ts              # リーダーAPI
+│   │   │   ├── tribes.ts               # 種族API
+│   │   │   └── index.ts                # ルートエクスポート
+│   │   └── index.ts            # メインエントリーポイント
 │   ├── package.json
-│   └── tsconfig.json
+│   ├── tsconfig.json
+│   └── .gitignore              # TypeScriptビルド成果物除外
 │
 └── frontend/                    # Next.js フロントエンド
     ├── src/
     │   ├── app/                # App Router
-    │   ├── features/           # Feature-Sliced Design
+    │   │   └── page.tsx                # ホームページ
+    │   ├── features/           # Feature-Sliced Design（将来実装）
     │   │   ├── deck-builder/           # デッキ構築機能
     │   │   ├── card-browser/           # カード閲覧機能
     │   │   └── auth/                   # 認証機能
-    │   ├── shared/             # UI共有コード
+    │   ├── shared/             # UI共有コード（将来実装）
     │   │   ├── ui/                     # UIコンポーネント
     │   │   ├── hooks/                  # カスタムフック
     │   │   └── utils/                  # ユーティリティ
-    │   └── widgets/            # ページレベルコンポーネント
+    │   └── widgets/            # ページレベルコンポーネント（将来実装）
     ├── package.json
     └── tsconfig.json
 ```
@@ -953,17 +959,37 @@ export function DeckForm() {
 }
 ```
 
-### ルートpackage.json（ワークスペース設定）
+### ルートpackage.json（メンテナンス中表示用）
 ```json
 {
-  "name": "mythologia-admiral-ship-bridge",
+  "name": "mythologia-admiral-ship-bridge-maintenance",
+  "version": "0.0.1",
+  "description": "Mythologia Admiral Ship Bridge - 神託のメソロギア ファンサイト - メンテナンス中",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static maintenance page - no build required'"
+  },
+  "keywords": [
+    "mythologia",
+    "maintenance",
+    "unofficial"
+  ],
+  "author": "Community Contributors",
+  "license": "MIT"
+}
+```
+
+### webapp/package.json（実際のワークスペース設定）
+```json
+{
+  "name": "mythologia-admiral-ship-bridge-webapp",
   "version": "1.0.0",
-  "description": "神託のメソロギア ファンサイト - Mythologia Admiral Ship Bridge",
+  "description": "神託のメソロギア ファンサイト - Mythologia Admiral Ship Bridge WebApp",
   "private": true,
   "workspaces": [
-    "webapp/shared",
-    "webapp/backend",
-    "webapp/frontend"
+    "shared",
+    "backend",
+    "frontend"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:shared\" \"npm run dev:backend\" \"npm run dev:frontend\"",
@@ -989,17 +1015,24 @@ export function DeckForm() {
 
 ### 1. 型定義の更新ワークフロー
 ```bash
-# 1. 共有パッケージで型定義を更新
-cd webapp/shared
-npm run build
+# 1. webappディレクトリに移動
+cd webapp
 
-# 2. バックエンド・フロントエンドで型チェック
+# 2. 共有パッケージで型定義を更新・ビルド
+cd shared
+npm run build
+cd ..
+
+# 3. バックエンド・フロントエンドで型チェック
 npm run type-check --workspaces
 
-# 3. テスト実行
+# 4. APIテスト実行
+./test-api.sh
+
+# 5. 全体テスト実行
 npm run test --workspaces
 
-# 4. コミット
+# 6. コミット
 git add .
 git commit -m "feat: 新しいTribeDto型定義を追加"
 ```
