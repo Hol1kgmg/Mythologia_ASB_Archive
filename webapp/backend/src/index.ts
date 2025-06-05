@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { cards, leaders, tribes } from './routes';
+import { cards, leaders, tribes, debug } from './routes';
 
 const app = new Hono();
 
@@ -35,5 +35,8 @@ app.get('/health', (c) => {
 app.route('/api/cards', cards);
 app.route('/api/leaders', leaders);
 app.route('/api/tribes', tribes);
+
+// 開発用デバッグルート
+app.route('/debug', debug);
 
 export default app;

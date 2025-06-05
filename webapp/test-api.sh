@@ -86,9 +86,17 @@ test_endpoint "GET" "/api/tribes?leaderId=1" "Filter tribes by leader"
 test_endpoint "GET" "/api/tribes/1" "Get tribe by ID"
 test_endpoint "GET" "/api/tribes/invalid" "Get tribe with invalid ID" 400
 
+# Test debug endpoints
+echo ""
+echo -e "${BLUE}🔧 Debug Information:${NC}"
+test_endpoint "GET" "/debug/schema" "Database schema information"
+test_endpoint "GET" "/debug/db-status" "Database connection status" 
+test_endpoint "GET" "/debug/mock-data" "Mock data information"
+
 echo "🎉 API testing completed!"
 echo ""
 echo "📝 Notes:"
 echo "  - All endpoints return mock data since database is not connected"
 echo "  - Status codes and response structure should be correct"
 echo "  - Parameter validation is working for ID endpoints"
+echo "  - Use /debug/* endpoints to check database status and schema"
