@@ -1,0 +1,34 @@
+{
+  "name": "@mythologia/backend",
+  "version": "1.0.0",
+  "description": "Mythologia Admiral Ship Bridge - Honoバックエンド",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts --compatibility-date 2024-01-01",
+    "build": "tsc",
+    "deploy:cloudflare": "wrangler deploy",
+    "deploy:vercel": "vercel deploy",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "@mythologia/shared": "*",
+    "hono": "^4.7.11",
+    "@hono/zod-validator": "^0.2.0",
+    "jose": "^5.0.0",
+    "pino": "^8.17.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.4.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  }
+}
