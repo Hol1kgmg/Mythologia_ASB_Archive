@@ -4,7 +4,7 @@
 # Usage: ./webapp/test-api.sh [base_url] or cd webapp && ./test-api.sh [base_url]
 # Default base_url: http://localhost:8787
 
-BASE_URL=${1:-"http://localhost:8787"}
+BASE_URL=${1:-"https://mythologia-admirals-ship-bridge.vercel.app"}
 
 echo "🧪 Mythologia Admiral Ship Bridge API テスト"
 echo "📍 Base URL: $BASE_URL"
