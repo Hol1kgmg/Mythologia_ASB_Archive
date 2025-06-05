@@ -8,10 +8,6 @@
       "config": {
         "maxLambdaSize": "50mb"
       }
-    },
-    {
-      "src": "webapp/frontend/package.json",
-      "use": "@vercel/next"
     }
   ],
   "routes": [
@@ -28,12 +24,14 @@
       "dest": "/webapp/backend/src/index.ts"
     },
     {
-      "src": "/(.*)",
-      "dest": "/webapp/frontend/$1"
+      "src": "/",
+      "dest": "/webapp/backend/src/index.ts"
     }
   ],
   "env": {
     "DATABASE_TYPE": "postgresql",
     "ENVIRONMENT": "production"
-  }
+  },
+  "installCommand": "cd webapp && npm install --workspace=@mythologia/shared && npm install --workspace=@mythologia/backend",
+  "buildCommand": "cd webapp && npm run build --workspace=@mythologia/shared && npm run build --workspace=@mythologia/backend"
 }
