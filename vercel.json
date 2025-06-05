@@ -8,6 +8,10 @@
       "config": {
         "maxLambdaSize": "50mb"
       }
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -25,7 +29,7 @@
     },
     {
       "src": "/",
-      "dest": "/webapp/backend/src/index.ts"
+      "dest": "/index.html"
     }
   ],
   "env": {
