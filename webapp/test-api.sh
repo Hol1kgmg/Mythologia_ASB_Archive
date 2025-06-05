@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Mythologia Admiral Ship Bridge API Test Script
-# Usage: ./test-api.sh [base_url]
+# Usage: ./webapp/test-api.sh [base_url] or cd webapp && ./test-api.sh [base_url]
 # Default base_url: http://localhost:8787
 
 BASE_URL=${1:-"http://localhost:8787"}
@@ -59,7 +59,7 @@ for i in {1..10}; do
     if [ $i -eq 10 ]; then
         echo -e "${RED}❌ Server not ready after 10 attempts${NC}"
         echo "Please make sure the server is running:"
-        echo "  cd webapp/backend && npm run dev"
+        echo "  cd backend && npm run dev"
         exit 1
     fi
     sleep 1

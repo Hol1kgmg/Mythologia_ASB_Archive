@@ -9,7 +9,8 @@
 ### 1. 依存関係のインストール
 
 ```bash
-# ルートディレクトリで実行
+# webappディレクトリで実行
+cd webapp
 npm install
 
 # 個別パッケージのビルド
@@ -20,7 +21,8 @@ npm run build -w @mythologia/backend
 ### 2. 型チェック
 
 ```bash
-# 全パッケージの型チェック
+# webapp内で全パッケージの型チェック
+cd webapp
 npm run type-check -w @mythologia/shared
 npm run type-check -w @mythologia/backend
 npm run type-check -w @mythologia/frontend
@@ -43,7 +45,8 @@ npm run dev
 ### 2. 自動テストスクリプト実行
 
 ```bash
-# ルートディレクトリから実行
+# webappディレクトリから実行
+cd webapp
 ./test-api.sh
 
 # または特定のURLを指定

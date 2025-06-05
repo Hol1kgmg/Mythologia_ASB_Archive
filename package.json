@@ -1,34 +1,14 @@
 {
-  "name": "mythologia-admiral-ship-bridge",
-  "version": "1.0.0",
-  "description": "神託のメソロギア ファンサイト - Mythologia Admiral Ship Bridge",
+  "name": "mythologia-admiral-ship-bridge-maintenance",
+  "version": "0.0.1",
+  "description": "Mythologia Admiral Ship Bridge - 神託のメソロギア ファンサイト - メンテナンス中",
   "private": true,
-  "workspaces": [
-    "webapp/shared",
-    "webapp/backend",
-    "webapp/frontend"
-  ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:shared\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:shared": "npm run dev --workspace=@mythologia/shared",
-    "dev:backend": "npm run dev --workspace=@mythologia/backend",
-    "dev:frontend": "npm run dev --workspace=@mythologia/frontend",
-    "build": "npm run build --workspace=@mythologia/shared && npm run build --workspace=@mythologia/backend && npm run build --workspace=@mythologia/frontend",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
-    "type-check": "npm run type-check --workspaces"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "build": "echo 'Static maintenance page - no build required'"
   },
   "keywords": [
     "mythologia",
-    "card-game",
-    "deck-builder",
+    "maintenance",
     "unofficial"
   ],
   "author": "Community Contributors",
