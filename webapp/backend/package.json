@@ -6,29 +6,38 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts --compatibility-date 2024-01-01",
     "build": "tsc",
-    "deploy:cloudflare": "wrangler deploy",
-    "deploy:vercel": "vercel deploy",
+    "deploy:cloudflare": "npm run build && wrangler deploy",
+    "deploy:vercel": "npm run build && vercel deploy",
+    "migrate:postgresql": "tsx scripts/migrate.ts postgresql",
+    "migrate:postgresql:dry": "tsx scripts/migrate.ts postgresql --dry-run",
+    "migrate:d1": "tsx scripts/migrate.ts d1",
+    "db:setup:cloudflare": "wrangler d1 create mythologia-db && wrangler kv:namespace create mythologia-cache",
     "test": "vitest",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "@mythologia/shared": "*",
-    "hono": "^4.7.11",
     "@hono/zod-validator": "^0.2.0",
+    "@mythologia/shared": "*",
+    "@vercel/postgres": "^0.10.0",
+    "dotenv": "^16.5.0",
+    "hono": "^4.7.11",
     "jose": "^5.0.0",
+    "pg": "^8.16.0",
     "pino": "^8.17.0",
     "zod": "^3.22.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "wrangler": "^4.4.0",
-    "vitest": "^1.0.0",
-    "eslint": "^8.0.0",
+    "@types/pg": "^8.15.4",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0"
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "wrangler": "^4.4.0"
   }
 }

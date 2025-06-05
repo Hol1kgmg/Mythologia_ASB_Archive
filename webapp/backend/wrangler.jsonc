@@ -1,38 +1,38 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-06-05"
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+  "name": "mythologia-backend",
+  "main": "dist/index.js",
+  "compatibility_date": "2024-01-01",
+  "vars": {
+    "DATABASE_TYPE": "d1",
+    "ENVIRONMENT": "production"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mythologia-db",
+      "database_id": "" // TODO: wrangler d1 create mythologia-db で取得したIDを設定
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "" // TODO: wrangler kv:namespace create mythologia-cache で取得したIDを設定
+    }
+  ],
+  // 開発用ローカル設定
+  "miniflare": {
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "mythologia-db-local"
+      }
+    ],
+    "kv_namespaces": [
+      {
+        "binding": "CACHE",
+        "id": "mythologia-cache-local"
+      }
+    ]
+  }
 }

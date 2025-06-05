@@ -1,15 +1,31 @@
 {
   "version": 2,
-  "builds": [
+  "framework": null,
+  "functions": {
+    "webapp/backend/dist/index.js": {
+      "runtime": "@vercel/node@3.0.0",
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
     {
-      "src": "index.html",
-      "use": "@vercel/static"
+      "source": "/api/:path*",
+      "destination": "/webapp/backend/dist/index.js"
+    },
+    {
+      "source": "/debug/:path*",
+      "destination": "/webapp/backend/dist/index.js"
+    },
+    {
+      "source": "/health",
+      "destination": "/webapp/backend/dist/index.js"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "env": {
+    "DATABASE_TYPE": "postgresql",
+    "ENVIRONMENT": "production"
+  },
+  "buildCommand": "cd webapp && npm install && npm run build",
+  "outputDirectory": "webapp/frontend/.next",
+  "installCommand": "cd webapp && npm install"
 }
