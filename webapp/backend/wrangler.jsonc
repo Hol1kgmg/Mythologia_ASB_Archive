@@ -5,34 +5,6 @@
   "compatibility_date": "2024-01-01",
   "vars": {
     "DATABASE_TYPE": "d1",
-    "ENVIRONMENT": "production"
-  },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "mythologia-db",
-      "database_id": "" // TODO: wrangler d1 create mythologia-db で取得したIDを設定
-    }
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "CACHE",
-      "id": "" // TODO: wrangler kv:namespace create mythologia-cache で取得したIDを設定
-    }
-  ],
-  // 開発用ローカル設定
-  "miniflare": {
-    "d1_databases": [
-      {
-        "binding": "DB",
-        "database_name": "mythologia-db-local"
-      }
-    ],
-    "kv_namespaces": [
-      {
-        "binding": "CACHE",
-        "id": "mythologia-cache-local"
-      }
-    ]
+    "ENVIRONMENT": "development"
   }
 }
