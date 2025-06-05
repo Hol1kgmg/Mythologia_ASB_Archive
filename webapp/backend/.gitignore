@@ -1,6 +1,11 @@
 # prod
 dist/
 
+# TypeScript build outputs
+*.js
+*.js.map
+!*.config.js
+
 # dev
 .yarn/
 !.yarn/releases
