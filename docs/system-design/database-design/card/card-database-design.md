@@ -6,6 +6,28 @@
 
 ## テーブル設計
 
+### leaders テーブル
+
+```sql
+CREATE TABLE leaders (
+  id INTEGER PRIMARY KEY,               -- リーダーID（1-5）
+  name VARCHAR(50) NOT NULL UNIQUE,     -- リーダー名（日本語）
+  name_en VARCHAR(50) NOT NULL UNIQUE,  -- リーダー名（英語）
+  description TEXT NULL,                -- リーダー説明
+  color VARCHAR(7) NOT NULL,            -- テーマカラー（HEX形式）
+  thematic VARCHAR(100) NULL,           -- テーマ特性
+  icon_url VARCHAR(500) NULL,           -- アイコンURL
+  focus VARCHAR(50) NOT NULL,           -- 戦略フォーカス（aggro, control, midrange, defense, combo）
+  average_cost DECIMAL(3,1) DEFAULT 3.5, -- 推奨平均コスト
+  preferred_card_types JSON NULL,       -- 推奨カードタイプ（JSON配列）
+  key_effects JSON NULL,                -- 主要効果（JSON配列）
+  sort_order INTEGER DEFAULT 0,         -- 表示順序
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
 ### tribes テーブル
 
 ```sql
@@ -61,6 +83,7 @@ CREATE TABLE cards (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
   -- 外部キー制約
+  FOREIGN KEY (leader_id) REFERENCES leaders(id) ON DELETE SET NULL,
   FOREIGN KEY (tribe_id) REFERENCES tribes(id),
   FOREIGN KEY (card_set_id) REFERENCES card_sets(id)
 );
@@ -108,9 +131,17 @@ CREATE INDEX idx_cards_tribe_type ON cards(tribe_id, card_type_id);
 CREATE INDEX idx_cards_cost_power ON cards(cost, power);
 CREATE INDEX idx_cards_set_active ON cards(card_set_id, is_active);
 
+-- leaders テーブル用インデックス
+CREATE INDEX idx_leaders_name ON leaders(name);
+CREATE INDEX idx_leaders_name_en ON leaders(name_en);
+CREATE INDEX idx_leaders_focus ON leaders(focus);
+CREATE INDEX idx_leaders_active ON leaders(is_active);
+CREATE INDEX idx_leaders_sort_order ON leaders(sort_order);
+
 -- tribes テーブル用インデックス
 CREATE INDEX idx_tribes_name ON tribes(name);
-CREATE INDEX idx_tribes_active ON tribes(is_active);
+CREATE INDEX idx_tribes_leader_id ON tribes(leaderId);
+CREATE INDEX idx_tribes_active ON tribes(isActive);
 
 -- card_sets テーブル用インデックス
 CREATE INDEX idx_card_sets_code ON card_sets(code);
@@ -127,7 +158,19 @@ CREATE INDEX idx_translations_card_lang ON card_translations(card_id, language_c
 
 ## Enum定義
 
-### TypeScript Enum対応
+### 初期データ移行（leaders）
+
+```sql
+-- リーダーテーブルの初期データ
+INSERT INTO leaders (id, name, name_en, description, color, thematic, focus, average_cost, preferred_card_types, key_effects, sort_order) VALUES 
+(1, 'ドラゴン', 'Dragon', '強力な攻撃力を持つカードが多い', '#FF6B35', '火力・直接攻撃', 'aggro', 3.2, '["ATTACKER"]', '["damage", "buff"]', 1),
+(2, 'アンドロイド', 'Android', 'テクノロジーとシナジー効果', '#00B4D8', '機械・連携', 'control', 4.1, '["BLOCKER", "CHARGER"]', '["draw", "search", "debuff"]', 2),
+(3, 'エレメンタル', 'Elemental', '自然の力と魔法的効果', '#06FFA5', '自然・魔法', 'midrange', 3.5, '["ATTACKER", "BLOCKER"]', '["heal", "buff", "damage"]', 3),
+(4, 'ルミナス', 'Luminus', '光の力と防御・回復', '#FFD23F', '光・防御・回復', 'defense', 3.8, '["BLOCKER"]', '["heal", "shield", "debuff"]', 4),
+(5, 'シェイド', 'Shade', '闇の力と特殊効果', '#6A4C93', '闇・特殊効果', 'combo', 3.0, '["CHARGER"]', '["draw", "search", "summon"]', 5);
+```
+
+### TypeScript Enum対応（動的リーダー対応）
 
 ```typescript
 // データベースの数値IDに対応するTypeScript定義
@@ -144,12 +187,21 @@ export enum CardType {
   CHARGER = 3      // チャージャー
 }
 
-export enum Leader {
-  DRAGON = 1,      // ドラゴン
-  ANDROID = 2,     // アンドロイド
-  ELEMENTAL = 3,   // エレメンタル
-  LUMINUS = 4,     // ルミナス
-  SHADE = 5        // シェイド
+// リーダーは動的なleadersテーブルから取得
+// 固定enumは使用せず、データベースベースの管理に移行済み
+export interface Leader {
+  id: number;
+  name: string;
+  nameEn: string;
+  description: string;
+  color: string;
+  thematic: string;
+  focus: 'aggro' | 'control' | 'midrange' | 'defense' | 'combo';
+  averageCost: number;
+  preferredCardTypes: string[];
+  keyEffects: string[];
+  sortOrder: number;
+  isActive: boolean;
 }
 ```
 
@@ -223,16 +275,18 @@ CREATE INDEX idx_cards_triggers ON cards((JSON_EXTRACT(effects, '$.triggers[*].t
 
 ```sql
 -- Phase 1: マスターデータの準備
--- 種族データの初期化
-INSERT INTO tribes (id, name, description) VALUES 
-(1, 'ドラゴン', '古代より存在する強大な竜族'),
-(2, 'ロボット', '高度な技術で作られた機械生命体'),
-(3, 'エレメンタル', '自然の力を宿す精霊たち'),
-(4, 'アンジェル', '天界からの使者'),
-(5, 'デーモン', '闇の力を操る魔族'),
-(6, 'ビースト', '野生の力を持つ獣族'),
-(7, 'ヒューマン', '様々な技能を持つ人間'),
-(8, 'アンデッド', '死を超越した不死の存在');
+-- リーダーデータの初期化（上記参照）
+
+-- 種族データの初期化（leaderId関連付け）
+INSERT INTO tribes (id, name, leaderId, thematic, description) VALUES 
+(1, 'ドラゴン', 1, '力と威厳', '古代より存在する強大な竜族'),
+(2, 'ロボット', 2, '論理と効率', '高度な技術で作られた機械生命体'),
+(3, 'エレメンタル', 3, '自然の調和', '自然の力を宿す精霊たち'),
+(4, 'アンジェル', 4, '神聖な力', '天界からの使者'),
+(5, 'デーモン', 5, '闇の誘惑', '闇の力を操る魔族'),
+(6, 'ビースト', NULL, '野生の本能', '野生の力を持つ獣族'),
+(7, 'ヒューマン', NULL, '多様性と適応', '様々な技能を持つ人間'),
+(8, 'アンデッド', NULL, '死を超越', '死を超越した不死の存在');
 
 -- カードセット情報の初期化
 INSERT INTO card_sets (id, name, code, release_date, card_count, description)
@@ -276,10 +330,12 @@ CREATE TABLE card_versions (
 ```sql
 -- よく使われるクエリパターンと最適化
 
--- 1. リーダー別カード検索
-SELECT * FROM cards 
-WHERE leader_id = ? AND is_active = TRUE 
-ORDER BY cost, name;
+-- 1. リーダー別カード検索（leadersテーブル結合）
+SELECT c.*, l.name as leader_name, l.focus as leader_focus
+FROM cards c
+LEFT JOIN leaders l ON c.leader_id = l.id
+WHERE c.leader_id = ? AND c.is_active = TRUE AND l.is_active = TRUE
+ORDER BY c.cost, c.name;
 
 -- 2. コストレンジ検索
 SELECT * FROM cards 
@@ -307,6 +363,8 @@ interface CardCacheKeys {
   all: "cards:all";                     // 全カード（短期キャッシュ）
   bySet: "cards:set:{setId}";          // セット別
   byLeader: "cards:leader:{leaderId}";  // リーダー別
+  leaders: "leaders:all";              // 全リーダー情報
+  leaderById: "leader:{leaderId}";      // 単体リーダー
   byType: "cards:type:{cardType}";     // タイプ別
   single: "card:{cardId}";             // 単体カード（長期キャッシュ）
   search: "cards:search:{query}";       // 検索結果

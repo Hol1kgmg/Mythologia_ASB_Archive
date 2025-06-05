@@ -11,7 +11,7 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 未開始 📋
-- **最新更新**: Tribeテーブル仕様確定（leaderId, thematic, MasterCardId追加）
+- **最新更新**: Leadersテーブル追加完了、リーダー情報のデータベース管理対応
 
 ## 技術スタック
 
@@ -31,18 +31,36 @@
 
 ## 重要なデータベース仕様
 
+### Leadersテーブル（新追加）
+```sql
+CREATE TABLE leaders (
+  id INTEGER PRIMARY KEY,               -- リーダーID（1-5）
+  name VARCHAR(50) NOT NULL UNIQUE,     -- リーダー名（日本語）
+  name_en VARCHAR(50) NOT NULL UNIQUE,  -- リーダー名（英語）
+  description TEXT NULL,                -- リーダー説明
+  color VARCHAR(7) NOT NULL,            -- テーマカラー（HEX形式）
+  thematic VARCHAR(100) NULL,           -- テーマ特性
+  focus VARCHAR(50) NOT NULL,           -- 戦略フォーカス
+  average_cost DECIMAL(3,1) DEFAULT 3.5, -- 推奨平均コスト
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
 ### Tribeテーブル（最新仕様）
 ```sql
 CREATE TABLE tribes (
   id INTEGER PRIMARY KEY,               -- 種族ID
   name VARCHAR(50) NOT NULL UNIQUE,     -- 種族名
-  leaderId INTEGER NULL,                -- リーダーID（1-5）
+  leaderId INTEGER NULL,                -- リーダーID（leaders.id参照）
   thematic VARCHAR(100) NULL,           -- テーマ特性
   description TEXT NULL,                -- 種族説明
   isActive BOOLEAN DEFAULT TRUE,        -- アクティブフラグ
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  MasterCardId VARCHAR(36) NULL         -- マスターカードID
+  MasterCardId VARCHAR(36) NULL,        -- マスターカードID
+  FOREIGN KEY (leaderId) REFERENCES leaders(id) ON DELETE SET NULL
 );
 ```
 
@@ -51,10 +69,11 @@ CREATE TABLE tribes (
 - **レアリティID**: 1:BRONZE, 2:SILVER, 3:GOLD, 4:LEGEND
 - **カードタイプID**: 1:ATTACKER, 2:BLOCKER, 3:CHARGER
 
-### 動的種族管理
-- 静的enumから動的データベース管理に移行済み
+### 動的データ管理
+- **リーダー管理**: 静的enumからleadersテーブルへ移行完了 ✅
+- **種族管理**: 静的enumから動的データベース管理に移行済み
 - `TribeDomain`インターフェース実装済み
-- リーダーとの関連性を数値IDで管理
+- リーダーと種族の関連性を外部キーで管理
 
 ## プロジェクト構造
 
@@ -118,7 +137,8 @@ npm run typecheck
 ## 開発時の注意事項
 
 ### データベース関連
-- Tribeテーブルは動的管理（静的enumは使用しない）
+- **Leadersテーブル**: 動的管理（静的enumから移行済み）
+- **Tribesテーブル**: 動的管理（静的enumは使用しない）
 - 外部キー制約を適切に設定
 - PostgreSQL/D1両対応のSQL記述
 
@@ -154,10 +174,10 @@ npm run typecheck
 このプロジェクトで作業する際は：
 
 1. **設計ドキュメントを必ず参照**してからコード実装
-2. **Tribeテーブルの最新仕様**（leaderId, thematic, MasterCardId）に準拠
+2. **Leadersテーブル管理**と**Tribesテーブルの最新仕様**に準拠
 3. **プラットフォーム非依存**の実装を心がける
 4. **型安全性**を最優先にしたコード記述
-5. **動的種族管理**の原則に従う（静的enumは使用禁止）
+5. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
 
 ## 設定ファイル
 

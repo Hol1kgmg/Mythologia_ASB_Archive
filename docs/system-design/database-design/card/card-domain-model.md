@@ -216,44 +216,67 @@ interface LeaderAffinity {
   restrictions?: string[];  // 制限事項
 }
 
-// リーダー別戦略特性（種族IDは動的に参照）
-const LEADER_STRATEGIES = {
-  [Leader.DRAGON]: {
-    focus: "aggro",           // 速攻重視
+// リーダー戦略特性（動的leadersテーブルから取得）
+// このデータはleadersテーブルに移行済み
+// 実装時はデータベースから動的に取得する
+interface LeaderStrategy {
+  id: number;
+  name: string;
+  focus: 'aggro' | 'control' | 'midrange' | 'defense' | 'combo';
+  preferredTypes: CardType[];
+  preferredTribesNames: string[];
+  averageCost: number;
+  keyEffects: string[];
+}
+
+// サンプルデータ（実際はデータベースから取得）
+const SAMPLE_LEADER_STRATEGIES: LeaderStrategy[] = [
+  {
+    id: 1,
+    name: 'ドラゴン',
+    focus: 'aggro',
     preferredTypes: [CardType.ATTACKER],
-    preferredTribesNames: ['ドラゴン', 'ビースト', 'デーモン'], // 種族名で指定
+    preferredTribesNames: ['ドラゴン', 'ビースト', 'デーモン'],
     averageCost: 3.2,
-    keyEffects: ["damage", "buff"]
+    keyEffects: ['damage', 'buff']
   },
-  [Leader.ANDROID]: {
-    focus: "control",         // 制圧重視
+  {
+    id: 2,
+    name: 'アンドロイド',
+    focus: 'control',
     preferredTypes: [CardType.BLOCKER, CardType.CHARGER],
     preferredTribesNames: ['ロボット', 'ヒューマン'],
     averageCost: 4.1,
-    keyEffects: ["draw", "search", "debuff"]
+    keyEffects: ['draw', 'search', 'debuff']
   },
-  [Leader.ELEMENTAL]: {
-    focus: "midrange",        // バランス重視
+  {
+    id: 3,
+    name: 'エレメンタル',
+    focus: 'midrange',
     preferredTypes: [CardType.ATTACKER, CardType.BLOCKER],
     preferredTribesNames: ['エレメンタル', 'ヒューマン', 'ビースト'],
     averageCost: 3.5,
-    keyEffects: ["heal", "buff", "damage"]
+    keyEffects: ['heal', 'buff', 'damage']
   },
-  [Leader.LUMINUS]: {
-    focus: "defense",         // 守備重視
+  {
+    id: 4,
+    name: 'ルミナス',
+    focus: 'defense',
     preferredTypes: [CardType.BLOCKER],
     preferredTribesNames: ['アンジェル', 'ヒューマン', 'エレメンタル'],
     averageCost: 3.8,
-    keyEffects: ["heal", "shield", "debuff"]
+    keyEffects: ['heal', 'shield', 'debuff']
   },
-  [Leader.SHADE]: {
-    focus: "combo",           // 連携重視
+  {
+    id: 5,
+    name: 'シェイド',
+    focus: 'combo',
     preferredTypes: [CardType.CHARGER],
     preferredTribesNames: ['デーモン', 'アンデッド', 'ヒューマン'],
     averageCost: 3.0,
-    keyEffects: ["draw", "search", "summon"]
+    keyEffects: ['draw', 'search', 'summon']
   }
-};
+];
 ```
 
 ### 3. 効果システムルール
@@ -382,15 +405,14 @@ async function getTribeName(tribeId: number, tribes: TribeDomain[]): Promise<str
   return tribe?.name || '不明';
 }
 
-function getLeaderName(leaderId: number): string {
-  const names = {
-    1: 'ドラゴン',
-    2: 'アンドロイド',
-    3: 'エレメンタル', 
-    4: 'ルミナス',
-    5: 'シェイド'
-  };
-  return names[leaderId] || '不明';
+// 動的リーダーデータ取得関数（実装時はデータベースから取得）
+async function getLeaderById(leaderId: number, leaders: LeaderStrategy[]): Promise<LeaderStrategy | null> {
+  return leaders.find(leader => leader.id === leaderId) || null;
+}
+
+async function getLeaderName(leaderId: number, leaders: LeaderStrategy[]): Promise<string> {
+  const leader = await getLeaderById(leaderId, leaders);
+  return leader?.name || '不明';
 }
 
 // 種族シナジー判定（動的種族データ対応）
@@ -440,12 +462,13 @@ interface TribeSynergyEffect {
 async function checkTribeLeaderAffinity(
   tribeId: number, 
   leaderId: number,
-  tribes: TribeDomain[]
+  tribes: TribeDomain[],
+  leaders: LeaderStrategy[]
 ): Promise<boolean> {
   const tribe = await getTribeById(tribeId, tribes);
   if (!tribe) return false;
   
-  const leaderStrategy = LEADER_STRATEGIES[leaderId];
+  const leaderStrategy = await getLeaderById(leaderId, leaders);
   if (!leaderStrategy) return false;
   
   return leaderStrategy.preferredTribesNames.includes(tribe.name);
@@ -463,7 +486,7 @@ interface CardDomain {
   name: CardName;                // カード名
   
   // 戦略属性
-  leaderId?: LeaderType;         // 専用リーダーID
+  leaderId?: number;             // 専用リーダーID（leaders.id）
   tribeId?: Tribe;               // 種族ID
   typeId: CardType;              // カードタイプID
   rarityId: Rarity;              // レアリティID

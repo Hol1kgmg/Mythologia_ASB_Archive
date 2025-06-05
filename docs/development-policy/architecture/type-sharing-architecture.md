@@ -286,48 +286,31 @@ export const GAME_RULES = {
   }
 } as const;
 
-// shared/src/constants/leaders.ts
-export const LEADERS = {
-  DRAGON: {
-    id: 1,
-    name: 'ドラゴン',
-    nameEn: 'Dragon',
-    description: '強力な攻撃力を持つカードが多い',
-    color: '#FF6B35',            // テーマカラー
-    thematic: '火力・直接攻撃',
-  },
-  ANDROID: {
-    id: 2,
-    name: 'アンドロイド',
-    nameEn: 'Android',
-    description: 'テクノロジーとシナジー効果',
-    color: '#00B4D8',
-    thematic: '機械・連携',
-  },
-  ELEMENTAL: {
-    id: 3,
-    name: 'エレメンタル',
-    nameEn: 'Elemental',
-    description: '自然の力と魔法的効果',
-    color: '#06FFA5',
-    thematic: '自然・魔法',
-  },
-  LUMINUS: {
-    id: 4,
-    name: 'ルミナス',
-    nameEn: 'Luminus',
-    description: '光の力と防御・回復',
-    color: '#FFD23F',
-    thematic: '光・防御・回復',
-  },
-  SHADE: {
-    id: 5,
-    name: 'シェイド',
-    nameEn: 'Shade',
-    description: '闇の力と特殊効果',
-    color: '#6A4C93',
-    thematic: '闇・特殊効果',
-  },
+// shared/src/types/dto/leader.dto.ts  
+// リーダー情報はleadersテーブルから動的に取得
+export interface LeaderDto {
+  id: number;
+  name: string;                // 日本語名
+  nameEn: string;              // 英語名
+  description: string;         // 説明
+  color: string;               // テーマカラー（HEX）
+  thematic: string;            // テーマ特性
+  iconUrl?: string;            // アイコンURL
+  focus: 'aggro' | 'control' | 'midrange' | 'defense' | 'combo';
+  averageCost: number;         // 推奨平均コスト
+  preferredCardTypes: string[]; // 推奨カードタイプ
+  keyEffects: string[];        // 主要効果
+  sortOrder: number;           // 表示順序
+  isActive: boolean;           // アクティブフラグ
+}
+
+// レガシー互換性のためのヘルパー定数（実装初期のみ使用）
+export const LEADER_IDS = {
+  DRAGON: 1,
+  ANDROID: 2, 
+  ELEMENTAL: 3,
+  LUMINUS: 4,
+  SHADE: 5,
 } as const;
 
 // shared/src/constants/rarities.ts
