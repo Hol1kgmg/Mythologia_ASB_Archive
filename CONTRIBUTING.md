@@ -9,17 +9,37 @@
 ```
 main
 ├── develop
-│   ├── feature/admin-auth
-│   ├── feature/card-crud
-│   └── feature/deck-builder
+│   ├── feature/#001_admin-auth
+│   ├── feature/#002_card-crud
+│   └── feature/#003_deck-builder
 └── release/v1.0.0
 ```
 
 ### ブランチ命名規則
-- `feature/` - 新機能開発
-- `bugfix/` - バグ修正
-- `hotfix/` - 緊急修正
-- `release/` - リリース準備
+- `feature/#000_branch-name` - 新機能開発
+- `bugfix/#000_branch-name` - バグ修正
+- `hotfix/#000_branch-name` - 緊急修正
+- `release/vX.X.X` - リリース準備
+
+#### 命名例
+```bash
+# Issue #5: 管理者認証システム実装
+feature/#005_admin-auth-system
+
+# Issue #12: カード検索バグ修正
+bugfix/#012_card-search-fix
+
+# Issue #23: 本番環境のメモリリーク修正
+hotfix/#023_memory-leak-fix
+```
+
+#### ブランチ作成手順
+```bash
+# Issue番号を確認してからブランチ作成
+git checkout develop
+git pull origin develop
+git checkout -b feature/#005_admin-auth-system
+```
 
 ### コミットメッセージ規約
 
@@ -48,21 +68,34 @@ feat(auth): スーパー管理者認証機能を追加
 - ロール別アクセス制御の基礎実装
 - 管理者アクティビティログの記録
 
-Issue #1
+Closes #5
 ```
 
 ### Pull Request ガイドライン
 
 1. **PRテンプレート使用**
-2. **レビュー必須項目**
+2. **Issue番号とブランチ名の対応確認**
+   - ブランチ名に対応するIssue番号が含まれている
+   - PRのタイトルにIssue番号を記載
+   - PR説明にて`Closes #000`形式でIssueリンク
+
+3. **レビュー必須項目**
    - [ ] テストが追加/更新されている
    - [ ] ドキュメントが更新されている
    - [ ] TypeScriptの型エラーがない
    - [ ] ESLintエラーがない
+   - [ ] Issue要件を満たしている
 
-3. **PRサイズ**
+4. **PRサイズ**
    - 1つのPRは1つの機能/修正に限定
    - 大きな機能は段階的に分割
+
+#### PRタイトル例
+```
+feat: 管理者認証システムの実装 (#5)
+fix: カード検索結果の表示バグを修正 (#12)  
+docs: API仕様書の更新 (#18)
+```
 
 ### コードスタイル
 
@@ -166,6 +199,12 @@ describe('AdminService', () => {
 - `type:enhancement` - 改善
 - `status:in-progress` - 作業中
 - `status:review` - レビュー中
+
+#### Issue番号の管理
+- Issue番号は3桁ゼロパディング（#001, #002, ...）
+- ブランチ作成前にIssue作成を推奨
+- 1つのIssueに対して1つのブランチ
+- Issue CloseはPRマージ時に自動実行
 
 ### 開発環境セットアップ
 

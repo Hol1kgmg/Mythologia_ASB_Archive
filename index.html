@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mythologia Admiral Ship Bridge - 神託のメソロギア ファンサイト</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Yu Gothic', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(180deg, #0a0a0a 0%, #111111 50%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 公式風の背景パターン */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.01) 10px,
+                    rgba(255, 255, 255, 0.01) 20px
+                );
+            z-index: 1;
+        }
+
+        /* メインコンテナ */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* ヘッダーセクション - アンダーライン版 */
+        .header-section {
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            position: relative;
+        }
+
+        .main-title {
+            position: relative;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #e0e0e0;
+            background: linear-gradient(
+                110deg,
+                #e0e0e0 45%,
+                #ffffff 55%,
+                #e0e0e0 65%
+            );
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shinyText 3s ease-in-out infinite;
+            text-shadow: none;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes shinyText {
+            0% {
+                background-position: -200% 0;
+            }
+            50% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .title-line {
+            display: block;
+            line-height: 1.1;
+        }
+
+        .main-title::before,
+        .main-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 215, 0, 0.4), 
+                rgba(255, 215, 0, 0.6),
+                rgba(255, 215, 0, 0.4),
+                transparent);
+        }
+
+        .main-title::before {
+            top: 0;
+        }
+
+        .main-title::after {
+            bottom: 0;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #b8c5d6;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .subtitle-english {
+            font-size: 1rem;
+            color: #8fa3b8;
+            margin-bottom: 0;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* Coming Soonカード */
+        .coming-soon-card {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 2.5rem;
+            margin: 1.5rem 0;
+            max-width: 700px;
+            box-shadow: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .coming-soon-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .coming-soon-title {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: #ffd700;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: #e6f3ff;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ffd700;
+            padding-left: 1rem;
+            text-align: left;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #d0dae6;
+            margin-bottom: 3rem;
+        }
+
+        /* プログレスセクション */
+        .progress-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .progress-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .progress-icon {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .completed {
+            color: #22c55e;
+        }
+
+        .in-progress {
+            color: #f59e0b;
+        }
+
+        /* 警告・情報セクション */
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            margin: 2rem 0;
+            max-width: 700px;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .warning-card {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(0, 0, 0, 0.3));
+        }
+
+        .release-card {
+            border-left-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(0, 0, 0, 0.3));
+        }
+
+        .info-card:hover {
+            transform: translateX(5px);
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-card .info-header {
+            color: #fbbf24;
+        }
+
+        .release-card .info-header {
+            color: #a78bfa;
+        }
+
+        .info-text {
+            color: #d0dae6;
+            line-height: 1.6;
+        }
+
+        /* フッター要素 */
+        .footer-links {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: #8fa3b8;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .footer-link:hover {
+            color: #ffd700;
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .header-section {
+                padding: 1.5rem 0;
+                margin-bottom: 1.5rem;
+            }
+            
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .main-title::before,
+            .main-title::after {
+                width: 90%;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .coming-soon-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .coming-soon-title {
+                font-size: 1.8rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .footer-links {
+                gap: 1rem;
+            }
+        }
+
+        /* アニメーション効果 */
+        .main-title, .subtitle, .subtitle-english {
+            opacity: 0;
+        }
+
+        .main-title.fade-in, .subtitle.fade-in, .subtitle-english.fade-in {
+            opacity: 1;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .header-section {
+            opacity: 0;
+        }
+
+        .header-section.fade-in {
+            opacity: 1;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-entrance {
+            animation: cardEntrance 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header-section">
+            <h1 class="main-title">
+                <span class="title-line">Mythologia</span>
+                <span class="title-line">Admiral Ship Bridge</span>
+            </h1>
+            <p class="subtitle">神託のメソロギア ファンサイト</p>
+            <p class="subtitle-english">Mythologia the Oracle Fan Site</p>
+        </div>
+
+        <div class="coming-soon-card card-entrance">
+            <div class="coming-soon-title">⚔️ Coming Soon ⚔️</div>
+            <div class="description">
+                メソロギアの世界をさらに深く楽しめる環境にするため<br>
+                ファンの皆様により充実した体験をお届けできるよう開発中です。
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-title">
+                    📋 開発状況
+                </div>
+                <div class="progress-item">
+                    <span class="progress-icon completed">✅</span>
+                    <span>システム設計完了済み</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-icon in-progress">🔄</span>
+                    <span>実装準備中</span>
+                </div>
+                <div class="progress-item">
+                    <span class="progress-icon in-progress">🔄</span>
+                    <span>公式デザイン準拠調整中</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-card warning-card">
+                <div class="info-header">
+                    <span>⚠️</span>
+                    <span>重要なお知らせ</span>
+                </div>
+                <div class="info-text">
+                    こちらは非公式ファンサイトです。<br>
+                    公式運営・株式会社ネコノメとは一切関係ありません。
+                </div>
+            </div>
+
+            <div class="info-card release-card">
+                <div class="info-header">
+                    <span>🚀</span>
+                    <span>リリース予定</span>
+                </div>
+                <div class="info-text">
+                    <strong>2025年夏頃</strong>を予定しています
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <a href="https://mythologiatheoracle.com/" class="footer-link" target="_blank">公式サイト</a>
+            <a href="https://x.com/mythologia_jp" class="footer-link" target="_blank">公式X</a>
+        </div>
+    </div>
+
+    <script>
+        // ページロード時のアニメーション制御
+        document.addEventListener('DOMContentLoaded', function() {
+            // ヘッダーセクション全体のフェードイン
+            const headerSection = document.querySelector('.header-section');
+            setTimeout(() => headerSection.classList.add('fade-in'), 100);
+            
+            // タイトル要素に個別でフェードイン効果を適用
+            const title = document.querySelector('.main-title');
+            const subtitle = document.querySelector('.subtitle');
+            const subtitleEn = document.querySelector('.subtitle-english');
+            
+            // 順次フェードイン
+            setTimeout(() => title.classList.add('fade-in'), 300);
+            setTimeout(() => subtitle.classList.add('fade-in'), 500);
+            setTimeout(() => subtitleEn.classList.add('fade-in'), 700);
+
+            // 背景パターンアニメーション
+            const bgPattern = document.querySelector('.bg-pattern');
+            let angle = 0;
+            setInterval(() => {
+                angle += 0.5;
+                bgPattern.style.transform = `rotate(${angle}deg)`;
+            }, 100);
+
+            // カードホバー時の効果音（視覚的なフィードバック）
+            const cards = document.querySelectorAll('.coming-soon-card, .info-card, .progress-item');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = this.classList.contains('coming-soon-card') 
+                        ? 'translateY(-2px)' 
+                        : 'translateX(5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // タイトルクリック時の効果
+            title.addEventListener('click', function() {
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+
+        // スクロール時の視差効果
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const bgPattern = document.querySelector('.bg-pattern');
+            bgPattern.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
+</body>
+</html>
