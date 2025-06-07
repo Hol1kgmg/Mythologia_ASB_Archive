@@ -170,6 +170,11 @@ npm run dev:node    # 通常のNode.js環境（.env.local使用）
 brew install postgresql
 brew services start postgresql
 
+# PostgreSQLサービス管理（macOS）
+brew services list              # サービス一覧と状態確認
+brew services stop postgresql   # PostgreSQL停止
+brew services restart postgresql # PostgreSQL再起動
+
 # Ubuntu/Debian
 sudo apt update
 sudo apt install postgresql postgresql-contrib
