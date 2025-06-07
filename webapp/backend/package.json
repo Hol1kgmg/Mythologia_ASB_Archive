@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "wrangler dev src/index.ts --compatibility-date 2024-01-01",
+    "dev:node": "tsx watch src/index.ts",
     "build": "tsc",
     "deploy:cloudflare": "npm run build && wrangler deploy",
     "deploy:vercel": "npm run build && vercel deploy",

@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 // 開発環境の場合のみ.envファイルを読み込む
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: '../../.env.local' });
+  dotenv.config({ path: '.env.local' });
 }
 
 // 環境変数スキーマ

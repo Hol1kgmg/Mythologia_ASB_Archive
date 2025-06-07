@@ -143,12 +143,22 @@ cd backend
 cp .env.example .env.local
 # .env.localを編集して必要な値を設定
 
-# データベースセットアップ（PostgreSQL）
-createdb mythologia
+# Cloudflare Workers開発の場合は.dev.varsも作成
+cp .env.example .dev.vars
+# .dev.varsを編集（Wrangler用）
+
+# データベースセットアップ（ローカルPostgreSQL）
+createdb mythologia_asb  # PostgreSQLに新しいデータベースを作成
+# または既存のPostgreSQLユーザーを指定
+# createdb -U postgres mythologia_asb
+
+# Drizzleでテーブル作成
 npm run db:push
 
 # 開発サーバー起動
-npm run dev
+npm run dev         # Cloudflare Workers環境（.dev.vars使用）
+# または
+npm run dev:node    # 通常のNode.js環境（.env.local使用）
 ```
 
 ### 詳細な環境構築手順
@@ -164,11 +174,15 @@ brew services start postgresql
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 
-# データベース作成
-createdb mythologia
+# データベース作成（ローカル環境）
+createdb mythologia_asb
+# またはユーザーを指定して作成
+# createdb -U postgres mythologia_asb
+# または psql で作成
+# psql -U postgres -c "CREATE DATABASE mythologia_asb;"
 
-# 環境変数設定
-export DATABASE_URL="postgresql://user:password@localhost:5432/mythologia"
+# 環境変数設定（.env.localに記載するか、exportで設定）
+export DATABASE_URL="postgresql://user:password@localhost:5432/mythologia_asb"
 ```
 
 #### 2. Drizzle ORM セットアップ
@@ -203,6 +217,16 @@ npm run db:push
 - **カード管理者**: `cardadmin` / `CardAdmin456!`
 - **閲覧専用管理者**: `vieweradmin` / `ViewAdmin789!`
 
+#### 4. 環境変数の使い分け
+
+バックエンドは実行環境によって異なる環境変数ファイルを使用します:
+
+- **`.env.local`**: 通常のNode.js実行時（`npm run dev:node`、`npm run db:studio`）
+- **`.dev.vars`**: Cloudflare Workers開発時（`npm run dev`）
+- **環境変数**: 本番環境（Vercel、Cloudflare Workers）
+
+両ファイルには同じ環境変数を設定してください。
+
 ## 開発コマンド
 
 ### 全体（webapp ディレクトリ）
@@ -223,10 +247,11 @@ cd webapp && npm run lint
 ### バックエンド（webapp/backend）
 ```bash
 # 開発サーバー起動
-cd webapp/backend && npm run dev
+cd webapp/backend && npm run dev       # Cloudflare Workers環境（.dev.vars使用）
+cd webapp/backend && npm run dev:node  # 通常のNode.js環境（.env.local使用）
 
 # Drizzle Studio（DB管理GUI）
-cd webapp/backend && npm run db:studio
+cd webapp/backend && npm run db:studio  # .env.localのDATABASE_URLを使用
 
 # マイグレーション管理
 cd webapp/backend && npm run db:generate  # 生成
