@@ -11,7 +11,7 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 未開始 📋
-- **最新更新**: カードカテゴリシステム設計完了、種族従属の細分化システム追加
+- **最新更新**: Tribeテーブル仕様確定（leaderId, thematic, MasterCardId追加）
 
 ## 技術スタック
 
@@ -19,71 +19,30 @@
 - **TypeScript** - 型安全性重視
 - **Hono** - 軽量Webフレームワーク
 - **Zod** - ランタイムバリデーション
-- **Drizzle ORM** - 型安全なORM・マイグレーション管理
 
-### データベース・インフラ
-- **PostgreSQL** (Railway提供)
-- **Redis** (Railway提供 - キャッシュ・セッション管理)
-- **Drizzle Kit** - マイグレーション・スキーマ管理
+### データベース（マルチプラットフォーム対応）
+- **PostgreSQL** (Vercel環境)
+- **D1/SQLite** (Cloudflare環境)
+- **Vercel KV / Cloudflare KV** (キャッシュ)
 
-### デプロイメント環境
-- **本番環境**: Railway(バックエンド) + Vercel(フロントエンド)
-- **ステージ環境**: Railway(バックエンド) + Vercel(フロントエンド)
-- **バックエンド**: Hono + PostgreSQL on Railway
-- **フロントエンド**: Next.js on Vercel
+### デプロイメント
+- **Vercel** - メイン環境
+- **Cloudflare Workers** - エッジ環境
 
 ## 重要なデータベース仕様
-
-### Leadersテーブル（新追加）
-```sql
-CREATE TABLE leaders (
-  id INTEGER PRIMARY KEY,               -- リーダーID（1-5）
-  name VARCHAR(50) NOT NULL UNIQUE,     -- リーダー名（日本語）
-  name_en VARCHAR(50) NOT NULL UNIQUE,  -- リーダー名（英語）
-  description TEXT NULL,                -- リーダー説明
-  color VARCHAR(7) NOT NULL,            -- テーマカラー（HEX形式）
-  thematic VARCHAR(100) NULL,           -- テーマ特性
-  focus VARCHAR(50) NOT NULL,           -- 戦略フォーカス
-  average_cost DECIMAL(3,1) DEFAULT 3.5, -- 推奨平均コスト
-  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-```
 
 ### Tribeテーブル（最新仕様）
 ```sql
 CREATE TABLE tribes (
   id INTEGER PRIMARY KEY,               -- 種族ID
   name VARCHAR(50) NOT NULL UNIQUE,     -- 種族名
-  leaderId INTEGER NULL,                -- リーダーID（leaders.id参照）
+  leaderId INTEGER NULL,                -- リーダーID（1-5）
   thematic VARCHAR(100) NULL,           -- テーマ特性
   description TEXT NULL,                -- 種族説明
   isActive BOOLEAN DEFAULT TRUE,        -- アクティブフラグ
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  MasterCardId VARCHAR(36) NULL,        -- マスターカードID
-  FOREIGN KEY (leaderId) REFERENCES leaders(id) ON DELETE SET NULL
-);
-```
-
-### Categoriesテーブル（新追加）
-```sql
-CREATE TABLE categories (
-  id INTEGER PRIMARY KEY,               -- カテゴリID
-  tribe_id INTEGER NOT NULL,            -- 種族ID（必須）
-  name VARCHAR(50) NOT NULL,            -- カテゴリ名（日本語）
-  name_en VARCHAR(50) NOT NULL,         -- カテゴリ名（英語）
-  description TEXT NULL,                -- カテゴリ説明
-  thematic VARCHAR(100) NULL,           -- テーマ特性
-  color VARCHAR(7) NULL,                -- テーマカラー（HEX形式）
-  synergy_type VARCHAR(50) NULL,        -- シナジータイプ
-  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE(tribe_id, name),               -- 同一種族内でのカテゴリ名重複防止
-  UNIQUE(tribe_id, name_en),            -- 同一種族内での英語名重複防止
-  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE CASCADE
+  MasterCardId VARCHAR(36) NULL         -- マスターカードID
 );
 ```
 
@@ -91,17 +50,11 @@ CREATE TABLE categories (
 - **リーダーID**: 1:DRAGON, 2:ANDROID, 3:ELEMENTAL, 4:LUMINUS, 5:SHADE
 - **レアリティID**: 1:BRONZE, 2:SILVER, 3:GOLD, 4:LEGEND
 - **カードタイプID**: 1:ATTACKER, 2:BLOCKER, 3:CHARGER
-- **種族ID**: 1:ドラゴン, 2:ロボット, 3:エレメンタル, 4:アンジェル, 5:デーモン, 6:ビースト, 7:ヒューマン, 8:アンデッド, 9:旧神
-- **カテゴリID**: 1-4:HUMAN種族(騎士,魔法使い,弓兵,僧侶), 5-8:DRAGON種族(古龍,幼龍,長老,守護龍), 9-12:ROBOT種族(戦闘機,支援機,重機,偵察機) ※旧神種族にはカテゴリなし
 
-### 動的データ管理
-- **リーダー管理**: 静的enumからleadersテーブルへ移行完了 ✅
-- **種族管理**: 静的enumから動的データベース管理に移行済み
-- **カテゴリ管理**: 種族に従属する細分化システムとして動的管理
+### 動的種族管理
+- 静的enumから動的データベース管理に移行済み
 - `TribeDomain`インターフェース実装済み
-- リーダーと種族の関連性を外部キーで管理
-- 種族とカテゴリの階層関係（categories.tribe_id外部キー）
-- カードとカテゴリの多対多関係（card_categories中間テーブル）
+- リーダーとの関連性を数値IDで管理
 
 ## プロジェクト構造
 
@@ -109,109 +62,48 @@ CREATE TABLE categories (
 /
 ├── README.md                    # プロジェクト概要
 ├── CLAUDE.md                   # このファイル
-├── docker-compose.yml          # Docker開発環境（未作成）
-├── .env.local                  # ローカル環境変数（未作成）
-├── docker/                     # Docker設定（未作成）
-│   ├── backend.Dockerfile     # バックエンドDockerfile
-│   ├── frontend.Dockerfile    # フロントエンドDockerfile
-│   └── postgres/              # PostgreSQL設定
-│       └── init.sql           # 初期化SQL
 ├── system-design/              # 設計ドキュメント（完成済み）
 │   ├── README.md              # 設計ドキュメント索引
 │   ├── database-design/       # データベース設計
 │   │   ├── card/             # カードシステム設計 ✅
-│   │   │   └── card-categories-design.md  # カテゴリシステム ✅
-│   │   └── deck/             # デッキシステム設定 ✅
+│   │   └── deck/             # デッキシステム設計 ✅
 │   └── [その他設計ファイル]
-└── webapp/                     # 実装ディレクトリ（予定）
-    ├── shared/                 # 共有型定義 ✅
-    ├── backend/                # バックエンド（未作成）
-    │   ├── drizzle/           # Drizzleマイグレーション
-    │   │   ├── migrations/    # マイグレーションファイル
-    │   │   └── schema.ts      # スキーマ定義
-    │   └── src/               # アプリケーションコード
-    └── frontend/               # フロントエンド（未作成）
-        └── src/               # アプリケーションコード
-```
-
-## ローカル開発環境（Docker）
-
-### Docker構成
-```bash
-# 開発環境起動（全サービス）
-docker-compose up -d
-
-# 特定のサービスのみ起動
-docker-compose up -d postgres redis
-
-# 開発サーバー起動（ホストで実行）
-npm run dev
-
-# コンテナ停止
-docker-compose down
-
-# ボリューム含めて完全削除
-docker-compose down -v
-```
-
-### サービス構成
-```yaml
-services:
-  postgres:    # PostgreSQL 16
-  redis:       # Redis 7
-  backend:     # Node.js開発環境（オプション）
-  frontend:    # Next.js開発環境（オプション）
-
-# Dockerfiles:
-# - docker/backend.Dockerfile   (バックエンド用)
-# - docker/frontend.Dockerfile  (フロントエンド用)
-# - docker/postgres/init.sql    (DB初期化)
+└── [実装予定ディレクトリ]
 ```
 
 ## 開発コマンド（実装後）
 
 ```bash
-# ローカル開発
-npm run dev              # 開発サーバー起動
-npm run dev:docker       # Docker環境での開発
+# 開発サーバー起動
+npm run dev
 
-# ビルド・テスト
+# ビルド
 npm run build
+
+# テスト実行
 npm run test
+
+# リント・型チェック
 npm run lint
 npm run typecheck
-
-# データベース関連
-npm run db:generate      # マイグレーションファイル生成
-npm run db:migrate       # マイグレーション実行
-npm run db:push          # スキーマを直接プッシュ（開発用）
-npm run db:studio        # Drizzle Studio起動
-npm run db:seed          # シードデータ投入
-
-# Docker関連
-npm run docker:up        # Docker環境起動
-npm run docker:down      # Docker環境停止
-npm run docker:logs      # ログ確認
 ```
 
 ## 設計原則・開発方針
 
-### 1. 環境分離とデプロイメント戦略
-- **ローカル環境**: Docker Compose（PostgreSQL + Redis）
-- **本番・ステージ環境**: Railway + Vercel構成
-- **データベース統一**: PostgreSQL（全環境共通）
-- **環境変数管理**: .env.local / Railway / Vercelで分離
+### 1. プラットフォーム非依存
+- **アダプターパターン**: PostgreSQL/D1両対応
+- **統一インターフェース**: 環境に依存しない実装
+- **環境抽象化**: データベース固有機能の隠蔽
 
-### 2. データベース管理戦略（Drizzle ORM）
-- **型安全なスキーマ**: TypeScriptでスキーマ定義
-- **マイグレーション管理**: Drizzle Kitによるバージョン管理
-- **開発体験**: Drizzle Studioによるデータ可視化
-- **環境別DB**: 本番・ステージ・ローカル環境の分離
-
-### 3. ドメイン駆動設計
+### 2. ドメイン駆動設計
 - **ビジネスロジック分離**: 純粋なドメインモデル
 - **動的データ管理**: 拡張性を重視した種族システム
-- **型安全性**: TypeScript + Zod + Drizzleによる厳密な型管理
+- **型安全性**: TypeScript + Zodによる厳密な型管理
+
+### 3. データ最小化戦略
+- **既存構造維持**: データベーステーブルはそのまま
+- **API最適化**: レスポンスサイズの最小化
+- **効率的キャッシュ**: 階層的キャッシュ戦略
 
 ## 重要なドキュメント参照順序
 
@@ -221,18 +113,14 @@ npm run docker:logs      # ログ確認
 2. **system-design/README.md** - 設計ドキュメント索引
 3. **system-design/database-design/card/card-domain-model.md** - カードビジネスルール
 4. **system-design/database-design/card/card-database-design.md** - データベース構造
-5. **system-design/database-design/card/card-categories-design.md** - カテゴリシステム設計
-6. **system-design/database-design/deck/deck-minimal-crud.md** - デッキ機能仕様
+5. **system-design/database-design/deck/deck-minimal-crud.md** - デッキ機能仕様
 
 ## 開発時の注意事項
 
 ### データベース関連
-- **Leadersテーブル**: 動的管理（静的enumから移行済み）
-- **Tribesテーブル**: 動的管理（静的enumは使用しない）
-- **Categoriesテーブル**: 第2の種族として動的管理
-- **多対多関係**: card_categories中間テーブルで管理
+- Tribeテーブルは動的管理（静的enumは使用しない）
 - 外部キー制約を適切に設定
-- PostgreSQL専用のSQL記述
+- PostgreSQL/D1両対応のSQL記述
 
 ### 実装パターン
 - アダプターパターンによる環境抽象化
@@ -243,53 +131,6 @@ npm run docker:logs      # ログ確認
 - TypeScript厳密モードの使用
 - コメントよりも明確な命名を優先
 - テストカバレッジの確保
-
-## デプロイメント構成
-
-### 環境構成
-```
-ローカル環境:
-├── Frontend: localhost:3000 (Next.js Dev)
-├── Backend: localhost:8000 (Hono Dev)
-├── Database: localhost:5432 (Docker PostgreSQL)
-└── Cache: localhost:6379 (Docker Redis)
-
-ステージ環境:
-├── Frontend: Vercel (mythologia-staging.vercel.app)
-├── Backend: Railway (mythologia-api-staging.railway.app)
-├── Database: Railway PostgreSQL (Staging DB)
-└── Cache: Railway Redis (Staging Cache)
-
-本番環境:
-├── Frontend: Vercel (mythologia-production.vercel.app)
-├── Backend: Railway (mythologia-api-production.railway.app)
-├── Database: Railway PostgreSQL (Production DB)
-└── Cache: Railway Redis (Production Cache)
-```
-
-### 環境変数管理
-**ローカル環境 (.env.local):**
-- `DATABASE_URL`: postgres://user:password@localhost:5432/mythologia_local
-- `REDIS_URL`: redis://localhost:6379
-- `JWT_SECRET`: local-development-secret
-- `NODE_ENV`: development
-- `NEXT_PUBLIC_API_URL`: http://localhost:8000
-
-**Railway (Backend):**
-- `DATABASE_URL`: PostgreSQL接続文字列（Drizzle接続用）
-- `REDIS_URL`: Redis接続文字列
-- `JWT_SECRET`: JWT署名キー
-- `NODE_ENV`: production/staging
-- `DRIZZLE_DATABASE_URL`: Drizzle専用DB URL（オプション）
-
-**Vercel (Frontend):**
-- `NEXT_PUBLIC_API_URL`: バックエンドURL
-- `NEXT_PUBLIC_ENVIRONMENT`: production/staging/local
-
-### デプロイフロー
-1. **ステージング**: `develop`ブランチ → 自動デプロイ
-2. **本番**: `main`ブランチ → 自動デプロイ
-3. **PR環境**: PRブランチ → プレビューデプロイ (Vercelのみ)
 
 ## 次期実装予定
 
@@ -313,27 +154,16 @@ npm run docker:logs      # ログ確認
 このプロジェクトで作業する際は：
 
 1. **設計ドキュメントを必ず参照**してからコード実装
-2. **ローカル開発はDocker**を使用（PostgreSQL + Redis）
-3. **Railway + Vercel構成**に最適化された実装
-4. **Drizzle ORM**でのマイグレーション・スキーマ管理
-5. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
-6. **環境分離**を意識した設定管理（Local/Staging/Production）
-7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
-8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
+2. **Tribeテーブルの最新仕様**（leaderId, thematic, MasterCardId）に準拠
+3. **プラットフォーム非依存**の実装を心がける
+4. **型安全性**を最優先にしたコード記述
+5. **動的種族管理**の原則に従う（静的enumは使用禁止）
 
 ## 設定ファイル
 
-### ローカル開発
-- `docker-compose.yml` - Docker Compose設定（未作成）
-- `.env.local` - ローカル開発環境変数（未作成）
-- `docker/backend.Dockerfile` - バックエンドDockerfile（未作成）
-- `docker/frontend.Dockerfile` - フロントエンドDockerfile（未作成）
-- `docker/postgres/init.sql` - PostgreSQL初期化（未作成）
-- `drizzle.config.ts` - Drizzle設定ファイル（未作成）
-
-### デプロイメント
-- `railway.toml` - Railway設定（未作成）
-- `vercel.json` - Vercel設定（未作成）
+- `settings.local.json` - ローカル開発設定（未作成）
+- `database.config.ts` - データベース設定（未作成）
+- `.env.local` - 環境変数（未作成）
 
 ---
 
