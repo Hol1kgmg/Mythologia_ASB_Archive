@@ -43,6 +43,7 @@ export interface AdminSessionDTO {
 }
 
 // 管理者アクティビティログ
+// TODO: 行動ログ機能は優先度が低いため、後で実装予定
 export interface AdminActivityLogDTO {
   id: string;
   adminId: string;

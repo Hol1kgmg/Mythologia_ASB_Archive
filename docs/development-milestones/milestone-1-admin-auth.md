@@ -118,12 +118,12 @@ POST   /api/admin/admins          # 管理者作成
 PUT    /api/admin/admins/:id      # 管理者更新
 DELETE /api/admin/admins/:id      # 管理者無効化
 PUT    /api/admin/admins/:id/permissions      # 権限更新
-GET    /api/admin/admins/:id/activity         # アクティビティ履歴
+GET    /api/admin/admins/:id/activity         # アクティビティ履歴 (TODO: 後で実装)
 POST   /api/admin/admins/:id/reset-password   # パスワードリセット
 
 # ダッシュボード
 GET    /api/admin/dashboard       # ダッシュボード統計
-GET    /api/admin/activity-logs   # システム全体のアクティビティログ
+GET    /api/admin/activity-logs   # システム全体のアクティビティログ (TODO: 後で実装)
 ```
 
 ### ミドルウェア構成
@@ -143,7 +143,7 @@ export const superAdminOnly = async (c: Context, next: Next) => {
   // スーパー管理者権限の検証
 };
 
-// アクティビティログ記録
+// アクティビティログ記録 (TODO: 後で実装)
 export const activityLogger = async (c: Context, next: Next) => {
   // 管理者アクションの記録
 };

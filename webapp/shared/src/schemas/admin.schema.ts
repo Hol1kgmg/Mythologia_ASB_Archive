@@ -45,6 +45,7 @@ export const AdminSessionSchema = z.object({
 });
 
 // 管理者アクティビティログスキーマ
+// TODO: 行動ログ機能は優先度が低いため、後で実装予定
 export const AdminActivityLogSchema = z.object({
   id: z.string().uuid(),
   adminId: z.string().uuid(),
@@ -143,7 +144,7 @@ export type AdminRole = z.infer<typeof AdminRoleSchema>;
 export type Admin = z.infer<typeof AdminSchema>;
 export type AdminDetail = z.infer<typeof AdminDetailSchema>;
 export type AdminSession = z.infer<typeof AdminSessionSchema>;
-export type AdminActivityLog = z.infer<typeof AdminActivityLogSchema>;
+export type AdminActivityLog = z.infer<typeof AdminActivityLogSchema>; // TODO: 後で実装
 export type CreateAdmin = z.infer<typeof CreateAdminSchema>;
 export type UpdateAdmin = z.infer<typeof UpdateAdminSchema>;
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
