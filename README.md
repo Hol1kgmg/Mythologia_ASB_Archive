@@ -20,7 +20,7 @@
 - **デッキ構築システム**: デッキコード圧縮によるデータ最小化
 - **種族・リーダーシステム**: 動的な種族管理とリーダーとの関連性
 - **多言語対応**: 日本語・英語・韓国語サポート
-- **クロスプラットフォーム**: Vercel（PostgreSQL）とCloudflare（D1）対応
+- **クラウドネイティブ**: Railway + Vercel による分離アーキテクチャ
 
 ## 技術スタック
 
@@ -35,14 +35,14 @@
 - **TanStack Query** - サーバー状態管理
 - **Jotai** - クライアント状態管理
 
-### バックエンド・データベース
-- **PostgreSQL** (Vercel環境)
-- **D1/SQLite** (Cloudflare環境)
-- **Vercel KV / Cloudflare KV** - キャッシュ
+### バックエンド
+- **Railway** - バックエンドホスティング
+- **PostgreSQL** - プライマリデータベース
+- **Redis** - キャッシュレイヤー
 
 ### デプロイメント
-- **Vercel** - メイン環境
-- **Cloudflare Workers** - エッジ環境
+- **Railway** - バックエンドAPI
+- **Vercel** - フロントエンド
 
 ## データベース設計
 
@@ -148,8 +148,8 @@ cd webapp/backend && npm run migrate:postgresql
 # TypeScriptビルド
 cd webapp/backend && npm run build
 
-# Cloudflare Workers デプロイ
-cd webapp/backend && npm run deploy:cloudflare
+# Railway デプロイ（GitHub自動連携）
+# push時に自動実行
 ```
 
 ### フロントエンド（webapp/frontend）
@@ -180,8 +180,8 @@ curl http://localhost:8787/debug/db-status
 
 - `.env.example` - 環境変数テンプレート
 - `webapp/backend/.env.local` - バックエンド環境変数（gitignore対象）
-- `webapp/backend/wrangler.jsonc` - Cloudflare Workers設定
-- `vercel.json` - Vercelデプロイ設定
+- `railway.json` - Railway設定（バックエンド）
+- `vercel.json` - Vercel設定（フロントエンド）
 - `CLAUDE.md` - AI開発支援設定
 
 ## データ最小化戦略
@@ -192,15 +192,16 @@ curl http://localhost:8787/debug/db-status
 - デッキコード形式による効率的なデータ転送
 
 ### キャッシュ戦略
+- **Redis**: セッション・一時データ
 - **長期キャッシュ**: 個別カード情報（24時間）
 - **中期キャッシュ**: セット別・リーダー別カード（1時間）
 - **短期キャッシュ**: 検索結果（5分）
 
 ## アーキテクチャ原則
 
-### 1. プラットフォーム非依存
-- アダプターパターンによる環境抽象化
-- Vercel/Cloudflare両対応
+### 1. マイクロサービス分離
+- バックエンドAPI（Railway）とフロントエンド（Vercel）の分離
+- 明確な責任境界とスケーラビリティ
 
 ### 2. ドメイン駆動設計
 - ビジネスロジックの分離
@@ -216,25 +217,26 @@ curl http://localhost:8787/debug/db-status
 ### ✅ 完了済み
 - **設計段階**: 完全完了
 - **バックエンド実装**: Hono + TypeScript + ドメインモデル
-- **デプロイメント設定**: Vercel・Cloudflare Workers両対応
-- **データベース**: PostgreSQL・D1両対応のマイグレーション
+- **デプロイメント戦略**: Railway + Vercel 分離アーキテクチャ
+- **データベース設計**: PostgreSQL + Redis構成
 - **API実装**: カード・リーダー・種族管理API
 - **開発環境**: ローカル開発・テスト環境構築
 
 ### 🚧 進行中
+- **Railway移行**: バックエンドホスティング移行作業
 - **フロントエンド実装**: Next.js + React基盤構築済み
-- **Vercelデプロイ**: 基本設定完了、実行時エラー調査中
+- **本番環境構築**: Railway + Vercel連携設定
 
 ### 📋 今後の予定
-- Vercel Status 500エラーの解決
+- Railway本番環境セットアップ
 - フロントエンド機能実装
-- 本格的なデータベース運用開始
+- API連携テスト・最適化
 
 ### 最新の更新内容
-- **デプロイメント対応**: Issue #8完了、Vercel・Cloudflare設定実装
-- **ローカル開発環境**: データベース操作ガイド完備
-- **型安全性**: TypeScriptビルドエラー修正
-- **Tribeテーブル仕様**: leaderId・thematic・MasterCardId追加
+- **アーキテクチャ変更**: Railway + Vercel分離構成に変更
+- **デプロイ戦略**: GitHub連携による自動デプロイ設定
+- **データベース最適化**: PostgreSQL + Redis構成確定
+- **開発環境**: 統合開発ガイド完備
 
 ## 開発参加ガイド
 
@@ -251,7 +253,7 @@ curl http://localhost:8787/debug/db-status
 
 ### 重要な原則
 - **設計ドキュメント参照**: 実装前に必ず確認
-- **プラットフォーム非依存**: アダプターパターン遵守
+- **分離アーキテクチャ**: バックエンド・フロントエンドの明確な分離
 - **型安全性**: TypeScript strict mode使用
 - **テスト実行**: コミット前に必ずテスト
 

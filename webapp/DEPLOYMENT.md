@@ -2,129 +2,76 @@
 
 ## 概要
 
-Mythologia Admiral Ship BridgeはVercelとCloudflareの両環境にデプロイ可能です。
+Mythologia Admiral Ship Bridgeは分離アーキテクチャでデプロイします：
+- **バックエンド**: Railway (API + Database)
+- **フロントエンド**: Vercel (Next.js)
 
-## 🚀 Vercel環境へのデプロイ
+## 環境構成
 
-### 1. 事前準備
+- **本番環境**: `release`ブランチ → Railway + Vercel Production
+- **ステージング環境**: `develop`ブランチ → Railway + Vercel Staging
 
-```bash
-# Vercel CLIインストール
-npm install -g vercel
+## 🚂 Railway バックエンドデプロイ
 
-# Vercelにログイン
-vercel login
+### 1. Railway プロジェクト作成
+
+1. [Railway](https://railway.app) にログイン
+2. 「New Project」→ 「Deploy from GitHub repo」
+3. このリポジトリを選択
+4. サービス設定:
+   - **Root Directory**: `webapp/backend`
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm start`
+
+### 2. データベース・キャッシュ設定
+
+#### PostgreSQL サービス追加
+1. プロジェクト → 「New Service」→ PostgreSQL
+2. 自動的に `DATABASE_URL` 環境変数が生成
+
+#### Redis サービス追加  
+1. プロジェクト → 「New Service」→ Redis
+2. 自動的に `REDIS_URL` 環境変数が生成
+
+### 3. Railway 環境変数設定
+
+```
+NODE_ENV=production
+DATABASE_TYPE=postgresql  
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+REDIS_URL=${{Redis.REDIS_URL}}
+PORT=${{PORT}}
+CORS_ORIGIN=https://your-frontend.vercel.app
 ```
 
-### 2. データベースセットアップ
+## 🚀 Vercel フロントエンドデプロイ
 
-```bash
-# Vercel Postgresデータベース作成
-vercel postgres create mythologia-db
+### 1. Vercel プロジェクト設定
 
-# データベースURLを取得（プロジェクト設定で確認）
-# DATABASE_URL=postgresql://...
+#### 本番環境プロジェクト
+1. [Vercel](https://vercel.com) にログイン
+2. 「New Project」→ GitHubリポジトリ選択
+3. プロジェクト設定:
+   - **Root Directory**: `webapp/frontend`
+   - **Framework Preset**: Next.js
+   - **Production Branch**: `release`
+
+#### ステージング環境プロジェクト
+1. 新しいプロジェクトを作成
+2. 同設定で **Production Branch**: `develop`
+
+### 2. Vercel 環境変数設定
+
+```
+NEXT_PUBLIC_API_URL=https://your-backend.railway.app
+ENVIRONMENT=production
 ```
 
-### 3. 環境変数設定
+### 3. 自動デプロイの動作
 
-```bash
-# Vercel環境変数設定
-vercel env add DATABASE_TYPE
-# Value: postgresql
-
-vercel env add DATABASE_URL
-# Value: <Vercel Postgresの接続URL>
-
-vercel env add ENVIRONMENT
-# Value: production
-```
-
-### 4. マイグレーション実行
-
-```bash
-# ローカルでマイグレーション実行（Vercel DB接続）
-cd webapp/backend
-npm run migrate:postgresql
-```
-
-### 5. デプロイ実行
-
-```bash
-# プロジェクトルートから
-vercel deploy --prod
-```
-
-### 6. 動作確認
-
-- `https://your-project.vercel.app/health`
-- `https://your-project.vercel.app/api/cards`
-- `https://your-project.vercel.app/debug/db-status`
-
-## ☁️ Cloudflare環境へのデプロイ
-
-### 1. 事前準備
-
-```bash
-# Wrangler CLIインストール（既にインストール済み）
-cd webapp/backend
-
-# Cloudflareにログイン
-npx wrangler login
-```
-
-### 2. データベース・KVセットアップ
-
-```bash
-# D1データベース作成
-npx wrangler d1 create mythologia-db
-
-# KVネームスペース作成
-npx wrangler kv:namespace create mythologia-cache
-
-# 出力されたIDをwrangler.joncのdatabase_idとidに設定
-```
-
-### 3. wrangler.jsonc更新
-
-```jsonc
-{
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "mythologia-db",
-      "database_id": "YOUR_DATABASE_ID" // 上記で取得したID
-    }
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "CACHE",
-      "id": "YOUR_KV_NAMESPACE_ID" // 上記で取得したID
-    }
-  ]
-}
-```
-
-### 4. マイグレーション実行
-
-```bash
-# D1マイグレーション実行
-npx wrangler d1 execute mythologia-db --file=sql/d1/001_initial_schema.sql
-npx wrangler d1 execute mythologia-db --file=sql/d1/002_initial_data.sql
-```
-
-### 5. デプロイ実行
-
-```bash
-cd webapp/backend
-npm run deploy:cloudflare
-```
-
-### 6. 動作確認
-
-- `https://your-worker.your-subdomain.workers.dev/health`
-- `https://your-worker.your-subdomain.workers.dev/api/cards`
-- `https://your-worker.your-subdomain.workers.dev/debug/db-status`
+- `release`ブランチ → Railway + Vercel 本番環境
+- `develop`ブランチ → Railway + Vercel ステージング環境
+- プルリクエスト → Vercel プレビューデプロイ
 
 ## 🔧 ローカル開発環境
 
@@ -135,8 +82,8 @@ npm run deploy:cloudflare
 cp .env.example .env.local
 
 # 以下を設定
-DATABASE_TYPE=postgresql # または d1
-DATABASE_URL=postgresql://... # PostgreSQLの場合
+DATABASE_TYPE=postgresql
+DATABASE_URL=postgresql://...
 ```
 
 ### 2. 開発サーバー起動
@@ -159,113 +106,110 @@ cd webapp
 ./test-api.sh
 ```
 
-## 📋 デプロイ後の確認事項
+
+## 📋 デプロイ確認事項
+
+### 環境別URL
+
+#### 本番環境
+- サイト: `https://mythologia.vercel.app`
+- API: `https://mythologia.vercel.app/api/*`
+- ヘルスチェック: `https://mythologia.vercel.app/health`
+
+#### ステージング環境
+- サイト: `https://mythologia-staging.vercel.app`
+- API: `https://mythologia-staging.vercel.app/api/*`
+- ヘルスチェック: `https://mythologia-staging.vercel.app/health`
 
 ### 基本動作確認
 
-- [ ] ヘルスチェック：`GET /health`
-- [ ] APIエンドポイント：`GET /api/cards`, `/api/leaders`, `/api/tribes`
-- [ ] デバッグ情報：`GET /debug/db-status`
-- [ ] フロントエンド：ホームページ表示
-- [ ] CORS：フロントエンドからAPI呼び出し
-
-### データベース確認
-
-- [ ] リーダーデータ：5件のリーダーが正常に挿入されている
-- [ ] 種族データ：6件の種族が正常に挿入されている
-- [ ] 外部キー制約：tribes.leader_idがleaders.idを参照
-
-### パフォーマンス確認
-
-- [ ] レスポンス時間：API呼び出しが1秒以内
-- [ ] 並行リクエスト：複数同時アクセスでエラーが発生しない
-- [ ] メモリ使用量：適切な範囲内
+- [ ] 自動デプロイ：GitHubプッシュ後に自動デプロイされる
+- [ ] プレビューデプロイ：PRごとに個別URLが生成される
+- [ ] 環境変数：各環境で正しく設定されている
+- [ ] データベース接続：Vercel Postgresに接続できる
 
 ## 🐛 トラブルシューティング
 
-### Vercel環境
+### デプロイが失敗する場合
 
-**問題**: データベース接続エラー
-```
-Database query failed: connection timeout
-```
+1. **ビルドエラー**
+   - package.jsonのスクリプトを確認
+   - 依存関係のバージョン競合を確認
+   - ルートディレクトリが`webapp`に設定されているか確認
 
-**解決策**:
-1. `DATABASE_URL`環境変数が正しく設定されているか確認
-2. Vercel Postgresのコネクション制限を確認
-3. ファイアウォール設定を確認
+2. **環境変数エラー**
+   - Vercelダッシュボードで環境変数が設定されているか確認
+   - 環境変数名のタイポがないか確認
+   - プレビューデプロイにも環境変数が適用されているか確認
 
-### Cloudflare環境
+3. **データベース接続エラー**
+   - DATABASE_URLが正しく設定されているか確認
+   - Vercel Postgresが作成されているか確認
+   - IPアドレス制限がないか確認
 
-**問題**: D1データベースが見つからない
-```
-Error: D1Database binding 'DB' not found
-```
+### プレビューデプロイの確認
 
-**解決策**:
-1. `wrangler.jsonc`の`database_id`が正しく設定されているか確認
-2. D1データベースが正常に作成されているか確認：`npx wrangler d1 list`
-3. デプロイ前にビルドが完了しているか確認
-
-### 共通
-
-**問題**: CORS エラー
-```
-Access-Control-Allow-Origin error
-```
-
-**解決策**:
-1. フロントエンドのURLがCORS設定に含まれているか確認
-2. プロダクション環境のURL設定を確認
+1. PRのコメントにプレビューURLが表示される
+2. プレビュー環境でも環境変数が必要
+3. データベースは本番/ステージングと共有される場合がある
 
 ## 📈 モニタリング
 
-### Vercel環境
+### Vercelダッシュボード
 
-- Vercelダッシュボードでリクエスト数・エラー率・レスポンス時間を監視
-- Postgres Insightsでデータベースパフォーマンスを監視
+1. **Analytics**
+   - リクエスト数
+   - エラー率
+   - レスポンス時間
+   - 地域別アクセス
 
-### Cloudflare環境
+2. **Functions**
+   - API関数の実行時間
+   - メモリ使用量
+   - エラーログ
 
-- Cloudflare Analyticsでトラフィック・パフォーマンスを監視
-- D1 Analyticsでデータベース使用量を監視
+3. **Logs**
+   - リアルタイムログ
+   - エラートレース
+   - デプロイログ
 
-## 🔄 CI/CD設定
+## 🔄 デプロイフロー
 
-### GitHub Actions（推奨）
+### ブランチ戦略
 
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy-vercel:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: cd webapp && npm install
-      - run: cd webapp && npm run build
-      - run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
-  
-  deploy-cloudflare:
-    runs-on: ubuntu-latest  
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: cd webapp/backend && npm install
-      - run: cd webapp/backend && npm run deploy:cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 ```
+feature/* → develop → release
+    ↓          ↓          ↓
+   PR      Staging    Production
+```
+
+### デプロイプロセス
+
+1. **機能開発**
+   - `feature/*`ブランチで開発
+   - `develop`へのPR作成
+   - プレビューデプロイで動作確認
+
+2. **ステージング確認**
+   - `develop`にマージ
+   - ステージング環境に自動デプロイ
+   - QAテスト実施
+
+3. **本番リリース**
+   - `develop`から`release`へのPR作成
+   - レビュー後マージ
+   - 本番環境に自動デプロイ
 
 ## 📞 サポート
 
 デプロイに関する問題が発生した場合：
 
-1. [TESTING.md](./TESTING.md) で基本動作を確認
-2. [GitHub Issues](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/issues) で既知の問題を確認
+1. Vercelのステータスページを確認: https://www.vercel-status.com/
+2. [GitHub Issues](https://github.com/your-org/Mythologia_AdmiralsShipBridge/issues) で既知の問題を確認
 3. 新しいIssueを作成して詳細を報告
+
+## 🔗 関連ドキュメント
+
+- [Vercel Documentation](https://vercel.com/docs)
+- [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)
+- [環境変数の管理](https://vercel.com/docs/environment-variables)
