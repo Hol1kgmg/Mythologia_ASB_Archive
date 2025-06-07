@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { cards, leaders, tribes, debug } from './routes';
+import { cards, leaders, tribes, debug, admin, auth } from './routes';
 import type { CloudflareEnv } from './config/env';
 
 // Honoアプリケーションの型定義
@@ -82,6 +82,10 @@ app.get('/health', (c) => {
 app.route('/api/cards', cards);
 app.route('/api/leaders', leaders);
 app.route('/api/tribes', tribes);
+
+// 管理者APIルート
+app.route('/api/admin/auth', auth);
+app.route('/api/admin/admins', admin);
 
 // 開発用デバッグルート
 app.route('/debug', debug);
