@@ -1,36 +1,6 @@
 import { DatabaseAdapter, QueryResult } from './DatabaseAdapter';
 
-declare global {
-  interface D1Database {
-    prepare(query: string): D1PreparedStatement;
-    batch(statements: D1PreparedStatement[]): Promise<D1Result[]>;
-    exec(query: string): Promise<D1ExecResult>;
-  }
-
-  interface D1PreparedStatement {
-    bind(...values: any[]): D1PreparedStatement;
-    first<T = any>(colName?: string): Promise<T | null>;
-    run(): Promise<D1Result>;
-    all<T = any>(): Promise<D1Result<T>>;
-    raw<T = any>(): Promise<T[]>;
-  }
-
-  interface D1Result<T = any> {
-    results: T[];
-    duration: number;
-    changes: number;
-    last_row_id: number;
-    changed_db: boolean;
-    size_after: number;
-    rows_read: number;
-    rows_written: number;
-  }
-
-  interface D1ExecResult {
-    count: number;
-    duration: number;
-  }
-}
+// D1 types are provided by @cloudflare/workers-types
 
 export class D1Adapter implements DatabaseAdapter {
   constructor(private database: D1Database) {}
@@ -39,7 +9,7 @@ export class D1Adapter implements DatabaseAdapter {
     try {
       const stmt = this.database.prepare(sql);
       const boundStmt = params.length > 0 ? stmt.bind(...params) : stmt;
-      const result = await boundStmt.all<T>();
+      const result = await boundStmt.all();
       
       return {
         rows: result.results,
