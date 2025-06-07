@@ -12,7 +12,10 @@
     "migrate:postgresql:dry": "tsx scripts/migrate.ts postgresql --dry-run",
     "migrate:d1": "tsx scripts/migrate.ts d1",
     "db:setup:cloudflare": "wrangler d1 create mythologia-db && wrangler kv:namespace create mythologia-cache",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
