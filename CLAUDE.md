@@ -84,6 +84,8 @@ CREATE TABLE tribes (
 /
 ├── README.md                    # プロジェクト概要
 ├── CLAUDE.md                   # このファイル
+├── docker-compose.yml          # Docker開発環境（未作成）
+├── .env.local                  # ローカル環境変数（未作成）
 ├── system-design/              # 設計ドキュメント（完成済み）
 │   ├── README.md              # 設計ドキュメント索引
 │   ├── database-design/       # データベース設計
@@ -93,43 +95,78 @@ CREATE TABLE tribes (
 └── webapp/                     # 実装ディレクトリ（予定）
     ├── shared/                 # 共有型定義 ✅
     ├── backend/                # バックエンド（未作成）
+    │   ├── Dockerfile         # Dockerファイル
     │   ├── drizzle/           # Drizzleマイグレーション
     │   │   ├── migrations/    # マイグレーションファイル
     │   │   └── schema.ts      # スキーマ定義
     │   └── src/               # アプリケーションコード
     └── frontend/               # フロントエンド（未作成）
+        ├── Dockerfile         # Dockerファイル
+        └── src/               # アプリケーションコード
+```
+
+## ローカル開発環境（Docker）
+
+### Docker構成
+```bash
+# 開発環境起動（全サービス）
+docker-compose up -d
+
+# 特定のサービスのみ起動
+docker-compose up -d postgres redis
+
+# 開発サーバー起動（ホストで実行）
+npm run dev
+
+# コンテナ停止
+docker-compose down
+
+# ボリューム含めて完全削除
+docker-compose down -v
+```
+
+### サービス構成
+```yaml
+services:
+  postgres:    # PostgreSQL 16
+  redis:       # Redis 7
+  backend:     # Node.js開発環境（オプション）
+  frontend:    # Next.js開発環境（オプション）
 ```
 
 ## 開発コマンド（実装後）
 
 ```bash
-# 開発サーバー起動
-npm run dev
+# ローカル開発
+npm run dev              # 開発サーバー起動
+npm run dev:docker       # Docker環境での開発
 
-# ビルド
+# ビルド・テスト
 npm run build
-
-# テスト実行
 npm run test
-
-# リント・型チェック
 npm run lint
 npm run typecheck
 
 # データベース関連
-npm run db:generate    # マイグレーションファイル生成
-npm run db:migrate     # マイグレーション実行
-npm run db:push        # スキーマを直接プッシュ（開発用）
-npm run db:studio      # Drizzle Studio起動
-npm run db:seed        # シードデータ投入
+npm run db:generate      # マイグレーションファイル生成
+npm run db:migrate       # マイグレーション実行
+npm run db:push          # スキーマを直接プッシュ（開発用）
+npm run db:studio        # Drizzle Studio起動
+npm run db:seed          # シードデータ投入
+
+# Docker関連
+npm run docker:up        # Docker環境起動
+npm run docker:down      # Docker環境停止
+npm run docker:logs      # ログ確認
 ```
 
 ## 設計原則・開発方針
 
 ### 1. 環境分離とデプロイメント戦略
+- **ローカル環境**: Docker Compose（PostgreSQL + Redis）
 - **本番・ステージ環境**: Railway + Vercel構成
-- **データベース統一**: PostgreSQL（本番・ステージ共通）
-- **環境変数管理**: Railway/Vercelの環境設定で分離
+- **データベース統一**: PostgreSQL（全環境共通）
+- **環境変数管理**: .env.local / Railway / Vercelで分離
 
 ### 2. データベース管理戦略（Drizzle ORM）
 - **型安全なスキーマ**: TypeScriptでスキーマ定義
@@ -174,20 +211,33 @@ npm run db:seed        # シードデータ投入
 
 ### 環境構成
 ```
-本番環境:
-├── Frontend: Vercel (mythologia-production.vercel.app)
-├── Backend: Railway (mythologia-api-production.railway.app)
-├── Database: Railway PostgreSQL (Production DB)
-└── Cache: Railway Redis (Production Cache)
+ローカル環境:
+├── Frontend: localhost:3000 (Next.js Dev)
+├── Backend: localhost:8000 (Hono Dev)
+├── Database: localhost:5432 (Docker PostgreSQL)
+└── Cache: localhost:6379 (Docker Redis)
 
 ステージ環境:
 ├── Frontend: Vercel (mythologia-staging.vercel.app)
 ├── Backend: Railway (mythologia-api-staging.railway.app)
 ├── Database: Railway PostgreSQL (Staging DB)
 └── Cache: Railway Redis (Staging Cache)
+
+本番環境:
+├── Frontend: Vercel (mythologia-production.vercel.app)
+├── Backend: Railway (mythologia-api-production.railway.app)
+├── Database: Railway PostgreSQL (Production DB)
+└── Cache: Railway Redis (Production Cache)
 ```
 
 ### 環境変数管理
+**ローカル環境 (.env.local):**
+- `DATABASE_URL`: postgres://user:password@localhost:5432/mythologia_local
+- `REDIS_URL`: redis://localhost:6379
+- `JWT_SECRET`: local-development-secret
+- `NODE_ENV`: development
+- `NEXT_PUBLIC_API_URL`: http://localhost:8000
+
 **Railway (Backend):**
 - `DATABASE_URL`: PostgreSQL接続文字列（Drizzle接続用）
 - `REDIS_URL`: Redis接続文字列
@@ -197,7 +247,7 @@ npm run db:seed        # シードデータ投入
 
 **Vercel (Frontend):**
 - `NEXT_PUBLIC_API_URL`: バックエンドURL
-- `NEXT_PUBLIC_ENVIRONMENT`: production/staging
+- `NEXT_PUBLIC_ENVIRONMENT`: production/staging/local
 
 ### デプロイフロー
 1. **ステージング**: `develop`ブランチ → 自動デプロイ
@@ -226,17 +276,22 @@ npm run db:seed        # シードデータ投入
 このプロジェクトで作業する際は：
 
 1. **設計ドキュメントを必ず参照**してからコード実装
-2. **Railway + Vercel構成**に最適化された実装
-3. **Drizzle ORM**でのマイグレーション・スキーマ管理
-4. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
-5. **環境分離**を意識した設定管理
-6. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
-7. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
+2. **ローカル開発はDocker**を使用（PostgreSQL + Redis）
+3. **Railway + Vercel構成**に最適化された実装
+4. **Drizzle ORM**でのマイグレーション・スキーマ管理
+5. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
+6. **環境分離**を意識した設定管理（Local/Staging/Production）
+7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
+8. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
 
 ## 設定ファイル
 
+### ローカル開発
+- `docker-compose.yml` - Docker Compose設定（未作成）
 - `.env.local` - ローカル開発環境変数（未作成）
 - `drizzle.config.ts` - Drizzle設定ファイル（未作成）
+
+### デプロイメント
 - `railway.toml` - Railway設定（未作成）
 - `vercel.json` - Vercel設定（未作成）
 
