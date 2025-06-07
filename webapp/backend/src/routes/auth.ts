@@ -23,28 +23,90 @@ app.post(
       const { username, password, rememberMe } = body;
 
       // TODO: レート制限チェック
-      // TODO: 管理者アカウント検索
-      // TODO: パスワード検証
-      // TODO: アクティブアカウントチェック
+      // TODO: 実際の管理者アカウント検索（データベース）
+      // TODO: 実際のパスワード検証（bcrypt）
       // TODO: JWTトークン生成
       // TODO: セッション作成
       // TODO: ログイン時刻更新
       // TODO: アクティビティログ記録
 
-      // モックレスポンス
-      const mockAuthResult = {
-        admin: {
-          id: 'admin-001',
-          username: username,
-          email: 'admin@example.com',
-          role: 'admin',
-          permissions: [],
-          isActive: true,
-          isSuperAdmin: false,
-          lastLoginAt: new Date().toISOString()
+      // モック認証ロジック（テスト用の固定アカウント）
+      const validAccounts = [
+        {
+          username: 'superadmin',
+          password: 'SuperAdmin123!',
+          admin: {
+            id: 'admin-001',
+            username: 'superadmin',
+            email: 'superadmin@example.com',
+            role: 'super_admin',
+            permissions: [],
+            isActive: true,
+            isSuperAdmin: true,
+            lastLoginAt: new Date().toISOString()
+          }
         },
-        accessToken: 'mock-jwt-access-token',
-        refreshToken: 'mock-jwt-refresh-token',
+        {
+          username: 'cardadmin',
+          password: 'CardAdmin123!',
+          admin: {
+            id: 'admin-002',
+            username: 'cardadmin',
+            email: 'cardadmin@example.com',
+            role: 'admin',
+            permissions: [
+              {
+                resource: 'cards',
+                actions: ['create', 'read', 'update', 'delete']
+              }
+            ],
+            isActive: true,
+            isSuperAdmin: false,
+            lastLoginAt: new Date().toISOString()
+          }
+        },
+        {
+          username: 'vieweradmin',
+          password: 'ViewerAdmin123!',
+          admin: {
+            id: 'admin-003',
+            username: 'vieweradmin',
+            email: 'vieweradmin@example.com',
+            role: 'admin',
+            permissions: [
+              {
+                resource: 'cards',
+                actions: ['read']
+              },
+              {
+                resource: 'users',
+                actions: ['read']
+              }
+            ],
+            isActive: true,
+            isSuperAdmin: false,
+            lastLoginAt: new Date().toISOString()
+          }
+        }
+      ];
+
+      // 認証チェック
+      const validAccount = validAccounts.find(
+        account => account.username === username && account.password === password
+      );
+
+      if (!validAccount) {
+        return c.json({
+          error: 'Authentication failed',
+          message: 'Invalid username or password'
+        }, 401);
+      }
+
+      // 認証成功
+      const mockAuthResult = {
+        admin: validAccount.admin,
+        accessToken: `mock-jwt-access-token-${validAccount.admin.id}`,
+        refreshToken: `mock-jwt-refresh-token-${validAccount.admin.id}`,
         expiresIn: 900 // 15分
       };
 
