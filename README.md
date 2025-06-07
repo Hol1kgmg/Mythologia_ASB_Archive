@@ -1,5 +1,9 @@
 # 🚢 Mythologia Admiral Ship Bridge
 
+[![PR Checks](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/pr-checks.yml)
+[![Push Checks](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/push-checks.yml/badge.svg)](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/push-checks.yml)
+[![Nightly Checks](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/nightly-checks.yml/badge.svg)](https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/actions/workflows/nightly-checks.yml)
+
 ## 神託のメソロギア ファンサイト
 
 **Mythologia Admiral Ship Bridge** は、カード情報データベースとデッキ構築をサポートする**非公式**ファンサイトです。
