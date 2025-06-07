@@ -20,14 +20,15 @@
 - **Hono** - 軽量Webフレームワーク
 - **Zod** - ランタイムバリデーション
 
-### データベース（マルチプラットフォーム対応）
-- **PostgreSQL** (Vercel環境)
-- **D1/SQLite** (Cloudflare環境)
-- **Vercel KV / Cloudflare KV** (キャッシュ)
+### データベース・インフラ
+- **PostgreSQL** (Railway提供)
+- **Redis** (Railway提供 - キャッシュ・セッション管理)
 
-### デプロイメント
-- **Vercel** - メイン環境
-- **Cloudflare Workers** - エッジ環境
+### デプロイメント環境
+- **本番環境**: Railway(バックエンド) + Vercel(フロントエンド)
+- **ステージ環境**: Railway(バックエンド) + Vercel(フロントエンド)
+- **バックエンド**: Hono + PostgreSQL on Railway
+- **フロントエンド**: Next.js on Vercel
 
 ## 重要なデータベース仕様
 
@@ -109,10 +110,10 @@ npm run typecheck
 
 ## 設計原則・開発方針
 
-### 1. プラットフォーム非依存
-- **アダプターパターン**: PostgreSQL/D1両対応
-- **統一インターフェース**: 環境に依存しない実装
-- **環境抽象化**: データベース固有機能の隠蔽
+### 1. 環境分離とデプロイメント戦略
+- **本番・ステージ環境**: Railway + Vercel構成
+- **データベース統一**: PostgreSQL（本番・ステージ共通）
+- **環境変数管理**: Railway/Vercelの環境設定で分離
 
 ### 2. ドメイン駆動設計
 - **ビジネスロジック分離**: 純粋なドメインモデル
@@ -152,6 +153,39 @@ npm run typecheck
 - コメントよりも明確な命名を優先
 - テストカバレッジの確保
 
+## デプロイメント構成
+
+### 環境構成
+```
+本番環境:
+├── Frontend: Vercel (mythologia-production.vercel.app)
+├── Backend: Railway (mythologia-api-production.railway.app)
+├── Database: Railway PostgreSQL (Production DB)
+└── Cache: Railway Redis (Production Cache)
+
+ステージ環境:
+├── Frontend: Vercel (mythologia-staging.vercel.app)
+├── Backend: Railway (mythologia-api-staging.railway.app)
+├── Database: Railway PostgreSQL (Staging DB)
+└── Cache: Railway Redis (Staging Cache)
+```
+
+### 環境変数管理
+**Railway (Backend):**
+- `DATABASE_URL`: PostgreSQL接続文字列
+- `REDIS_URL`: Redis接続文字列
+- `JWT_SECRET`: JWT署名キー
+- `NODE_ENV`: production/staging
+
+**Vercel (Frontend):**
+- `NEXT_PUBLIC_API_URL`: バックエンドURL
+- `NEXT_PUBLIC_ENVIRONMENT`: production/staging
+
+### デプロイフロー
+1. **ステージング**: `develop`ブランチ → 自動デプロイ
+2. **本番**: `main`ブランチ → 自動デプロイ
+3. **PR環境**: PRブランチ → プレビューデプロイ (Vercelのみ)
+
 ## 次期実装予定
 
 ### Phase 1: 基盤実装
@@ -174,16 +208,17 @@ npm run typecheck
 このプロジェクトで作業する際は：
 
 1. **設計ドキュメントを必ず参照**してからコード実装
-2. **Leadersテーブル管理**と**Tribesテーブルの最新仕様**に準拠
-3. **プラットフォーム非依存**の実装を心がける
-4. **型安全性**を最優先にしたコード記述
-5. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
+2. **Railway + Vercel構成**に最適化された実装
+3. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
+4. **環境分離**を意識した設定管理
+5. **型安全性**を最優先にしたコード記述
+6. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
 
 ## 設定ファイル
 
-- `settings.local.json` - ローカル開発設定（未作成）
-- `database.config.ts` - データベース設定（未作成）
-- `.env.local` - 環境変数（未作成）
+- `.env.local` - ローカル開発環境変数（未作成）
+- `railway.toml` - Railway設定（未作成）
+- `vercel.json` - Vercel設定（未作成）
 
 ---
 
