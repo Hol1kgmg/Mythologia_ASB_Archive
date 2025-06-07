@@ -11,7 +11,7 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 未開始 📋
-- **最新更新**: Leadersテーブル追加完了、リーダー情報のデータベース管理対応
+- **最新更新**: Drizzle ORM導入、Railway + Vercel構成に変更
 
 ## 技術スタック
 
@@ -19,10 +19,12 @@
 - **TypeScript** - 型安全性重視
 - **Hono** - 軽量Webフレームワーク
 - **Zod** - ランタイムバリデーション
+- **Drizzle ORM** - 型安全なORM・マイグレーション管理
 
 ### データベース・インフラ
 - **PostgreSQL** (Railway提供)
 - **Redis** (Railway提供 - キャッシュ・セッション管理)
+- **Drizzle Kit** - マイグレーション・スキーマ管理
 
 ### デプロイメント環境
 - **本番環境**: Railway(バックエンド) + Vercel(フロントエンド)
@@ -88,7 +90,14 @@ CREATE TABLE tribes (
 │   │   ├── card/             # カードシステム設計 ✅
 │   │   └── deck/             # デッキシステム設計 ✅
 │   └── [その他設計ファイル]
-└── [実装予定ディレクトリ]
+└── webapp/                     # 実装ディレクトリ（予定）
+    ├── shared/                 # 共有型定義 ✅
+    ├── backend/                # バックエンド（未作成）
+    │   ├── drizzle/           # Drizzleマイグレーション
+    │   │   ├── migrations/    # マイグレーションファイル
+    │   │   └── schema.ts      # スキーマ定義
+    │   └── src/               # アプリケーションコード
+    └── frontend/               # フロントエンド（未作成）
 ```
 
 ## 開発コマンド（実装後）
@@ -106,6 +115,13 @@ npm run test
 # リント・型チェック
 npm run lint
 npm run typecheck
+
+# データベース関連
+npm run db:generate    # マイグレーションファイル生成
+npm run db:migrate     # マイグレーション実行
+npm run db:push        # スキーマを直接プッシュ（開発用）
+npm run db:studio      # Drizzle Studio起動
+npm run db:seed        # シードデータ投入
 ```
 
 ## 設計原則・開発方針
@@ -115,15 +131,16 @@ npm run typecheck
 - **データベース統一**: PostgreSQL（本番・ステージ共通）
 - **環境変数管理**: Railway/Vercelの環境設定で分離
 
-### 2. ドメイン駆動設計
+### 2. データベース管理戦略（Drizzle ORM）
+- **型安全なスキーマ**: TypeScriptでスキーマ定義
+- **マイグレーション管理**: Drizzle Kitによるバージョン管理
+- **開発体験**: Drizzle Studioによるデータ可視化
+- **環境別DB**: 本番・ステージ・ローカル環境の分離
+
+### 3. ドメイン駆動設計
 - **ビジネスロジック分離**: 純粋なドメインモデル
 - **動的データ管理**: 拡張性を重視した種族システム
-- **型安全性**: TypeScript + Zodによる厳密な型管理
-
-### 3. データ最小化戦略
-- **既存構造維持**: データベーステーブルはそのまま
-- **API最適化**: レスポンスサイズの最小化
-- **効率的キャッシュ**: 階層的キャッシュ戦略
+- **型安全性**: TypeScript + Zod + Drizzleによる厳密な型管理
 
 ## 重要なドキュメント参照順序
 
@@ -172,10 +189,11 @@ npm run typecheck
 
 ### 環境変数管理
 **Railway (Backend):**
-- `DATABASE_URL`: PostgreSQL接続文字列
+- `DATABASE_URL`: PostgreSQL接続文字列（Drizzle接続用）
 - `REDIS_URL`: Redis接続文字列
 - `JWT_SECRET`: JWT署名キー
 - `NODE_ENV`: production/staging
+- `DRIZZLE_DATABASE_URL`: Drizzle専用DB URL（オプション）
 
 **Vercel (Frontend):**
 - `NEXT_PUBLIC_API_URL`: バックエンドURL
@@ -209,14 +227,16 @@ npm run typecheck
 
 1. **設計ドキュメントを必ず参照**してからコード実装
 2. **Railway + Vercel構成**に最適化された実装
-3. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
-4. **環境分離**を意識した設定管理
-5. **型安全性**を最優先にしたコード記述
-6. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
+3. **Drizzle ORM**でのマイグレーション・スキーマ管理
+4. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
+5. **環境分離**を意識した設定管理
+6. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
+7. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
 
 ## 設定ファイル
 
 - `.env.local` - ローカル開発環境変数（未作成）
+- `drizzle.config.ts` - Drizzle設定ファイル（未作成）
 - `railway.toml` - Railway設定（未作成）
 - `vercel.json` - Vercel設定（未作成）
 
