@@ -143,6 +143,10 @@ const INITIAL_TRIBES: Omit<TribeDomain, 'id' | 'isActive' | 'createdAt' | 'updat
   {
     name: 'アンデッド',
     description: '死を超越した不死の存在'
+  },
+  {
+    name: '旧神',
+    description: '太古より存在する畏怖すべき神格'
   }
 ];
 ```

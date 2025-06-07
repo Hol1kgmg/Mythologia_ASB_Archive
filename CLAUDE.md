@@ -91,7 +91,8 @@ CREATE TABLE categories (
 - **リーダーID**: 1:DRAGON, 2:ANDROID, 3:ELEMENTAL, 4:LUMINUS, 5:SHADE
 - **レアリティID**: 1:BRONZE, 2:SILVER, 3:GOLD, 4:LEGEND
 - **カードタイプID**: 1:ATTACKER, 2:BLOCKER, 3:CHARGER
-- **カテゴリID**: 1-4:HUMAN種族(騎士,魔法使い,弓兵,僧侶), 5-8:DRAGON種族(古龍,幼龍,長老,守護龍)...
+- **種族ID**: 1:ドラゴン, 2:ロボット, 3:エレメンタル, 4:アンジェル, 5:デーモン, 6:ビースト, 7:ヒューマン, 8:アンデッド, 9:旧神
+- **カテゴリID**: 1-4:HUMAN種族(騎士,魔法使い,弓兵,僧侶), 5-8:DRAGON種族(古龍,幼龍,長老,守護龍), 9-12:ROBOT種族(戦闘機,支援機,重機,偵察機) ※旧神種族にはカテゴリなし
 
 ### 動的データ管理
 - **リーダー管理**: 静的enumからleadersテーブルへ移行完了 ✅

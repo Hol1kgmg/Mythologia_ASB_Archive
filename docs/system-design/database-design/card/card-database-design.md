@@ -380,7 +380,8 @@ INSERT INTO tribes (id, name, leaderId, description) VALUES
 (5, 'デーモン', 5, '闇の力を操る魔族'),
 (6, 'ビースト', NULL, '野生の力を持つ獣族'),
 (7, 'ヒューマン', NULL, '様々な技能を持つ人間'),
-(8, 'アンデッド', NULL, '死を超越した不死の存在');
+(8, 'アンデッド', NULL, '死を超越した不死の存在'),
+(9, '旧神', NULL, '太古より存在する畏怖すべき神格');
 
 -- カテゴリの初期データ（種族に従属）
 INSERT INTO categories (id, tribe_id, name, name_en, description) VALUES
@@ -401,6 +402,8 @@ INSERT INTO categories (id, tribe_id, name, name_en, description) VALUES
 (10, 2, '支援機', 'SUPPORT', 'サポート機能'),
 (11, 2, '重機', 'HEAVY', '高耐久'),
 (12, 2, '偵察機', 'SCOUT', '高機動');
+
+-- Note: 旧神種族（tribe_id = 9）にはカテゴリは存在しない
 
 -- カードセット情報の初期化
 INSERT INTO card_sets (id, name, code, release_date, card_count, description)

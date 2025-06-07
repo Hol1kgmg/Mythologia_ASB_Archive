@@ -24,6 +24,8 @@
 - 同名カード制限: 最大3枚まで
 - リーダー選択: 必須（5種類から1つ）
 - カード重複: 同じカードIDは1つのデッキに1回のみ登録
+- 種族制限: 旧神種族のカードはデッキに1枚まで
+- 重複定義: 同名カードとカードIDの重複は同義
 ```
 
 #### リーダーシステム
@@ -161,7 +163,7 @@ class DeckCode {
       throw new Error('無効なデッキコード形式');
     }
     
-    // 重複チェック
+    // 重複チェック（同名カードとカードIDの重複は同義）
     const cardIds = this.getCardIds();
     if (new Set(cardIds).size !== cardIds.length) {
       throw new Error('重複したカードが含まれています');
@@ -172,6 +174,10 @@ class DeckCode {
     if (totalCards < 30 || totalCards > 40) {
       throw new Error('デッキは30-40枚である必要があります');
     }
+    
+    // 旧神種族制限チェック（実装時にカード詳細情報と照合）
+    // Note: ここでは旧神カードの詳細情報が必要なため、
+    // 実際のバリデーションはDeckBuildingRulesで行う
   }
   
   getCardIds(): string[] {
@@ -249,6 +255,40 @@ class DeckBuildingRules {
         error: `無効なリーダーIDです（${leaderId}）`
       };
     }
+    return { isValid: true };
+  }
+  
+  static validateOldGodRestriction(cards: DeckCard[], cardDetails: Card[]): ValidationResult {
+    // 旧神種族のカードをチェック
+    const oldGodCards = cards.filter(deckCard => {
+      const cardDetail = cardDetails.find(c => c.id === deckCard.cardId);
+      return cardDetail?.tribeId === 9; // 旧神種族のID
+    });
+    
+    // 旧神カードの総枚数チェック
+    const totalOldGodCards = oldGodCards.reduce((sum, card) => sum + card.quantity, 0);
+    if (totalOldGodCards > 1) {
+      return {
+        isValid: false,
+        error: `旧神種族のカードはデッキに1枚までしか採用できません（現在${totalOldGodCards}枚）`
+      };
+    }
+    
+    return { isValid: true };
+  }
+  
+  static validateCardDuplication(cards: DeckCard[]): ValidationResult {
+    // カードIDの重複チェック（同名カードとカードIDの重複は同義）
+    const cardIds = cards.map(card => card.cardId);
+    const duplicates = cardIds.filter((id, index) => cardIds.indexOf(id) !== index);
+    
+    if (duplicates.length > 0) {
+      return {
+        isValid: false,
+        error: `同じカードが重複して登録されています: ${duplicates.join(', ')}`
+      };
+    }
+    
     return { isValid: true };
   }
 }
