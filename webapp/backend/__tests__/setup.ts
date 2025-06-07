@@ -3,8 +3,9 @@
  * 共通のテスト設定とユーティリティ
  */
 
+import { expect } from 'vitest';
 import { Hono } from 'hono';
-import type { AdminDTO, CreateAdminDTO, LoginDTO } from '@mythologia/shared';
+import type { CreateAdminDTO, LoginDTO } from '@mythologia/shared';
 
 // テスト用のアプリケーション作成関数
 export function createTestApp(): Hono {

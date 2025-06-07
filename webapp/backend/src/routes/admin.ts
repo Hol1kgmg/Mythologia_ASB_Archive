@@ -14,24 +14,29 @@ import {
 
 const app = new Hono();
 
-// クエリパラメータ用のスキーマ（文字列からの変換を含む）
+// クエリパラメータ用のスキーマ（シンプル版）
 const AdminListQuerySchema = z.object({
-  page: z.string().transform(Number).pipe(z.number().min(1)).default('1'),
-  limit: z.string().transform(Number).pipe(z.number().min(1).max(100)).default('20'),
+  page: z.string().optional(),
+  limit: z.string().optional(),
   role: z.enum(['admin', 'super_admin']).optional(),
-  isActive: z.string().transform(v => v === 'true').optional(),
-  createdBy: z.string().uuid().optional()
+  isActive: z.string().optional(),
+  createdBy: z.string().optional()
 });
 
 // GET /admin/admins - 管理者一覧取得
 app.get(
   '/',
-  zValidator('query', AdminListQuerySchema),
   async (c) => {
     try {
-      const query = c.req.valid('query');
-      const { page, limit, ...filters } = query;
+      const query = c.req.query();
+      const page = parseInt(query.page || '1', 10);
+      const limit = parseInt(query.limit || '20', 10);
       const offset = (page - 1) * limit;
+      const filters = {
+        role: query.role as 'admin' | 'super_admin' | undefined,
+        isActive: query.isActive === 'true' ? true : query.isActive === 'false' ? false : undefined,
+        createdBy: query.createdBy
+      };
 
       // TODO: 認証ミドルウェアで管理者情報を取得
       // TODO: スーパー管理者権限チェック
