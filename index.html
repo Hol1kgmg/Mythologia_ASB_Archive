@@ -147,41 +147,20 @@
 
         /* Coming Soonカード */
         .coming-soon-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            border-radius: 16px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
             padding: 2.5rem;
             margin: 1.5rem 0;
             max-width: 700px;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: none;
             transition: all 0.3s ease;
             position: relative;
         }
 
-        .coming-soon-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ffd700, #8a2be2, #ffd700);
-            border-radius: 18px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
         .coming-soon-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: none;
+            box-shadow: none;
         }
 
         .coming-soon-title {
@@ -206,7 +185,7 @@
             font-size: 1.1rem;
             line-height: 1.8;
             color: #d0dae6;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         /* プログレスセクション */
@@ -251,18 +230,18 @@
         }
 
         .completed {
-            color: #4ade80;
+            color: #22c55e;
         }
 
         .in-progress {
-            color: #fbbf24;
+            color: #f59e0b;
         }
 
         /* 警告・情報セクション */
         .info-section {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 3rem;
             margin: 2rem 0;
             max-width: 700px;
         }
@@ -439,10 +418,8 @@
 
         <div class="coming-soon-card card-entrance">
             <div class="coming-soon-title">⚔️ Coming Soon ⚔️</div>
-            <div class="tagline">「次の一手が死命を制する」</div>
             <div class="description">
-                メソロギアの世界をさらに深く楽しめる<br>
-                新しいコンテンツの準備を進めています。<br>
+                メソロギアの世界をさらに深く楽しめる環境にするため<br>
                 ファンの皆様により充実した体験をお届けできるよう開発中です。
             </div>
 
@@ -455,11 +432,11 @@
                     <span>システム設計完了済み</span>
                 </div>
                 <div class="progress-item">
-                    <span class="progress-icon in-progress">⚡</span>
+                    <span class="progress-icon in-progress">🔄</span>
                     <span>実装準備中</span>
                 </div>
                 <div class="progress-item">
-                    <span class="progress-icon in-progress">🎨</span>
+                    <span class="progress-icon in-progress">🔄</span>
                     <span>公式デザイン準拠調整中</span>
                 </div>
             </div>
