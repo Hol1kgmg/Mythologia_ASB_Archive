@@ -16,6 +16,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+    "drizzle:generate": "drizzle-kit generate:pg",
+    "drizzle:push": "drizzle-kit push:pg",
+    "drizzle:studio": "drizzle-kit studio",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
@@ -25,10 +28,13 @@
     "@mythologia/shared": "*",
     "@vercel/postgres": "^0.10.0",
     "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.1",
+    "drizzle-orm": "^0.44.2",
     "hono": "^4.7.11",
     "jose": "^5.0.0",
     "pg": "^8.16.0",
     "pino": "^8.17.0",
+    "postgres": "^3.4.7",
     "zod": "^3.22.0"
   },
   "devDependencies": {
