@@ -5,7 +5,14 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Hono } from 'hono';
+import type { AuthResultDTO, AdminDTO, TokenRefreshResultDTO } from '@mythologia/shared';
 import { createTestApp, TestData, AssertionHelpers } from './setup';
+
+// テスト用のAPIレスポンス型定義
+interface ErrorResponse {
+  error: string;
+  message?: string;
+}
 
 describe('Admin Auth API', () => {
   let app: Hono;
@@ -26,7 +33,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AuthResultDTO;
       AssertionHelpers.expectValidAuthResult(data);
       
       // スーパー管理者の特定チェック
@@ -49,7 +56,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectErrorResponse(res, 401);
       
-      const data = await res.json();
+      const data = await res.json() as ErrorResponse;
       expect(data).toHaveProperty('error');
       expect(data.error).toBe('Invalid credentials');
     });
@@ -90,7 +97,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as { success: boolean };
       expect(data.success).toBe(true);
     });
   });
@@ -109,7 +116,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as TokenRefreshResultDTO;
       expect(data).toHaveProperty('accessToken');
       expect(data).toHaveProperty('expiresIn');
       expect(data.accessToken).toContain('mock.access.token');
@@ -123,7 +130,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDTO;
       AssertionHelpers.expectValidAdmin(admin);
       expect(admin.username).toBe('superadmin');
       expect(admin.email).toBe('superadmin@example.com');
@@ -142,7 +149,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDTO;
       AssertionHelpers.expectValidAdmin(admin);
       expect(admin.username).toBe(TestData.profileUpdate.username);
       expect(admin.email).toBe(TestData.profileUpdate.email);
@@ -161,7 +168,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as any;
       expect(admin.username).toBe('onlyusername');
       // emailは変更されないはず
       expect(admin.email).toBe('superadmin@example.com');
@@ -180,7 +187,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as any;
       expect(data.success).toBe(true);
     });
 
@@ -205,7 +212,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as any;
       expect(data).toHaveProperty('sessions');
       expect(data).toHaveProperty('total');
       expect(Array.isArray(data.sessions)).toBe(true);
@@ -232,7 +239,7 @@ describe('Admin Auth API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as any;
       expect(data.success).toBe(true);
     });
 
@@ -283,7 +290,7 @@ describe('Admin Auth API', () => {
         body: JSON.stringify(TestData.validLogin),
       });
 
-      const data = await res.json();
+      const data = await res.json() as any;
       
       // 管理者情報の型チェック
       expect(typeof data.admin.id).toBe('string');
@@ -309,7 +316,7 @@ describe('Admin Auth API', () => {
         body: JSON.stringify(TestData.invalidLogin),
       });
 
-      const data = await res.json();
+      const data = await res.json() as any;
       expect(typeof data.error).toBe('string');
       expect(data.error.length).toBeGreaterThan(0);
     });

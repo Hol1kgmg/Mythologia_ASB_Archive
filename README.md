@@ -34,6 +34,7 @@
 ### バックエンド・データベース
 - **PostgreSQL** (Vercel環境)
 - **D1/SQLite** (Cloudflare環境)
+- **Drizzle ORM** - TypeScript対応ORM
 - **Vercel KV / Cloudflare KV** - キャッシュ
 
 ### デプロイメント
@@ -100,8 +101,9 @@ CREATE TABLE tribes (
 │   ├── shared/                     # 共有パッケージ（型定義・スキーマ）
 │   ├── backend/                    # Honoバックエンド
 │   │   ├── src/                    # TypeScriptソースコード
-│   │   ├── sql/                    # マイグレーションSQL
-│   │   └── scripts/                # ビルド・マイグレーションスクリプト
+│   │   ├── drizzle/                # Drizzle ORMスキーマ
+│   │   ├── __tests__/              # Vitestテスト
+│   │   └── scripts/                # ビルドスクリプト
 │   ├── frontend/                   # Next.jsフロントエンド
 │   │   ├── src/                    # React + TypeScriptソースコード
 │   │   └── public/                 # 静的アセット
@@ -115,6 +117,91 @@ CREATE TABLE tribes (
 ├── CONTRIBUTING.md                  # 開発参加ガイドライン
 └── README.md                        # このファイル
 ```
+
+## 環境構築
+
+### 前提条件
+
+- **Node.js**: v18.0以上
+- **npm**: v8.0以上
+- **PostgreSQL**: v13以上（本番環境）
+- **Git**: 最新版
+
+### クイックスタート
+
+```bash
+# リポジトリクローン
+git clone https://github.com/yourusername/Mythologia_AdmiralsShipBridge.git
+cd Mythologia_AdmiralsShipBridge
+
+# 依存関係インストール
+cd webapp
+npm install
+
+# 環境変数設定
+cd backend
+cp .env.example .env.local
+# .env.localを編集して必要な値を設定
+
+# データベースセットアップ（PostgreSQL）
+createdb mythologia
+npm run db:push
+
+# 開発サーバー起動
+npm run dev
+```
+
+### 詳細な環境構築手順
+
+#### 1. PostgreSQL セットアップ
+
+```bash
+# macOS
+brew install postgresql
+brew services start postgresql
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
+# データベース作成
+createdb mythologia
+
+# 環境変数設定
+export DATABASE_URL="postgresql://user:password@localhost:5432/mythologia"
+```
+
+#### 2. Drizzle ORM セットアップ
+
+```bash
+cd webapp/backend
+
+# Drizzle設定ファイル作成
+cat > drizzle.config.ts << 'EOF'
+import type { Config } from 'drizzle-kit';
+
+export default {
+  schema: './drizzle/schema/*.ts',
+  out: './drizzle/migrations',
+  driver: 'pg',
+  dbCredentials: {
+    connectionString: process.env.DATABASE_URL!,
+  },
+} satisfies Config;
+EOF
+
+# マイグレーション実行
+npm run db:generate
+npm run db:push
+```
+
+#### 3. 認証用テストアカウント
+
+開発環境では以下のテストアカウントが使用可能:
+
+- **スーパー管理者**: `superadmin` / `SuperAdmin123!`
+- **カード管理者**: `cardadmin` / `CardAdmin456!`
+- **閲覧専用管理者**: `vieweradmin` / `ViewAdmin789!`
 
 ## 開発コマンド
 
@@ -138,8 +225,13 @@ cd webapp && npm run lint
 # 開発サーバー起動
 cd webapp/backend && npm run dev
 
-# PostgreSQLマイグレーション
-cd webapp/backend && npm run migrate:postgresql
+# Drizzle Studio（DB管理GUI）
+cd webapp/backend && npm run db:studio
+
+# マイグレーション管理
+cd webapp/backend && npm run db:generate  # 生成
+cd webapp/backend && npm run db:migrate   # 実行
+cd webapp/backend && npm run db:push      # 直接反映
 
 # TypeScriptビルド
 cd webapp/backend && npm run build
@@ -170,12 +262,18 @@ cd webapp && ./test-api.sh http://localhost:8787
 
 # デバッグエンドポイント確認
 curl http://localhost:8787/debug/db-status
+
+# 認証テスト
+curl -X POST http://localhost:8787/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "superadmin", "password": "SuperAdmin123!"}'
 ```
 
 ## 設定ファイル
 
 - `.env.example` - 環境変数テンプレート
 - `webapp/backend/.env.local` - バックエンド環境変数（gitignore対象）
+- `webapp/backend/drizzle.config.ts` - Drizzle ORM設定
 - `webapp/backend/wrangler.jsonc` - Cloudflare Workers設定
 - `vercel.json` - Vercelデプロイ設定
 - `CLAUDE.md` - AI開発支援設定
@@ -212,25 +310,30 @@ curl http://localhost:8787/debug/db-status
 ### ✅ 完了済み
 - **設計段階**: 完全完了
 - **バックエンド実装**: Hono + TypeScript + ドメインモデル
+- **Drizzle ORM実装**: PostgreSQL・D1両対応の完全移行
+- **管理者認証API**: JWT認証・CRUD操作・テストカバレッジ
 - **デプロイメント設定**: Vercel・Cloudflare Workers両対応
 - **データベース**: PostgreSQL・D1両対応のマイグレーション
 - **API実装**: カード・リーダー・種族管理API
 - **開発環境**: ローカル開発・テスト環境構築
+- **テスト環境**: Vitest導入・66テスト実装済み
 
 ### 🚧 進行中
 - **フロントエンド実装**: Next.js + React基盤構築済み
-- **Vercelデプロイ**: 基本設定完了、実行時エラー調査中
+- **管理者機能実装**: セッション管理・アクティビティログ機能追加中（Issue #13）
 
 ### 📋 今後の予定
-- Vercel Status 500エラーの解決
-- フロントエンド機能実装
+- 管理者セッション・アクティビティログ完全実装
+- フロントエンド管理画面実装
+- カードデータベースCRUD API実装
 - 本格的なデータベース運用開始
 
 ### 最新の更新内容
-- **デプロイメント対応**: Issue #8完了、Vercel・Cloudflare設定実装
-- **ローカル開発環境**: データベース操作ガイド完備
-- **型安全性**: TypeScriptビルドエラー修正
-- **Tribeテーブル仕様**: leaderId・thematic・MasterCardId追加
+- **Drizzle ORM移行**: Issue #14完了、SQLファイル削除・完全ORM化
+- **管理者認証実装**: Issue #12完了、JWT認証・テストアカウント3種
+- **テストカバレッジ**: 認証・管理者API・Drizzle全66テスト実装
+- **型安全性向上**: テストファイルの型エラー50件以上修正
+- **環境構築改善**: README更新・Drizzle移行手順文書化
 
 ## 開発参加ガイド
 

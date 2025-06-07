@@ -5,7 +5,16 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Hono } from 'hono';
+import type { AdminDTO, AdminDetailDTO } from '@mythologia/shared';
 import { createTestApp, TestData, AssertionHelpers } from './setup';
+// import { ResponseHelpers } from './helpers/response-helpers'
+// ; // 将来的に使用予定
+import type {
+  AdminListResponse,
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  ActivityLogResponse
+} from './types/api-responses';
 
 describe('Admin Management API', () => {
   let app: Hono;
@@ -20,7 +29,8 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
+      
       expect(data).toHaveProperty('admins');
       expect(data).toHaveProperty('total');
       expect(data).toHaveProperty('page');
@@ -34,7 +44,7 @@ describe('Admin Management API', () => {
       expect(data.limit).toBe(20);
       
       // 各管理者の構造チェック
-      data.admins.forEach((admin: any) => {
+      data.admins.forEach((admin: AdminDTO) => {
         AssertionHelpers.expectValidAdmin(admin);
       });
     });
@@ -44,7 +54,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data.page).toBe(1);
       expect(data.limit).toBe(5);
       expect(data.admins.length).toBeLessThanOrEqual(5);
@@ -55,7 +65,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data).toHaveProperty('admins');
       // フィルター結果の検証（モック実装では全件返却）
       expect(Array.isArray(data.admins)).toBe(true);
@@ -66,7 +76,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data).toHaveProperty('admins');
       expect(Array.isArray(data.admins)).toBe(true);
     });
@@ -76,7 +86,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data.page).toBe(1);
       expect(data.limit).toBe(10);
       expect(Array.isArray(data.admins)).toBe(true);
@@ -104,7 +114,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       AssertionHelpers.expectValidAdmin(admin);
       expect(admin.id).toBe(adminId);
       expect(admin).toHaveProperty('createdBy');
@@ -116,7 +126,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectErrorResponse(res, 404);
       
-      const data = await res.json();
+      const data = await res.json() as ApiErrorResponse;
       expect(data).toHaveProperty('error');
       expect(data.error).toBe('Admin not found');
     });
@@ -141,7 +151,7 @@ describe('Admin Management API', () => {
 
       expect(res.status).toBe(201);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       AssertionHelpers.expectValidAdmin(admin);
       expect(admin.username).toBe(TestData.validAdmin.username);
       expect(admin.email).toBe(TestData.validAdmin.email);
@@ -161,15 +171,15 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectErrorResponse(res, 400);
       
-      const data = await res.json();
+      const data = await res.json() as ApiErrorResponse;
       expect(data).toHaveProperty('error');
       expect(data).toHaveProperty('errors');
       expect(Array.isArray(data.errors)).toBe(true);
-      expect(data.errors.length).toBeGreaterThan(0);
+      expect(data.errors!.length).toBeGreaterThan(0);
       
       // エラー内容の検証
-      const errors = data.errors;
-      const fieldNames = errors.map((error: any) => error.field);
+      const errors = data.errors!;
+      const fieldNames = Object.keys(errors);
       expect(fieldNames).toContain('username');
     });
 
@@ -189,7 +199,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectErrorResponse(res, 400);
       
-      const data = await res.json();
+      const data = await res.json() as ApiErrorResponse;
       expect(data).toHaveProperty('errors');
     });
 
@@ -222,7 +232,7 @@ describe('Admin Management API', () => {
 
       expect(res.status).toBe(201);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       expect(admin.role).toBe('admin'); // デフォルト値
       expect(admin.isSuperAdmin).toBe(false); // デフォルト値
       expect(Array.isArray(admin.permissions)).toBe(true); // デフォルト値
@@ -248,7 +258,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       AssertionHelpers.expectValidAdmin(admin);
       expect(admin.id).toBe(adminId);
       expect(admin.username).toBe(updateData.username);
@@ -272,7 +282,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       expect(admin.username).toBe('partiallydated');
       // その他のフィールドは変更されないかデフォルト値
     });
@@ -321,7 +331,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as ApiSuccessResponse;
       expect(data.success).toBe(true);
     });
 
@@ -356,7 +366,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as ActivityLogResponse;
       expect(data).toHaveProperty('activities');
       expect(data).toHaveProperty('total');
       expect(data).toHaveProperty('page');
@@ -385,7 +395,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as ActivityLogResponse;
       expect(data.page).toBe(1);
       expect(data.limit).toBe(10);
       expect(data.activities.length).toBeLessThanOrEqual(10);
@@ -428,7 +438,7 @@ describe('Admin Management API', () => {
   describe('レスポンス形式のテスト', () => {
     it('管理者一覧レスポンスの型チェック', async () => {
       const res = await app.request('/api/admin/admins');
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       
       expect(typeof data.total).toBe('number');
       expect(typeof data.page).toBe('number');
@@ -436,7 +446,7 @@ describe('Admin Management API', () => {
       expect(typeof data.totalPages).toBe('number');
       expect(Array.isArray(data.admins)).toBe(true);
       
-      data.admins.forEach((admin: any) => {
+      data.admins.forEach((admin: AdminDTO) => {
         expect(typeof admin.id).toBe('string');
         expect(typeof admin.username).toBe('string');
         expect(typeof admin.email).toBe('string');
@@ -454,7 +464,7 @@ describe('Admin Management API', () => {
         body: JSON.stringify(TestData.validAdmin),
       });
 
-      const admin = await res.json();
+      const admin = await res.json() as AdminDetailDTO;
       
       expect(typeof admin.id).toBe('string');
       expect(typeof admin.username).toBe('string');
@@ -476,15 +486,16 @@ describe('Admin Management API', () => {
         body: JSON.stringify(TestData.invalidAdmin),
       });
 
-      const data = await res.json();
+      const data = await res.json() as ApiErrorResponse;
       
       expect(typeof data.error).toBe('string');
       expect(Array.isArray(data.errors)).toBe(true);
       
-      data.errors.forEach((error: any) => {
-        expect(typeof error.field).toBe('string');
-        expect(typeof error.message).toBe('string');
-      });
+      if (data.errors) {
+        Object.values(data.errors).forEach((errorArray: string[]) => {
+          expect(Array.isArray(errorArray)).toBe(true);
+        });
+      }
     });
   });
 
@@ -494,7 +505,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data.limit).toBe(100);
       // 実際のデータ数に関係なく、APIは正常に応答するべき
     });
@@ -504,7 +515,7 @@ describe('Admin Management API', () => {
 
       AssertionHelpers.expectSuccessResponse(res);
       
-      const data = await res.json();
+      const data = await res.json() as AdminListResponse;
       expect(data.page).toBe(1000);
       // 空の結果でも正常なレスポンス構造を保つべき
     });

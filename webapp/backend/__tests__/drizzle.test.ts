@@ -1,6 +1,7 @@
 /**
  * Drizzle ORM テスト
- * DrizzleAdminRepositoryの動作確認
+ * DrizzleAdminRepositoryの基本的な動作確認
+ * 注意: 複雑なモッキングではなく、基本的な構造テストに焦点
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -24,25 +25,35 @@ const mockAdmin: Admin = {
   updatedAt: new Date('2023-01-01')
 };
 
-// モッククライアント作成
+// 実用的なモック設計: Drizzleの複雑なチェーンではなく、結果に焦点
 function createMockClient(type: 'postgresql' | 'd1' = 'postgresql'): DrizzleClient {
-  const mockChain = {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    limit: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockReturnThis(),
-    returning: vi.fn().mockReturnThis(),
-    update: vi.fn().mockReturnThis(),
-    set: vi.fn().mockReturnThis(),
-    orderBy: vi.fn().mockReturnThis(),
-    offset: vi.fn().mockReturnThis()
+  // シンプルな関数ベースのモック
+  const createMockDB = () => {
+    const mockChain = {
+      select: vi.fn(),
+      from: vi.fn(),
+      where: vi.fn(),
+      limit: vi.fn(),
+      insert: vi.fn(),
+      values: vi.fn(),
+      returning: vi.fn(),
+      update: vi.fn(),
+      set: vi.fn(),
+      orderBy: vi.fn(),
+      offset: vi.fn(),
+    };
+
+    // チェーンメソッドを設定
+    Object.keys(mockChain).forEach(key => {
+      mockChain[key as keyof typeof mockChain].mockReturnValue(mockChain);
+    });
+
+    return mockChain;
   };
 
   return {
     type,
-    db: mockChain as any
+    db: createMockDB() as any
   };
 }
 
@@ -58,7 +69,7 @@ describe('DrizzleAdminRepository', () => {
   describe('findById', () => {
     it('管理者が見つかった場合はAdminオブジェクトを返す', async () => {
       // モックの設定
-      (mockClient.db.limit as any).mockResolvedValue([{
+      ((mockClient.db as any).limit).mockResolvedValue([{
         id: mockAdmin.id,
         username: mockAdmin.username,
         email: mockAdmin.email,
@@ -81,7 +92,7 @@ describe('DrizzleAdminRepository', () => {
     });
 
     it('管理者が見つからない場合はnullを返す', async () => {
-      (mockClient.db.limit as any).mockResolvedValue([]);
+      ((mockClient.db as any).limit).mockResolvedValue([]);
 
       const result = await repository.findById('nonexistent');
 
@@ -89,7 +100,7 @@ describe('DrizzleAdminRepository', () => {
     });
 
     it('データベースエラーが発生した場合は例外をスロー', async () => {
-      (mockClient.db.limit as any).mockRejectedValue(new Error('DB Error'));
+      ((mockClient.db as any).limit).mockRejectedValue(new Error('DB Error'));
 
       await expect(repository.findById('admin-001')).rejects.toThrow('Failed to find admin');
     });
@@ -97,7 +108,7 @@ describe('DrizzleAdminRepository', () => {
 
   describe('findByUsername', () => {
     it('ユーザー名で管理者を検索できる', async () => {
-      (mockClient.db.limit as any).mockResolvedValue([{
+      ((mockClient.db as any).limit).mockResolvedValue([{
         id: mockAdmin.id,
         username: mockAdmin.username,
         email: mockAdmin.email,
@@ -121,7 +132,7 @@ describe('DrizzleAdminRepository', () => {
 
   describe('findByEmail', () => {
     it('メールアドレスで管理者を検索できる', async () => {
-      (mockClient.db.limit as any).mockResolvedValue([{
+      ((mockClient.db as any).limit).mockResolvedValue([{
         id: mockAdmin.id,
         username: mockAdmin.username,
         email: mockAdmin.email,
@@ -157,7 +168,7 @@ describe('DrizzleAdminRepository', () => {
         lastLoginAt: null
       };
 
-      (mockClient.db.returning as any).mockResolvedValue([{
+      ((mockClient.db as any).returning).mockResolvedValue([{
         id: 'admin-new',
         username: newAdmin.username,
         email: newAdmin.email,
@@ -186,7 +197,7 @@ describe('DrizzleAdminRepository', () => {
         email: 'updated@example.com'
       };
 
-      (mockClient.db.returning as any).mockResolvedValue([{
+      ((mockClient.db as any).returning).mockResolvedValue([{
         id: mockAdmin.id,
         username: updates.username,
         email: updates.email,
@@ -208,7 +219,7 @@ describe('DrizzleAdminRepository', () => {
     });
 
     it('存在しない管理者の更新は例外をスロー', async () => {
-      (mockClient.db.returning as any).mockResolvedValue([]);
+      ((mockClient.db as any).returning).mockResolvedValue([]);
 
       await expect(repository.update('nonexistent', {})).rejects.toThrow('Failed to update admin');
     });
@@ -216,7 +227,7 @@ describe('DrizzleAdminRepository', () => {
 
   describe('delete', () => {
     it('管理者を論理削除できる', async () => {
-      (mockClient.db.returning as any).mockResolvedValue([{
+      ((mockClient.db as any).returning).mockResolvedValue([{
         ...mockAdmin,
         is_active: false,
         updated_at: new Date()
@@ -242,7 +253,7 @@ describe('DrizzleAdminRepository', () => {
     });
 
     it('D1クライアントでも管理者を検索できる', async () => {
-      (mockClient.db.limit as any).mockResolvedValue([{
+      ((mockClient.db as any).limit).mockResolvedValue([{
         id: mockAdmin.id,
         username: mockAdmin.username,
         email: mockAdmin.email,
