@@ -11,7 +11,7 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 未開始 📋
-- **最新更新**: Drizzle ORM導入、Railway + Vercel構成に変更
+- **最新更新**: カードカテゴリシステム設計完了、種族従属の細分化システム追加
 
 ## 技術スタック
 
@@ -67,16 +67,40 @@ CREATE TABLE tribes (
 );
 ```
 
+### Categoriesテーブル（新追加）
+```sql
+CREATE TABLE categories (
+  id INTEGER PRIMARY KEY,               -- カテゴリID
+  tribe_id INTEGER NOT NULL,            -- 種族ID（必須）
+  name VARCHAR(50) NOT NULL,            -- カテゴリ名（日本語）
+  name_en VARCHAR(50) NOT NULL,         -- カテゴリ名（英語）
+  description TEXT NULL,                -- カテゴリ説明
+  thematic VARCHAR(100) NULL,           -- テーマ特性
+  color VARCHAR(7) NULL,                -- テーマカラー（HEX形式）
+  synergy_type VARCHAR(50) NULL,        -- シナジータイプ
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE(tribe_id, name),               -- 同一種族内でのカテゴリ名重複防止
+  UNIQUE(tribe_id, name_en),            -- 同一種族内での英語名重複防止
+  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE CASCADE
+);
+```
+
 ### 重要なID体系
 - **リーダーID**: 1:DRAGON, 2:ANDROID, 3:ELEMENTAL, 4:LUMINUS, 5:SHADE
 - **レアリティID**: 1:BRONZE, 2:SILVER, 3:GOLD, 4:LEGEND
 - **カードタイプID**: 1:ATTACKER, 2:BLOCKER, 3:CHARGER
+- **カテゴリID**: 1-4:HUMAN種族(騎士,魔法使い,弓兵,僧侶), 5-8:DRAGON種族(古龍,幼龍,長老,守護龍)...
 
 ### 動的データ管理
 - **リーダー管理**: 静的enumからleadersテーブルへ移行完了 ✅
 - **種族管理**: 静的enumから動的データベース管理に移行済み
+- **カテゴリ管理**: 種族に従属する細分化システムとして動的管理
 - `TribeDomain`インターフェース実装済み
 - リーダーと種族の関連性を外部キーで管理
+- 種族とカテゴリの階層関係（categories.tribe_id外部キー）
+- カードとカテゴリの多対多関係（card_categories中間テーブル）
 
 ## プロジェクト構造
 
@@ -95,6 +119,7 @@ CREATE TABLE tribes (
 │   ├── README.md              # 設計ドキュメント索引
 │   ├── database-design/       # データベース設計
 │   │   ├── card/             # カードシステム設計 ✅
+│   │   │   └── card-categories-design.md  # カテゴリシステム ✅
 │   │   └── deck/             # デッキシステム設定 ✅
 │   └── [その他設計ファイル]
 └── webapp/                     # 実装ディレクトリ（予定）
@@ -195,15 +220,18 @@ npm run docker:logs      # ログ確認
 2. **system-design/README.md** - 設計ドキュメント索引
 3. **system-design/database-design/card/card-domain-model.md** - カードビジネスルール
 4. **system-design/database-design/card/card-database-design.md** - データベース構造
-5. **system-design/database-design/deck/deck-minimal-crud.md** - デッキ機能仕様
+5. **system-design/database-design/card/card-categories-design.md** - カテゴリシステム設計
+6. **system-design/database-design/deck/deck-minimal-crud.md** - デッキ機能仕様
 
 ## 開発時の注意事項
 
 ### データベース関連
 - **Leadersテーブル**: 動的管理（静的enumから移行済み）
 - **Tribesテーブル**: 動的管理（静的enumは使用しない）
+- **Categoriesテーブル**: 第2の種族として動的管理
+- **多対多関係**: card_categories中間テーブルで管理
 - 外部キー制約を適切に設定
-- PostgreSQL/D1両対応のSQL記述
+- PostgreSQL専用のSQL記述
 
 ### 実装パターン
 - アダプターパターンによる環境抽象化
@@ -290,7 +318,7 @@ npm run docker:logs      # ログ確認
 5. **PostgreSQL単一DB**での設計（D1/SQLiteサポートは廃止）
 6. **環境分離**を意識した設定管理（Local/Staging/Production）
 7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
-8. **動的データ管理**の原則に従う（リーダー・種族の静的enumは使用禁止）
+8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
 
 ## 設定ファイル
 

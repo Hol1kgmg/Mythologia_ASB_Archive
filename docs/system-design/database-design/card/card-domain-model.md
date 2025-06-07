@@ -98,7 +98,6 @@ interface TribeDomain {
   id: number;                    // 種族ID
   name: string;                  // 種族名
   leaderId?: number;             // リーダーID（1-5）
-  thematic?: string;             // テーマ特性
   description?: string;          // 種族説明
   isActive: boolean;             // アクティブフラグ
   createdAt: Date;               // 作成日時
@@ -111,46 +110,38 @@ const INITIAL_TRIBES: Omit<TribeDomain, 'id' | 'isActive' | 'createdAt' | 'updat
   {
     name: 'ドラゴン',
     leaderId: 1,
-    thematic: '力と威厳',
     description: '古代より存在する強大な竜族'
   },
   {
     name: 'ロボット',
     leaderId: 2,
-    thematic: '論理と効率',
     description: '高度な技術で作られた機械生命体'
   },
   {
     name: 'エレメンタル',
     leaderId: 3,
-    thematic: '自然の調和',
     description: '自然の力を宿す精霊たち'
   },
   {
     name: 'アンジェル',
     leaderId: 4,
-    thematic: '神聖な力',
     description: '天界からの使者'
   },
   {
     name: 'デーモン',
     leaderId: 5,
-    thematic: '闇の誘惑',
     description: '闇の力を操る魔族'
   },
   {
     name: 'ビースト',
-    thematic: '野生の本能',
     description: '野生の力を持つ獣族'
   },
   {
     name: 'ヒューマン',
-    thematic: '多様性と適応',
     description: '様々な技能を持つ人間'
   },
   {
     name: 'アンデッド',
-    thematic: '死を超越',
     description: '死を超越した不死の存在'
   }
 ];

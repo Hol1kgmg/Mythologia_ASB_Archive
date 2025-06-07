@@ -78,7 +78,8 @@ CREATE TABLE cards (
   image_url VARCHAR(500) NOT NULL,      -- カード画像URL
   artist VARCHAR(100) NULL,             -- イラストレーター
   card_set_id VARCHAR(36) NOT NULL,     -- カードセットID
-  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ（論理削除用）
+  deleted_at TIMESTAMP NULL,            -- 削除日時（論理削除用）
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
@@ -86,9 +87,51 @@ CREATE TABLE cards (
   FOREIGN KEY (leader_id) REFERENCES leaders(id) ON DELETE SET NULL,
   FOREIGN KEY (tribe_id) REFERENCES tribes(id),
   FOREIGN KEY (card_set_id) REFERENCES card_sets(id)
+  
+  -- Note: カテゴリ情報は中間テーブル card_categories で管理
+  -- 1つのカードに複数のカテゴリを割り当て可能
+  -- 主カテゴリは is_primary フラグで識別
+  -- 中間テーブルは論理削除（is_active, deleted_at）で管理
+  -- 例: カード「魔法騎士」→ カテゴリ「騎士」(primary) + 「魔法使い」(secondary)
 );
 ```
 
+
+### categories テーブル（カテゴリ分類）
+
+```sql
+CREATE TABLE categories (
+  id INTEGER PRIMARY KEY,               -- カテゴリID
+  tribe_id INTEGER NOT NULL,            -- 種族ID（必須）
+  name VARCHAR(50) NOT NULL,            -- カテゴリ名（日本語）
+  name_en VARCHAR(50) NOT NULL,         -- カテゴリ名（英語）
+  description TEXT NULL,                -- カテゴリ説明
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ（論理削除用）
+  deleted_at TIMESTAMP NULL,            -- 削除日時（論理削除用）
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE(tribe_id, name),               -- 同一種族内でのカテゴリ名重複防止
+  UNIQUE(tribe_id, name_en),            -- 同一種族内での英語名重複防止
+  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE CASCADE
+);
+```
+
+### card_categories テーブル（中間テーブル）
+
+```sql
+CREATE TABLE card_categories (
+  card_id VARCHAR(36) NOT NULL,         -- カードID
+  category_id INTEGER NOT NULL,         -- カテゴリID
+  is_primary BOOLEAN DEFAULT FALSE,     -- 主カテゴリフラグ
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ（論理削除用）
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,            -- 削除日時（論理削除用）
+  PRIMARY KEY (card_id, category_id),
+  FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+```
 
 ### card_translations テーブル（多言語対応）
 
@@ -100,6 +143,8 @@ CREATE TABLE card_translations (
   name VARCHAR(100) NOT NULL,           -- 翻訳されたカード名
   flavor_text TEXT NULL,                -- 翻訳されたフレーバーテキスト
   effects_text JSON NULL,               -- 翻訳された効果テキスト
+  is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ（論理削除用）
+  deleted_at TIMESTAMP NULL,            -- 削除日時（論理削除用）
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE,
@@ -123,6 +168,7 @@ CREATE INDEX idx_cards_cost ON cards(cost);
 CREATE INDEX idx_cards_power ON cards(power);
 CREATE INDEX idx_cards_set ON cards(card_set_id);
 CREATE INDEX idx_cards_active ON cards(is_active);
+CREATE INDEX idx_cards_deleted_at ON cards(deleted_at);
 
 -- 複合インデックス（よく使われる組み合わせ）
 CREATE INDEX idx_cards_rarity_type ON cards(rarity_id, card_type_id);
@@ -151,9 +197,26 @@ CREATE INDEX idx_card_sets_active ON card_sets(is_active);
 -- 検索用フルテキストインデックス
 CREATE FULLTEXT INDEX idx_cards_search ON cards(name, flavor_text);
 
+-- categories テーブル用インデックス
+CREATE INDEX idx_categories_tribe_id ON categories(tribe_id);
+CREATE INDEX idx_categories_name ON categories(name);
+CREATE INDEX idx_categories_name_en ON categories(name_en);
+CREATE INDEX idx_categories_active ON categories(is_active);
+CREATE INDEX idx_categories_deleted_at ON categories(deleted_at);
+
+-- card_categories テーブル用インデックス
+CREATE INDEX idx_card_categories_card_id ON card_categories(card_id);
+CREATE INDEX idx_card_categories_category_id ON card_categories(category_id);
+CREATE INDEX idx_card_categories_primary ON card_categories(is_primary);
+CREATE INDEX idx_card_categories_active ON card_categories(is_active);
+CREATE INDEX idx_card_categories_deleted_at ON card_categories(deleted_at);
+CREATE INDEX idx_card_categories_active_primary ON card_categories(is_active, is_primary);
+
 -- 翻訳テーブル用インデックス
 CREATE INDEX idx_translations_language ON card_translations(language_code);
 CREATE INDEX idx_translations_card_lang ON card_translations(card_id, language_code);
+CREATE INDEX idx_translations_active ON card_translations(is_active);
+CREATE INDEX idx_translations_deleted_at ON card_translations(deleted_at);
 ```
 
 ## Enum定義
@@ -204,13 +267,35 @@ export interface Leader {
   nameEn: string;
   description: string;
   color: string;
-  thematic: string;
   focus: 'aggro' | 'control' | 'midrange' | 'defense' | 'combo';
   averageCost: number;
   preferredCardTypes: string[];
   keyEffects: string[];
   sortOrder: number;
   isActive: boolean;
+}
+
+// カテゴリ関連の型定義
+export interface Category {
+  id: number;
+  tribeId: number;
+  name: string;
+  nameEn: string;
+  description?: string;
+  isActive: boolean;
+  deletedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CardCategory {
+  cardId: string;
+  categoryId: number;
+  isPrimary: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
 }
 ```
 
@@ -287,15 +372,35 @@ CREATE INDEX idx_cards_triggers ON cards((JSON_EXTRACT(effects, '$.triggers[*].t
 -- リーダーデータの初期化（上記参照）
 
 -- 種族データの初期化（leaderId関連付け）
-INSERT INTO tribes (id, name, leaderId, thematic, description) VALUES 
-(1, 'ドラゴン', 1, '力と威厳', '古代より存在する強大な竜族'),
-(2, 'ロボット', 2, '論理と効率', '高度な技術で作られた機械生命体'),
-(3, 'エレメンタル', 3, '自然の調和', '自然の力を宿す精霊たち'),
-(4, 'アンジェル', 4, '神聖な力', '天界からの使者'),
-(5, 'デーモン', 5, '闇の誘惑', '闇の力を操る魔族'),
-(6, 'ビースト', NULL, '野生の本能', '野生の力を持つ獣族'),
-(7, 'ヒューマン', NULL, '多様性と適応', '様々な技能を持つ人間'),
-(8, 'アンデッド', NULL, '死を超越', '死を超越した不死の存在');
+INSERT INTO tribes (id, name, leaderId, description) VALUES 
+(1, 'ドラゴン', 1, '古代より存在する強大な竜族'),
+(2, 'ロボット', 2, '高度な技術で作られた機械生命体'),
+(3, 'エレメンタル', 3, '自然の力を宿す精霊たち'),
+(4, 'アンジェル', 4, '天界からの使者'),
+(5, 'デーモン', 5, '闇の力を操る魔族'),
+(6, 'ビースト', NULL, '野生の力を持つ獣族'),
+(7, 'ヒューマン', NULL, '様々な技能を持つ人間'),
+(8, 'アンデッド', NULL, '死を超越した不死の存在');
+
+-- カテゴリの初期データ（種族に従属）
+INSERT INTO categories (id, tribe_id, name, name_en, description) VALUES
+-- HUMAN種族のカテゴリ（tribe_id = 7）
+(1, 7, '騎士', 'KNIGHT', '重装甲で防御重視'),
+(2, 7, '魔法使い', 'MAGE', '魔法攻撃特化'),
+(3, 7, '弓兵', 'ARCHER', '遠距離攻撃'),
+(4, 7, '僧侶', 'HEALER', '回復・支援特化'),
+
+-- DRAGON種族のカテゴリ（tribe_id = 1）
+(5, 1, '古龍', 'ANCIENT', '強力な個体'),
+(6, 1, '幼龍', 'WHELP', '素早い攻撃'),
+(7, 1, '長老', 'ELDER', '知恵と魔法'),
+(8, 1, '守護龍', 'GUARDIAN', '防御特化'),
+
+-- ROBOT種族のカテゴリ（tribe_id = 2）
+(9, 2, '戦闘機', 'COMBAT', '攻撃特化'),
+(10, 2, '支援機', 'SUPPORT', 'サポート機能'),
+(11, 2, '重機', 'HEAVY', '高耐久'),
+(12, 2, '偵察機', 'SCOUT', '高機動');
 
 -- カードセット情報の初期化
 INSERT INTO card_sets (id, name, code, release_date, card_count, description)
@@ -362,6 +467,23 @@ WHERE rarity = ?
   AND cost <= ?
   AND is_active = TRUE
 ORDER BY power DESC;
+
+-- 5. カードのアクティブなカテゴリ取得（論理削除対応）
+SELECT c.*, cat.name as category_name, cc.is_primary
+FROM cards c
+JOIN card_categories cc ON c.id = cc.card_id 
+JOIN categories cat ON cc.category_id = cat.id
+WHERE c.id = ? 
+  AND cc.is_active = TRUE 
+  AND cc.deleted_at IS NULL
+  AND cat.is_active = TRUE;
+
+-- 6. カテゴリの論理削除
+UPDATE card_categories 
+SET is_active = FALSE, 
+    deleted_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP
+WHERE card_id = ? AND category_id = ?;
 ```
 
 ### キャッシュ戦略
