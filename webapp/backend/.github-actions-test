@@ -1,0 +1,23 @@
+# GitHub Actions Test File
+
+このファイルはGitHub Actionsワークフローのテストのために作成されました。
+
+作成日時: 2025-06-07
+目的: PR作成時のワークフロー動作確認
+
+## 確認項目
+
+- [x] PR作成時に pr-checks.yml が実行される
+- [ ] TypeScript型チェックが通る  
+- [ ] npm test (66テスト) が全て成功する
+- [ ] マトリックステスト（Node.js 18.x, 20.x）が実行される
+- [ ] アーティファクトが正しく保存される
+
+## 期待される結果
+
+✅ All checks should pass
+✅ Tests: 66 passed
+✅ Type check: Success
+✅ Build status: Success
+
+このファイルはテスト後に削除予定です。
