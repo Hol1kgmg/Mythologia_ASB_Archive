@@ -25,7 +25,7 @@
 
 インフラ構成
 ├── メイン: Vercel + PostgreSQL
-├── エッジ: Cloudflare Workers + D1
+├── バックエンド: Railway + PostgreSQL + Redis
 └── 監視: アプリケーション・インフラ監視
 ```
 

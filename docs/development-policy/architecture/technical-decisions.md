@@ -58,7 +58,7 @@ TypeScript + Hono
 ```
 マルチプラットフォーム対応
 ├── PostgreSQL 15.x (Vercel)
-├── D1 (Cloudflare Workers)
+├── Redis (Railwayキャッシュ)
 └── Redis/KV (キャッシュ)
 ```
 

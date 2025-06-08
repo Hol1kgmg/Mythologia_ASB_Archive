@@ -27,7 +27,7 @@
 ├── Frontend: Next.js + TypeScript + FSD
 ├── Backend: Hono + TypeScript + Zod
 ├── Database: PostgreSQL / D1 (Multi-platform)
-├── Infrastructure: Vercel / Cloudflare Workers
+├── Infrastructure: Railway (Backend) / Vercel (Frontend)
 └── Monitoring: Application & Infrastructure
 ```
 

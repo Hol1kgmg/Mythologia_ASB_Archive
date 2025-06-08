@@ -109,13 +109,10 @@ CREATE TABLE categories (
 /
 ├── README.md                    # プロジェクト概要
 ├── CLAUDE.md                   # このファイル
+├── railway.json                # Railway設定（ルート用）
+├── vercel.json                 # Vercel設定（ルート用）
+├── DEPLOYMENT_SEPARATED.md     # 分離デプロイガイド
 ├── docker-compose.yml          # Docker開発環境（未作成）
-├── .env.local                  # ローカル環境変数（未作成）
-├── docker/                     # Docker設定（未作成）
-│   ├── backend.Dockerfile     # バックエンドDockerfile
-│   ├── frontend.Dockerfile    # フロントエンドDockerfile
-│   └── postgres/              # PostgreSQL設定
-│       └── init.sql           # 初期化SQL
 ├── system-design/              # 設計ドキュメント（完成済み）
 │   ├── README.md              # 設計ドキュメント索引
 │   ├── database-design/       # データベース設計
@@ -123,49 +120,63 @@ CREATE TABLE categories (
 │   │   │   └── card-categories-design.md  # カテゴリシステム ✅
 │   │   └── deck/             # デッキシステム設定 ✅
 │   └── [その他設計ファイル]
-└── webapp/                     # 実装ディレクトリ（予定）
+└── webapp/                     # 実装ディレクトリ
     ├── shared/                 # 共有型定義 ✅
-    ├── backend/                # バックエンド（未作成）
+    ├── backend/                # バックエンド（Railway用）
+    │   ├── Dockerfile         # Railway用Dockerファイル ✅
+    │   ├── .dockerignore      # Docker除外ファイル ✅
+    │   ├── railway.toml       # Railway設定 ✅
+    │   ├── .env.example       # 環境変数テンプレート ✅
     │   ├── drizzle/           # Drizzleマイグレーション
     │   │   ├── migrations/    # マイグレーションファイル
     │   │   └── schema.ts      # スキーマ定義
     │   └── src/               # アプリケーションコード
-    └── frontend/               # フロントエンド（未作成）
+    └── frontend/               # フロントエンド（Vercel用）
+        ├── Dockerfile         # 開発・テスト用Dockerファイル ✅
+        ├── .dockerignore      # Docker除外ファイル ✅
+        ├── vercel.json        # Vercel設定 ✅
+        ├── .env.example       # 環境変数テンプレート ✅
         └── src/               # アプリケーションコード
 ```
 
-## ローカル開発環境（Docker）
+## Docker管理構成
 
-### Docker構成
+### 分離Docker管理
 ```bash
-# 開発環境起動（全サービス）
-docker-compose up -d
+# バックエンド用（Railway環境テスト）
+cd webapp/backend
+docker build -t mythologia-backend .
+docker run -p 8787:8787 mythologia-backend
 
-# 特定のサービスのみ起動
+# フロントエンド用（ローカルテスト）
+cd webapp/frontend  
+docker build -t mythologia-frontend .
+docker run -p 3000:3000 mythologia-frontend
+
+# 開発環境データベース（Docker Compose）
 docker-compose up -d postgres redis
-
-# 開発サーバー起動（ホストで実行）
-npm run dev
-
-# コンテナ停止
-docker-compose down
-
-# ボリューム含めて完全削除
-docker-compose down -v
 ```
 
-### サービス構成
-```yaml
-services:
-  postgres:    # PostgreSQL 16
-  redis:       # Redis 7
-  backend:     # Node.js開発環境（オプション）
-  frontend:    # Next.js開発環境（オプション）
+### Dockerファイル管理
+```
+webapp/
+├── backend/
+│   ├── Dockerfile         # Railway用本番ビルド
+│   ├── .dockerignore      # Railway用除外設定
+│   └── railway.toml       # Railway設定
+└── frontend/
+    ├── Dockerfile         # ローカルテスト用
+    ├── .dockerignore      # Vercel用除外設定
+    └── vercel.json        # Vercel設定
+```
 
-# Dockerfiles:
-# - docker/backend.Dockerfile   (バックエンド用)
-# - docker/frontend.Dockerfile  (フロントエンド用)
-# - docker/postgres/init.sql    (DB初期化)
+### 開発環境構成
+```yaml
+# docker-compose.yml (未作成)
+services:
+  postgres:    # PostgreSQL 16（開発用）
+  redis:       # Redis 7（開発用）
+  # Note: バックエンド・フロントエンドは各ディレクトリで個別管理
 ```
 
 ## 開発コマンド（実装後）
@@ -189,9 +200,9 @@ npm run db:studio        # Drizzle Studio起動
 npm run db:seed          # シードデータ投入
 
 # Docker関連
-npm run docker:up        # Docker環境起動
-npm run docker:down      # Docker環境停止
-npm run docker:logs      # ログ確認
+npm run docker:backend   # バックエンドDocker起動
+npm run docker:frontend  # フロントエンドDocker起動
+npm run docker:dev       # 開発用DB起動（PostgreSQL + Redis）
 ```
 
 ## 設計原則・開発方針
@@ -324,16 +335,25 @@ npm run docker:logs      # ログ確認
 ## 設定ファイル
 
 ### ローカル開発
-- `docker-compose.yml` - Docker Compose設定（未作成）
-- `.env.local` - ローカル開発環境変数（未作成）
-- `docker/backend.Dockerfile` - バックエンドDockerfile（未作成）
-- `docker/frontend.Dockerfile` - フロントエンドDockerfile（未作成）
-- `docker/postgres/init.sql` - PostgreSQL初期化（未作成）
+- `docker-compose.yml` - 開発用データベース環境 ✅
+- `docker/postgres/init.sql` - PostgreSQL初期化スクリプト ✅
+- `.env.local.example` - ローカル開発環境変数テンプレート ✅
+- `webapp/backend/.env.example` - バックエンド環境変数テンプレート ✅
+- `webapp/frontend/.env.example` - フロントエンド環境変数テンプレート ✅
 - `drizzle.config.ts` - Drizzle設定ファイル（未作成）
 
-### デプロイメント
-- `railway.toml` - Railway設定（未作成）
-- `vercel.json` - Vercel設定（未作成）
+### デプロイメント（分離管理）
+- **バックエンド（Railway）**:
+  - `railway.json` - ルート用Railway設定 ✅
+  - `webapp/backend/railway.toml` - バックエンド専用設定 ✅
+  - `webapp/backend/Dockerfile` - Railway用Dockerファイル ✅
+  - `webapp/backend/.dockerignore` - Docker除外設定 ✅
+
+- **フロントエンド（Vercel）**:
+  - `vercel.json` - ルート用Vercel設定 ✅
+  - `webapp/frontend/vercel.json` - フロントエンド専用設定 ✅
+  - `webapp/frontend/Dockerfile` - ローカルテスト用 ✅
+  - `webapp/frontend/.dockerignore` - Docker除外設定 ✅
 
 ---
 

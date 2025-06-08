@@ -82,12 +82,12 @@ Next.js + React を使用したクライアントサイド開発方針
 ### アーキテクチャ
 - **レイヤードアーキテクチャ** + **ドメイン分離**
 - **TypeScript 5.x** + **Hono 3.x** (バックエンド)
-- **PostgreSQL** (Vercel) / **D1** (Cloudflare)
+- **PostgreSQL** (Railway) + **Redis** (Railway)
 - **Zod** バリデーション + **JWT** 認証
 - **アダプターパターン** による環境抽象化
 
 ### 運用
-- **Vercel** / **Cloudflare Workers** デプロイメント
+- **Railway** (バックエンド) / **Vercel** (フロントエンド) デプロイメント
 - **Blue-Green** デプロイメント
 - **セマンティックバージョニング**
 - **監視・アラート** システム

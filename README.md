@@ -91,33 +91,38 @@ CREATE TABLE tribes (
 ```
 /
 ├── docs/                            # ドキュメント管理
+│   ├── ENVIRONMENT_VARIABLES.md    # 環境変数管理戦略
 │   ├── development-milestones/      # 開発マイルストーン
 │   ├── development-policy/          # 開発方針・ガイドライン
 │   ├── gamewiki/                    # ゲームルール・戦略
 │   └── system-design/               # システム設計
-├── dev/                             # 開発ガイド
-│   ├── setup-guide.md              # 全体セットアップガイド
-│   ├── backend-setup.md            # バックエンド開発ガイド
-│   ├── frontend-setup.md           # フロントエンド開発ガイド
-│   └── database-local-setup.md     # ローカルDB操作ガイド
+├── docker/                          # Docker設定
+│   └── postgres/                    # PostgreSQL設定
+│       └── init.sql                 # 初期化スクリプト
 ├── webapp/                          # アプリケーション実装
 │   ├── shared/                     # 共有パッケージ（型定義・スキーマ）
-│   ├── backend/                    # Honoバックエンド
+│   ├── backend/                    # Honoバックエンド（Railway用）
 │   │   ├── src/                    # TypeScriptソースコード
-│   │   ├── sql/                    # マイグレーションSQL
-│   │   └── scripts/                # ビルド・マイグレーションスクリプト
-│   ├── frontend/                   # Next.jsフロントエンド
+│   │   ├── Dockerfile              # Railway用コンテナ設定
+│   │   ├── railway.toml            # Railway設定
+│   │   └── .env.example            # バックエンド個人設定
+│   ├── frontend/                   # Next.jsフロントエンド（Vercel用）
 │   │   ├── src/                    # React + TypeScriptソースコード
-│   │   └── public/                 # 静的アセット
+│   │   ├── Dockerfile              # ローカルテスト用
+│   │   ├── vercel.json             # Vercel設定
+│   │   └── .env.example            # フロントエンド個人設定
 │   ├── DEPLOYMENT.md               # デプロイメントガイド
-│   ├── TESTING.md                  # テストガイド
 │   └── test-api.sh                 # API動作確認スクリプト
-├── vercel.json                      # Vercelデプロイ設定
-├── .env.example                     # 環境変数テンプレート
-├── index.html                       # Coming Soonページ
-├── CLAUDE.md                        # AI開発支援設定
-├── CONTRIBUTING.md                  # 開発参加ガイドライン
-└── README.md                        # このファイル
+├── docker-compose.yml              # 開発用データベース環境
+├── railway.json                    # Railway設定（ルート用）
+├── vercel.json                     # Vercel設定（ルート用）
+├── DEPLOYMENT_SEPARATED.md         # 分離デプロイガイド
+├── .env                            # チーム共有環境変数（コミット対象）
+├── .env.local.example              # 個人設定テンプレート
+├── index.html                      # Coming Soonページ
+├── CLAUDE.md                       # AI開発支援設定
+├── CONTRIBUTING.md                 # 開発参加ガイドライン
+└── README.md                       # このファイル
 ```
 
 ## 開発コマンド
@@ -164,7 +169,8 @@ cd webapp/frontend && npm run build
 cd webapp/frontend && npm run start
 ```
 
-### データベース操作確認
+
+### API動作確認
 ```bash
 # API動作テスト実行
 cd webapp && ./test-api.sh
@@ -178,11 +184,28 @@ curl http://localhost:8787/debug/db-status
 
 ## 設定ファイル
 
-- `.env.example` - 環境変数テンプレート
-- `webapp/backend/.env.local` - バックエンド環境変数（gitignore対象）
-- `railway.json` - Railway設定（バックエンド）
-- `vercel.json` - Vercel設定（フロントエンド）
+### 分離デプロイ設定
+- **Railway（バックエンド）**:
+  - `railway.json` - ルート用Railway設定
+  - `webapp/backend/railway.toml` - バックエンド専用設定
+  - `webapp/backend/Dockerfile` - Railway用コンテナ設定
+  - `webapp/backend/.env.example` - バックエンド環境変数テンプレート
+
+- **Vercel（フロントエンド）**:
+  - `vercel.json` - ルート用Vercel設定
+  - `webapp/frontend/vercel.json` - フロントエンド専用設定
+  - `webapp/frontend/.env.example` - フロントエンド環境変数テンプレート
+
+### 開発環境
+- `docker-compose.yml` - 開発用データベース環境（PostgreSQL + Redis）
+- `webapp/frontend/Dockerfile` - ローカルテスト用コンテナ設定
+- `.env` - チーム共有環境変数（コミット対象）
+- `.env.local.example` - 個人設定テンプレート
 - `CLAUDE.md` - AI開発支援設定
+
+### 環境変数管理
+詳細な環境変数戦略は [docs/ENVIRONMENT_VARIABLES.md](docs/ENVIRONMENT_VARIABLES.md) を参照してください。
+
 
 ## データ最小化戦略
 
@@ -197,10 +220,138 @@ curl http://localhost:8787/debug/db-status
 - **中期キャッシュ**: セット別・リーダー別カード（1時間）
 - **短期キャッシュ**: 検索結果（5分）
 
+## Docker開発環境
+
+### 🐳 開発用データベース環境
+
+#### 🚀 クイックスタート
+```bash
+# 1. リポジトリクローン
+git clone <repository>
+cd Mythologia_AdmiralsShipBridge
+
+# 2. 環境変数設定
+cp .env.local.example .env.local
+vim .env.local  # 個人の機密情報を設定
+
+# 3. データベース環境起動
+docker-compose up -d
+
+# 4. 依存関係インストール
+cd webapp && npm install
+
+# 5. 開発サーバー起動
+npm run dev
+```
+
+#### サービス構成
+```yaml
+services:
+  postgres:      # PostgreSQL 16
+  redis:         # Redis 7  
+  adminer:       # PostgreSQL管理UI
+  redis-insight: # Redis管理UI
+```
+
+#### 基本コマンド
+```bash
+# 全サービス起動
+docker-compose up -d
+
+# データベースのみ起動
+docker-compose up -d postgres redis
+
+# ログ確認
+docker-compose logs -f postgres redis
+
+# サービス停止
+docker-compose down
+
+# データ削除（初期化）
+docker-compose down -v
+```
+
+### 🔧 管理UI
+
+#### データベース管理
+- **Adminer**: http://localhost:8080
+  - Server: `postgres`
+  - Username: `mythologia_user`
+  - Password: `mythologia_pass`
+  - Database: `mythologia_dev`
+
+#### キャッシュ管理
+- **RedisInsight**: http://localhost:8001
+  - Host: `redis`
+  - Port: `6379`
+  - Password: `mythologia_redis_pass`
+
+### 🚀 分離デプロイ用コンテナ
+
+#### Railway バックエンドテスト
+```bash
+cd webapp/backend
+docker build -t mythologia-backend .
+docker run -p 8787:8787 \
+  --env-file .env.local \
+  mythologia-backend
+```
+
+#### Vercel フロントエンドテスト
+```bash
+cd webapp/frontend
+docker build -t mythologia-frontend \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8787 .
+docker run -p 3000:3000 mythologia-frontend
+
+# ブラウザで http://localhost:3000 にアクセスして確認
+# APIヘルスチェック機能でバックエンド接続テスト可能
+```
+
+### 🏗️ 日常開発ワークフロー
+```bash
+# Docker環境起動
+docker-compose up -d postgres redis
+
+# アプリケーション開発
+cd webapp && npm run dev
+
+# 管理UI確認
+open http://localhost:8080    # Adminer
+open http://localhost:8001    # RedisInsight
+```
+
+### 🧹 メンテナンス
+
+#### データベースリセット
+```bash
+# データベース完全初期化
+docker-compose down -v
+docker-compose up -d postgres redis
+
+# マイグレーション実行（今後実装予定）
+npm run db:migrate
+```
+
+#### ログ・デバッグ
+```bash
+# サービス状態確認
+docker-compose ps
+
+# ログ確認
+docker-compose logs postgres
+docker-compose logs redis
+
+# コンテナ内接続
+docker-compose exec postgres psql -U mythologia_user -d mythologia_dev
+docker-compose exec redis redis-cli -a mythologia_redis_pass
+```
+
 ## アーキテクチャ原則
 
 ### 1. マイクロサービス分離
 - バックエンドAPI（Railway）とフロントエンド（Vercel）の分離
+- 各サービス専用のDocker設定
 - 明確な責任境界とスケーラビリティ
 
 ### 2. ドメイン駆動設計
