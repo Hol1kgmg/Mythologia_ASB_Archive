@@ -13,7 +13,7 @@
 
 ### コア技術
 - **Framework**: Next.js 14+ (App Router)
-  - 理由: Vercel/Cloudflare Pages両対応、優れた開発体験
+  - 理由: Vercelに最適化、優れた開発体験
   - Vercelの自動最適化を活用
   - App RouterによるサーバーコンポーネントとRSC対応
 - **Language**: TypeScript 5.3+
@@ -113,7 +113,7 @@ export class PrismaRepository<T> implements Repository<T> {
   - アップロードファイルの保存
   - バックアップデータの管理
 - **CDN統合**: 画像配信の最適化
-  - Cloudflare CDN経由での配信
+  - Vercel Edge Network経由での配信
   - 画像最適化とキャッシング
 
 ## 開発ツール
@@ -187,49 +187,49 @@ export class PrismaRepository<T> implements Repository<T> {
   - Web Vitals計測
   - リアルタイムパフォーマンス監視
 
-### CI/CD
+<!-- ### CI/CD
 - **GitHub Actions**
   - 自動テスト実行
   - 型チェック、リント
   - Railway/Vercelへの自動デプロイ
-  - ブランチごとのプレビュー環境
+  - ブランチごとのプレビュー環境 -->
 
 ## 監視・分析
 
 ### エラー監視
 - **Sentry 7.91+**: エラートラッキング、パフォーマンス監視
-  - Cloudflare Workers統合
+  - Railway/Vercel統合
   - ソースマップサポート
   - リリーストラッキング
 
 ### アナリティクス
-- **Cloudflare Web Analytics**: プライバシーファースト分析
+- **Vercel Analytics**: プライバシーファースト分析
   - Cookieレス、GDPR準拠
   - Core Web Vitals自動計測
-- **Cloudflare Analytics Engine**: カスタムメトリクス
-  - SQLクエリ対応、リアルタイム集計
+- **Custom Metrics**: カスタムメトリクス
+  - PostgreSQL基盤、リアルタイム集計
 
 ### ログ管理
-- **Cloudflare Logpush**: 構造化ログ配信
-  - R2への自動保存
-  - リアルタイムストリーミング
-- **Workers Tail**: リアルタイムログ監視
+- **Railway Logs**: 構造化ログ配信
+  - 自動保存・ストリーミング
+  - リアルタイムモニタリング
+- **Vercel Functions Logs**: フロントエンドログ監視
   - 開発・デバッグ用
 
 ### 監視・アラート
-- **Cloudflare Notifications**: システムアラート
-  - メール、Webhook、PagerDuty統合
+- **Railway Notifications**: システムアラート
+  - メール、Webhook統合
 - **Health Checks**: エンドポイント監視
-  - 自動フェイルオーバー
+  - ヘルスチェック機能
 
 ## 技術選定の方針
 
 ### 優先事項
-1. **エッジファースト**: レイテンシ最小化、グローバル配信
+1. **パフォーマンス**: レイテンシ最小化、グローバル配信
 2. **型安全性**: TypeScriptによる堅牢性
 3. **開発効率**: 統合されたツールチェーン
 4. **コスト効率**: 従量課金、充実した無料枠
-5. **スケーラビリティ**: 自動スケーリング、無限の拡張性
+5. **スケーラビリティ**: 自動スケーリング、柔軟な拡張性
 
 ### Railway + Vercel採用のメリット
 1. **専門性の活用**: 各プラットフォームの強みを最大限活用
