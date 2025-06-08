@@ -11,7 +11,7 @@
     "NEXT_PUBLIC_API_URL": "$RAILWAY_API_URL",
     "ENVIRONMENT": "production"
   },
-  "installCommand": "cd webapp && npm install --workspace=@mythologia/shared && npm install --workspace=@mythologia/frontend",
-  "buildCommand": "cd webapp && npm run build --workspace=@mythologia/shared && npm run build --workspace=@mythologia/frontend",
+  "installCommand": "cd webapp && npm ci && npm ci --workspace=@mythologia/shared && npm ci --workspace=@mythologia/frontend",
+  "buildCommand": "cd webapp && npm run build:frontend",
   "outputDirectory": "webapp/frontend/.next"
 }
