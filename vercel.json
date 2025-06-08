@@ -11,7 +11,7 @@
     "NEXT_PUBLIC_API_URL": "$RAILWAY_API_URL",
     "ENVIRONMENT": "production"
   },
-  "installCommand": "cd webapp && npm install",
-  "buildCommand": "cd webapp && npm run build:frontend",
-  "outputDirectory": "webapp/frontend/.next"
+  "installCommand": "npm install",
+  "buildCommand": "npm run build:frontend",
+  "outputDirectory": "frontend/.next"
 }
