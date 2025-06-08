@@ -1,5 +1,5 @@
 {
-  "name": "@mythologia/backend",
+  "name": "@mythologia-asb/backend",
   "type": "module",
   "version": "1.0.0",
   "scripts": {

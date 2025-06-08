@@ -1,5 +1,5 @@
 {
-  "name": "@mythologia/shared",
+  "name": "@mythologia-asb/shared",
   "version": "1.0.0",
   "description": "Mythologia Admiral Ship Bridge - 共有型定義・バリデーション・定数",
   "main": "./dist/index.js",
