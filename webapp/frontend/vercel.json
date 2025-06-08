@@ -5,6 +5,8 @@
     "NEXT_PUBLIC_API_URL": "$RAILWAY_API_URL",
     "ENVIRONMENT": "production"
   },
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "functions": {
     "app/**/*.tsx": {
       "maxDuration": 30
