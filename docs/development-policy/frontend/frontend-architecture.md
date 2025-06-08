@@ -10,7 +10,6 @@ Next.js App RouterとFeature-Sliced Design（FSD）を組み合わせた、ス�
 ```
 レイヤーの階層（上位 → 下位）:
 ├── app      # アプリケーション構成
-├── pages    # ページコンポーネント（App Routerと統合）
 ├── widgets  # 独立した機能ブロック
 ├── features # ユーザー操作・ビジネスロジック
 ├── entities # ビジネスエンティティ
@@ -29,7 +28,6 @@ Next.js App RouterとFeature-Sliced Design（FSD）を組み合わせた、ス�
 frontend/
 ├── app/                    # Next.js App Router
 ├── src/                    # FSDアーキテクチャ
-│   ├── pages/             # ページコンポーネント層
 │   ├── widgets/           # ウィジェット層
 │   ├── features/          # フィーチャー層
 │   ├── entities/          # エンティティ層
@@ -73,33 +71,6 @@ app/
 ```
 
 #### FSD構造 (src/)
-
-##### Pages層
-```
-src/pages/
-├── home/
-│   ├── ui/
-│   │   ├── HomePage.tsx
-│   │   └── HomePage.module.css
-│   └── index.ts
-├── card-list/
-│   ├── ui/
-│   │   ├── CardListPage.tsx
-│   │   ├── CardFilters.tsx
-│   │   └── CardGrid.tsx
-│   ├── model/
-│   │   └── useCardListPage.ts
-│   └── index.ts
-└── deck-builder/
-    ├── ui/
-    │   ├── DeckBuilderPage.tsx
-    │   ├── CardSelector.tsx
-    │   └── DeckPreview.tsx
-    ├── model/
-    │   ├── useDeckBuilder.ts
-    │   └── deckBuilderStore.ts
-    └── index.ts
-```
 
 ##### Widgets層
 ```
@@ -234,12 +205,6 @@ src/shared/
 - ローディング・エラー状態の管理
 - サーバーサイドレンダリング
 
-### Pages層
-- ページ全体の構成
-- ウィジェットの組み合わせ
-- ページ固有の状態管理
-- SEO対応
-
 ### Widgets層
 - 独立した機能ブロック
 - 複数のフィーチャーの組み合わせ
@@ -324,7 +289,6 @@ import { CardDisplay } from '@/entities/card';
     "paths": {
       "@/*": ["src/*"],
       "@/app/*": ["app/*"],
-      "@/pages/*": ["src/pages/*"],
       "@/widgets/*": ["src/widgets/*"],
       "@/features/*": ["src/features/*"],
       "@/entities/*": ["src/entities/*"],
