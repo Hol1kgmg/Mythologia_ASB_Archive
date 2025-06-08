@@ -2,7 +2,7 @@
 
 ## 概要
 
-**神託のメソロギア**ファンサイト「Mythologia Admiral Ship Bridge」における、フロントエンドとバックエンド間での型定義共有アーキテクチャです。**ドメイン分離ポリシー**、**技術方針**に基づき、Honoフレームワークとマルチプラットフォーム対応（Vercel/Cloudflare）を考慮したセキュアで保守性の高い設計となっています。
+**神託のメソロギア**ファンサイト「Mythologia Admiral Ship Bridge」における、フロントエンドとバックエンド間での型定義共有アーキテクチャです。**ドメイン分離ポリシー**、**技術方針**に基づき、HonoフレームワークとRailway/Vercel分離アーキテクチャを考慮したセキュアで保守性の高い設計となっています。
 
 ### このドキュメントの位置づけ
 - **ベース**: `docs/development-policy/architecture/domain-separation-policy.md`
@@ -17,8 +17,8 @@
 - **共有しないもの**: ドメインモデル、内部実装の型、データベーススキーマ、セキュリティセンシティブな型
 
 ### 2. プラットフォーム対応
-- **Vercel環境**: PostgreSQL + Vercel KV
-- **Cloudflare環境**: D1 + Cloudflare KV  
+- **Railway環境**: PostgreSQL + Redis (バックエンド)
+- **Vercel環境**: Next.js (フロントエンド)
 - **共通インターフェース**: アダプターパターンによる環境抽象化
 
 ### 3. ディレクトリ構造
@@ -69,7 +69,7 @@ webapp/
 │   │   │   ├── database/               # データベース実装
 │   │   │   │   ├── DatabaseAdapter.ts  # DB統一インターフェース
 │   │   │   │   ├── PostgreSQLAdapter.ts # PostgreSQL実装
-│   │   │   │   ├── D1Adapter.ts         # Cloudflare D1実装
+│   │   │   │   ├── RedisAdapter.ts      # Redis実装
 │   │   │   │   ├── DatabaseAdapterFactory.ts # ファクトリー
 │   │   │   │   └── index.ts             # エクスポート
 │   │   │   └── cache/                  # キャッシュ実装
@@ -1116,7 +1116,7 @@ export interface CardDto {
 - **依存関係**: 明確な依存関係とインターフェース
 
 ### 4. スケーラビリティ
-- **プラットフォーム対応**: Vercel/Cloudflare両環境対応
+- **プラットフォーム対応**: Railway/Vercel分離アーキテクチャ
 - **機能拡張**: 新機能追加時の型安全性確保
 - **チーム開発**: 複数開発者での一貫した型使用
 
@@ -1125,7 +1125,7 @@ export interface CardDto {
 この型共有アーキテクチャにより、**Mythologia Admiral Ship Bridge**プロジェクトは：
 
 1. **Mythologia固有の要件対応**: ゲームルール、種族システム、デッキ制約の型安全な実装
-2. **マルチプラットフォーム対応**: Vercel/Cloudflare環境での一貫した開発体験
+2. **分離アーキテクチャ対応**: Railway(バックエンド)/Vercel(フロントエンド)での一貫した開発体験
 3. **高品質なUX**: 型安全性によるバグ削減とリアルタイムバリデーション
 4. **効率的な開発**: Feature-Sliced Designとの組み合わせによる保守性向上
 5. **将来への拡張性**: 新カードセット・新機能追加への柔軟な対応
