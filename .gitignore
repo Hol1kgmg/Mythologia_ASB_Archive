@@ -6,11 +6,13 @@ yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
 
-# Environment variables
-.env
+# Environment variables (機密情報含む)
 .env.local
 .env.production
+.env.staging
 .env.*.local
+
+# Note: .env はチーム共有のためコミット対象
 
 # IDE
 .vscode/
@@ -75,3 +77,12 @@ settings.local.json
 # Documentation build
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+
+# Docker
+docker-compose.override.yml
+.docker/
+docker/postgres/data/
+
+# Development databases
+postgres_data/
+redis_data/
