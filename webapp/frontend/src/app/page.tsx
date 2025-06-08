@@ -8,7 +8,10 @@ export default function Home() {
   const [healthData, setHealthData] = useState<{ status?: string; timestamp?: string; error?: string } | null>(null);
 
   useEffect(() => {
-    setApiUrl(process.env.NEXT_PUBLIC_API_URL || 'https://placeholder-api.example.com');
+    const apiUrl = typeof window !== 'undefined' 
+      ? (process.env.NEXT_PUBLIC_API_URL || 'https://placeholder-api.example.com')
+      : 'https://placeholder-api.example.com';
+    setApiUrl(apiUrl);
   }, []);
 
   const checkAPIHealth = async () => {

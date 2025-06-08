@@ -1,8 +1,17 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-mono {
+  font-family: 'Roboto Mono', monospace;
 }
 
 @theme inline {
