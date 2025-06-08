@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mythologia Admiral Ship Bridge",
-  description: "神託のメソロギア 非公式ファンサイト - カード情報データベース・デッキ構築サポート",
+  title: "Mythologia Admiral Ship Bridge - 神託のメソロギア ファンサイト",
+  description: "神託のメソロギア（Mythologia the Oracle）のファンサイト。非公式プロジェクトです。",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
