@@ -33,7 +33,8 @@
     "mythologia",
     "card-game",
     "deck-builder",
-    "unofficial"
+    "unofficial",
+    "tcg"
   ],
   "author": "Community Contributors",
   "license": "MIT"
