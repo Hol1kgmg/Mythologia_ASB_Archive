@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [apiUrl, setApiUrl] = useState('');
   const [healthStatus, setHealthStatus] = useState<'loading' | 'success' | 'error' | 'idle'>('idle');
-  const [healthData, setHealthData] = useState<any>(null);
+  const [healthData, setHealthData] = useState<{ status?: string; timestamp?: string; error?: string } | null>(null);
 
   useEffect(() => {
-    setApiUrl(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787');
+    setApiUrl(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000');
   }, []);
 
   const checkAPIHealth = async () => {
