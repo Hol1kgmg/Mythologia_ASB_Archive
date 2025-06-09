@@ -191,6 +191,7 @@ const MaintenanceContainer: React.FC = () => {
           </div>
         </div>
 
+
         {/* 情報セクション */}
         <div className="grid grid-cols-1 gap-12 my-8 max-w-2xl w-full">
           <InfoCard type="warning" icon="⚠️" title="重要なお知らせ">
