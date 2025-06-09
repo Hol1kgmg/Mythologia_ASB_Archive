@@ -29,7 +29,7 @@ app.use('*', cors({
 // Rate limiting for all routes
 app.use('*', rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  maxRequests: 100 // 100 requests per minute
+  maxRequests: 50 // 50 requests per minute
 }))
 
 // Public routes (no authentication required)

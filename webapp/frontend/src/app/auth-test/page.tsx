@@ -67,7 +67,7 @@ export default function AuthTestPage() {
                     <li>• JWT（JSON Web Token）: アプリケーション識別</li>
                     <li>• HMAC署名: リクエスト完全性検証</li>
                     <li>• タイムスタンプ: リプレイ攻撃防止</li>
-                    <li>• レート制限: 100リクエスト/分</li>
+                    <li>• レート制限: 50リクエスト/分</li>
                   </ul>
                 </div>
 
