@@ -39,6 +39,7 @@ export function rateLimit(options: RateLimitOptions) {
     // Check if limit exceeded
     if (entry.count > maxRequests) {
       const resetTime = Math.ceil((entry.resetTime - now) / 1000);
+      console.log(`Rate limit exceeded for key: ${key} (${entry.count}/${maxRequests} requests)`);
       return c.json({
         error: 'Rate limit exceeded',
         retryAfter: resetTime

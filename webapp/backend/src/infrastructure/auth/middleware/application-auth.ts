@@ -14,6 +14,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
       // Extract JWT from Authorization header
       const authHeader = c.req.header('Authorization');
       if (!authHeader?.startsWith('Bearer ')) {
+        console.log('Authentication failed: Missing or invalid Authorization header');
         return c.json({ error: 'Missing or invalid Authorization header' }, 401);
       }
       
@@ -24,6 +25,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
       const timestamp = c.req.header('X-Timestamp');
       
       if (!signature || !timestamp) {
+        console.log('Authentication failed: Missing HMAC signature or timestamp');
         return c.json({ error: 'Missing HMAC signature or timestamp' }, 401);
       }
       
@@ -33,6 +35,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
         jwtPayload = await verifyJWT(token, options.jwtSecret);
         validateJWTPayload(jwtPayload, options.allowedAppIds);
       } catch (error) {
+        console.log('Authentication failed: Invalid JWT token -', error instanceof Error ? error.message : 'Unknown error');
         return c.json({ error: 'Invalid JWT token' }, 401);
       }
       
@@ -53,6 +56,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
           maxAge: 300000 // 5 minutes
         });
       } catch (error) {
+        console.log('Authentication failed: Invalid HMAC signature -', error instanceof Error ? error.message : 'Unknown error');
         return c.json({ error: 'Invalid HMAC signature' }, 401);
       }
       
