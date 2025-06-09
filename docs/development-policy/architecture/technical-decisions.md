@@ -188,6 +188,15 @@ CREATE INDEX idx_active_cards ON cards(id) WHERE is_active = true;
 - 最小権限の原則
 - 監査ログの実装
 
+### 4. Application Level認証（Vercel-Railway間）
+- **課題**: Railwayのパブリックネットワーク経由でのAPI通信保護
+- **解決策**: JWT + HMAC署名による二重認証
+- **実装**:
+  - JWT: アプリケーション識別とペイロード暗号化
+  - HMAC: リクエスト完全性の検証
+  - タイムスタンプ: リプレイ攻撃の防止
+- **詳細**: [Application Level認証設計](./application-level-auth.md)参照
+
 ## パフォーマンス技術方針
 
 ### 1. キャッシュ戦略
