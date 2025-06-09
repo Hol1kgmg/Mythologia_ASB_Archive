@@ -5,8 +5,8 @@ import Link from 'next/link';
 import AuthTestButton from '../../components/AuthTestButton';
 
 export default function AuthTestPage() {
-  // 本番環境では404を返す
-  if (process.env.NODE_ENV === 'production') {
+  // 認証テストページの無効化（ステージング環境以外）
+  if (!process.env.NEXT_PUBLIC_ENABLE_AUTH_TEST) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex items-center justify-center">
         <div className="text-center">
