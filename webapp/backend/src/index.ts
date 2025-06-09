@@ -17,11 +17,12 @@ if (!JWT_SECRET || !HMAC_SECRET) {
 }
 
 // CORS middleware
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000']; // デフォルトはローカル開発のみ
+
 app.use('*', cors({
-  origin: [
-    'http://localhost:3000',
-    'https://mythologia-admirals-ship-bridge.vercel.app'
-  ],
+  origin: allowedOrigins,
   allowHeaders: ['Authorization', 'Content-Type', 'X-HMAC-Signature', 'X-Timestamp'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
