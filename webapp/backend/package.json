@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
-    "hono": "^4.7.11"
+    "dotenv": "^16.5.0",
+    "hono": "^4.7.11",
+    "jose": "^6.0.11"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
