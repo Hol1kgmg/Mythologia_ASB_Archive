@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createApiClient, ApiError } from '../lib/api-client';
+import { createApiClient, ApiError } from '../../../../lib/api-client';
 
 interface AuthTestResult {
   success: boolean;
