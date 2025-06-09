@@ -6,6 +6,12 @@ export default function AuthTestPage() {
   // 環境変数の値をそのまま確認（Vercelでは文字列として設定される）
   const authTestEnv = process.env.NEXT_PUBLIC_ENABLE_AUTH_TEST;
   
+  // デバッグ用ログ（作業ブランチ確認用）
+  console.log('[DEBUG] NEXT_PUBLIC_ENABLE_AUTH_TEST value:', authTestEnv);
+  console.log('[DEBUG] Type of NEXT_PUBLIC_ENABLE_AUTH_TEST:', typeof authTestEnv);
+  console.log('[DEBUG] Comparison result (=== "true"):', authTestEnv === 'true');
+  console.log('[DEBUG] All env vars:', Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
+  
   // 環境変数が'true'の場合のみ有効
   const isAuthTestEnabled = authTestEnv === 'true';
 
