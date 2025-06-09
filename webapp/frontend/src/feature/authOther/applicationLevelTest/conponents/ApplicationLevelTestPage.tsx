@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import AuthTestButton from './AuthTestButton';
 import WarningCard from './WarningCard';
+import HomeButton from '../../../../components/HomeButton';
 
 export default function ApplicationLevelTestPage() {
   return (
@@ -103,12 +103,7 @@ export default function ApplicationLevelTestPage() {
 
           {/* Back Link */}
           <div className="text-center mt-8">
-            <Link 
-              href="/" 
-              className="inline-block px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-300"
-            >
-              ← ホームに戻る
-            </Link>
+            <HomeButton />
           </div>
         </div>
       </div>

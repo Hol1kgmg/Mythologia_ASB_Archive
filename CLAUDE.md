@@ -331,6 +331,7 @@ npm run docker:frontend  # フロントエンドDocker起動
 - `JWT_SECRET`: local-development-secret
 - `NODE_ENV`: development
 - `NEXT_PUBLIC_API_URL`: http://localhost:8000
+- `NEXT_PUBLIC_IS_STAGING`: true
 
 **Railway (Backend):**
 - `DATABASE_URL`: PostgreSQL接続文字列（Drizzle接続用）
@@ -341,7 +342,7 @@ npm run docker:frontend  # フロントエンドDocker起動
 
 **Vercel (Frontend):**
 - `NEXT_PUBLIC_API_URL`: バックエンドURL
-- `NEXT_PUBLIC_ENVIRONMENT`: production/staging/local
+- `NEXT_PUBLIC_IS_STAGING`: true（ステージング環境のみ、本番では未設定）
 
 ### デプロイフロー
 1. **ステージング**: `develop`ブランチ → 自動デプロイ
