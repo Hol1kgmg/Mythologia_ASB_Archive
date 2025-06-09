@@ -16,6 +16,7 @@ export default function AuthTestPage() {
     console.log('[DEBUG] NODE_ENV:', process.env.NODE_ENV);
     console.log('[DEBUG] Is undefined?:', authTestEnv === undefined);
     console.log('[DEBUG] Raw value:', JSON.stringify(authTestEnv));
+    console.log('[DEBUG] Timestamp:', new Date().toISOString());
   }, []);
   
   // 環境変数が'true'の場合のみ有効
