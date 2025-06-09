@@ -1,11 +1,5 @@
-import { getOrGenerateJWT } from './auth/jwt';
-import { generateHMACSignature } from './auth/hmac';
-
 export interface ApiClientOptions {
   baseURL: string;
-  appId: string;
-  jwtSecret: string;
-  hmacSecret: string;
 }
 
 export interface ApiRequestOptions {
@@ -31,33 +25,35 @@ export class ApiClient {
     } = requestOptions;
 
     try {
-      // Generate JWT token
-      const token = await getOrGenerateJWT(
-        this.options.appId,
-        this.options.jwtSecret
-      );
-
       // Prepare request body
       const requestBody = body ? JSON.stringify(body) : undefined;
 
-      // Generate HMAC signature
-      const { signature, timestamp } = await generateHMACSignature(
-        method,
-        path,
-        requestBody,
-        this.options.hmacSecret
-      );
+      // Get authentication headers from server-side API route
+      const authResponse = await fetch('/api/auth-headers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          method,
+          path,
+          body: requestBody
+        })
+      });
 
-      // Prepare headers
+      if (!authResponse.ok) {
+        throw new Error('Failed to generate authentication headers');
+      }
+
+      const { headers: authHeaders } = await authResponse.json();
+
+      // Prepare final headers
       const requestHeaders: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        'X-HMAC-Signature': signature,
-        'X-Timestamp': timestamp,
+        ...authHeaders,
         ...headers
       };
 
-      // Make request
+      // Make request to external API
       const response = await fetch(`${this.options.baseURL}${path}`, {
         method,
         headers: requestHeaders,
@@ -121,26 +117,12 @@ export class ApiError extends Error {
 // Create default API client instance
 export function createApiClient(): ApiClient {
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
-  const appId = process.env.NEXT_PUBLIC_APP_ID || 'mythologia-frontend';
-  const jwtSecret = process.env.JWT_SECRET;
-  const hmacSecret = process.env.HMAC_SECRET;
 
   if (!baseURL) {
     throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
   }
 
-  if (!jwtSecret) {
-    throw new Error('JWT_SECRET environment variable is required');
-  }
-
-  if (!hmacSecret) {
-    throw new Error('HMAC_SECRET environment variable is required');
-  }
-
   return new ApiClient({
-    baseURL,
-    appId,
-    jwtSecret,
-    hmacSecret
+    baseURL
   });
 }

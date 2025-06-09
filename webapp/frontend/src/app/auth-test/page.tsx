@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import AuthTestButton from '../../components/AuthTestButton';
 
 export default function AuthTestPage() {
@@ -11,7 +12,7 @@ export default function AuthTestPage() {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">404</h1>
           <p className="text-gray-400 mb-4">ページが見つかりません</p>
-          <a href="/" className="text-blue-400 hover:text-blue-300">ホームに戻る</a>
+          <Link href="/" className="text-blue-400 hover:text-blue-300">ホームに戻る</Link>
         </div>
       </div>
     );
@@ -120,12 +121,12 @@ export default function AuthTestPage() {
 
           {/* Back Link */}
           <div className="text-center mt-8">
-            <a 
+            <Link 
               href="/" 
               className="inline-block px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-300"
             >
               ← ホームに戻る
-            </a>
+            </Link>
           </div>
         </div>
       </div>
