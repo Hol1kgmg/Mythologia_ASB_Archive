@@ -1,10 +1,11 @@
 import ApplicationLevelTestPage from '../../feature/authOther/applicationLevelTest/conponents/ApplicationLevelTestPage';
 import NotFoundPage from '../../components/NotFoundPage';
 
-// 環境変数が'true'の場合のみ有効
-const isAuthTestEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH_TEST === 'true';
+// ステージング環境（開発・ステージング両方）でのみ認証テストページを有効化
+const isAuthTestEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
+
 export default function AuthTestPage() {
-  // 認証テストページの無効化（ステージング環境以外）  
+  // 本番環境では認証テストページを無効化
   if (!isAuthTestEnabled) {
     return <NotFoundPage />;
   }
