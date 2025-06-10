@@ -34,7 +34,7 @@ export default function UISampleIndexPage() {
       href: '/auth/ui-sample/interaction',
       title: 'Phase 4: インタラクション系',
       description: 'Modal, Tabs, Popover, Accordion - インタラクティブコンポーネント',
-      status: 'planned',
+      status: 'completed',
     },
     {
       href: '/auth/ui-sample/feedback',

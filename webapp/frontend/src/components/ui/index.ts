@@ -13,3 +13,9 @@ export * from './layout/Box';
 export * from './layout/Card';
 export * from './layout/Grid';
 export * from './layout/Stack';
+
+// Interaction Components
+export * from './interaction/Modal';
+export * from './interaction/Tabs';
+export * from './interaction/Popover';
+export * from './interaction/Accordion';
