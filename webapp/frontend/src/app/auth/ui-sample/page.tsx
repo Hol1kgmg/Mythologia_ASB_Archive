@@ -74,15 +74,15 @@ export default function UISampleIndexPage() {
             Headless UIを使用した共通コンポーネントライブラリ
           </p>
           
-          <Box className="space-y-4">
+          <Box className="space-y-6">
             {samplePages.map((page) => (
-              <Link key={page.href} href={page.href}>
+              <Link key={page.href} href={page.href} className="block mb-6">
                 <Box
                   padding="md"
-                  background="default"
+                  background="none"
                   border="default"
                   rounded="lg"
-                  className={`cursor-pointer transition-all duration-200 hover:bg-gray-700 hover:border-gray-500 ${
+                  className={`cursor-pointer transition-all duration-200 bg-gray-800/40 hover:bg-gray-700/60 hover:border-gray-500 ${
                     page.status === 'planned' ? 'opacity-60' : ''
                   }`}
                 >
