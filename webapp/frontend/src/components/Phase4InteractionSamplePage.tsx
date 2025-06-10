@@ -14,6 +14,7 @@ import {
   DropdownMenu,
   Accordion,
   AccordionItem,
+  HorizontalAccordion,
   VStack,
   HStack
 } from './ui';
@@ -86,13 +87,17 @@ export default function Phase4InteractionSamplePage() {
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>通知を有効にする</span>
-                <span className="text-xs px-2 py-1 bg-green-600 text-white rounded">有効</span>
+                <Button variant="success" size="xs" onClick={() => console.log('通知設定を変更')}>
+                  有効
+                </Button>
               </HStack>
             </Card>
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>自動保存</span>
-                <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded">オン</span>
+                <Button variant="primary" size="xs" onClick={() => console.log('自動保存設定を変更')}>
+                  オン
+                </Button>
               </HStack>
             </Card>
           </VStack>
@@ -110,12 +115,14 @@ export default function Phase4InteractionSamplePage() {
         <Card variant="default" padding="lg">
           <VStack spacing="lg">
             <h3 className="text-lg font-semibold">プロフィール設定</h3>
-            <VStack spacing="md">
+            <VStack spacing="md" align="center">
               <Box className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full"></Box>
               <VStack spacing="sm" align="center">
                 <h4 className="font-semibold">ユーザー名</h4>
                 <p className="text-sm text-gray-400">user@example.com</p>
-                <p className="text-xs text-blue-400">クリックして編集</p>
+                <Button variant="ghost" size="xs" focusRing={false} onClick={() => console.log('プロフィール編集を開始')}>
+                  クリックして編集
+                </Button>
               </VStack>
             </VStack>
           </VStack>
@@ -134,13 +141,17 @@ export default function Phase4InteractionSamplePage() {
               <Card variant="outlined" padding="sm">
                 <HStack justify="between" align="center">
                   <span>メール通知</span>
-                  <span className="text-xs px-2 py-1 bg-green-600 text-white rounded">有効</span>
+                  <Button variant="success" size="xs" onClick={() => console.log('メール通知を無効にする')}>
+                    有効
+                  </Button>
                 </HStack>
               </Card>
               <Card variant="outlined" padding="sm">
                 <HStack justify="between" align="center">
                   <span>プッシュ通知</span>
-                  <span className="text-xs px-2 py-1 bg-gray-600 text-white rounded">無効</span>
+                  <Button variant="secondary" size="xs" onClick={() => console.log('プッシュ通知を有効にする')}>
+                    無効
+                  </Button>
                 </HStack>
               </Card>
             </VStack>
@@ -260,6 +271,114 @@ export default function Phase4InteractionSamplePage() {
     },
   ];
 
+  // Horizontal Accordion items
+  const horizontalAccordionItems = [
+    {
+      id: 'dashboard',
+      title: 'ダッシュボード',
+      icon: <ChartBarIcon className="h-5 w-5" />,
+      content: (
+        <VStack spacing="md">
+          <h4 className="text-lg font-semibold">ダッシュボード</h4>
+          <Box className="grid grid-cols-2 gap-4">
+            <Card variant="filled" padding="sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">256</div>
+                <div className="text-xs text-gray-400">アクティブユーザー</div>
+              </div>
+            </Card>
+            <Card variant="filled" padding="sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">1,024</div>
+                <div className="text-xs text-gray-400">総セッション</div>
+              </div>
+            </Card>
+          </Box>
+          <p className="text-sm text-gray-400">リアルタイムの統計情報を表示しています。</p>
+        </VStack>
+      ),
+    },
+    {
+      id: 'documents',
+      title: 'ドキュメント',
+      icon: <DocumentTextIcon className="h-5 w-5" />,
+      content: (
+        <VStack spacing="md">
+          <h4 className="text-lg font-semibold">ドキュメント管理</h4>
+          <VStack spacing="sm">
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>API仕様書.pdf</span>
+                <Button variant="primary" size="xs">開く</Button>
+              </HStack>
+            </Card>
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>ユーザーガイド.md</span>
+                <Button variant="secondary" size="xs">編集</Button>
+              </HStack>
+            </Card>
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>設計書.docx</span>
+                <Button variant="ghost" size="xs">表示</Button>
+              </HStack>
+            </Card>
+          </VStack>
+        </VStack>
+      ),
+    },
+    {
+      id: 'settings',
+      title: '設定',
+      icon: <CogIcon className="h-5 w-5" />,
+      defaultOpen: true,
+      content: (
+        <VStack spacing="md">
+          <h4 className="text-lg font-semibold">アプリケーション設定</h4>
+          <VStack spacing="sm">
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>テーマ</span>
+                <Button variant="secondary" size="xs">ダークモード</Button>
+              </HStack>
+            </Card>
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>言語</span>
+                <Button variant="secondary" size="xs">日本語</Button>
+              </HStack>
+            </Card>
+            <Card variant="outlined" padding="sm">
+              <HStack justify="between" align="center">
+                <span>通知</span>
+                <Button variant="success" size="xs">有効</Button>
+              </HStack>
+            </Card>
+          </VStack>
+        </VStack>
+      ),
+    },
+    {
+      id: 'help',
+      title: 'ヘルプ',
+      icon: <InformationCircleIcon className="h-5 w-5" />,
+      content: (
+        <VStack spacing="md">
+          <h4 className="text-lg font-semibold">ヘルプ & サポート</h4>
+          <VStack spacing="sm">
+            <p className="text-sm text-gray-400">よくある質問やサポート情報をここで確認できます。</p>
+            <VStack spacing="xs">
+              <Button variant="primary" size="sm" fullWidth>FAQ を見る</Button>
+              <Button variant="secondary" size="sm" fullWidth>サポートに連絡</Button>
+              <Button variant="ghost" size="sm" fullWidth>チュートリアル</Button>
+            </VStack>
+          </VStack>
+        </VStack>
+      ),
+    },
+  ];
+
   return (
     <Box
       background="darker"
@@ -315,7 +434,7 @@ export default function Phase4InteractionSamplePage() {
         
         <VStack spacing="lg">
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">基本的なポップオーバー</h4>
+            <h4 className="text-md font-medium text-gray-300 mb-3">基本的なポップオーバー（サイズ指定可能）</h4>
             <HStack spacing="md" wrap>
               <Popover
                 trigger={
@@ -324,6 +443,7 @@ export default function Phase4InteractionSamplePage() {
                   </span>
                 }
                 placement="bottom-start"
+                size="lg"
               >
                 <VStack spacing="sm">
                   <h4 className="font-semibold">詳細情報</h4>
@@ -340,6 +460,7 @@ export default function Phase4InteractionSamplePage() {
                 }
                 placement="bottom-center"
                 variant="glass"
+                size="sm"
               >
                 <VStack spacing="sm">
                   <h4 className="font-semibold">クイック設定</h4>
@@ -410,6 +531,11 @@ export default function Phase4InteractionSamplePage() {
           </Box>
 
           <Box>
+            <h4 className="text-md font-medium text-gray-300 mb-3">ボーダーなしアコーディオン</h4>
+            <Accordion items={accordionItems.slice(0, 3)} variant="default" showBorder={false} />
+          </Box>
+
+          <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">個別アコーディオンアイテム</h4>
             <VStack spacing="sm">
               <AccordionItem
@@ -432,12 +558,56 @@ export default function Phase4InteractionSamplePage() {
                   <Card variant="filled" padding="sm">
                     <HStack justify="between" align="center">
                       <span>設定項目</span>
-                      <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded">設定済み</span>
+                      <Button variant="primary" size="xs" onClick={() => console.log('設定を変更')}>
+                        設定済み
+                      </Button>
                     </HStack>
                   </Card>
                 </VStack>
               </AccordionItem>
             </VStack>
+          </Box>
+
+          <Box>
+            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（右向き）</h4>
+            <HorizontalAccordion 
+              items={horizontalAccordionItems} 
+              direction="right"
+              buttonWidth="w-16"
+              contentWidth="w-96"
+            />
+          </Box>
+
+          <Box>
+            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（左向き）</h4>
+            <HorizontalAccordion 
+              items={horizontalAccordionItems.slice(0, 3)} 
+              direction="left"
+              buttonWidth="w-16"
+              contentWidth="w-80"
+            />
+          </Box>
+
+          <Box>
+            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（複数選択可能・右向き）</h4>
+            <HorizontalAccordion 
+              items={horizontalAccordionItems.slice(0, 3)} 
+              direction="right"
+              allowMultiple
+              buttonWidth="w-16"
+              contentWidth="w-80"
+            />
+          </Box>
+
+          <Box>
+            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（ボーダーなし・左向き）</h4>
+            <HorizontalAccordion 
+              items={horizontalAccordionItems.slice(0, 3)} 
+              direction="left"
+              showBorder={false}
+              buttonWidth="w-16"
+              contentWidth="w-80"
+            />
           </Box>
         </VStack>
       </Box>

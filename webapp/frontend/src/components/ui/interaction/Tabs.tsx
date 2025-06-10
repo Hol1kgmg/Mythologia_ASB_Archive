@@ -103,7 +103,7 @@ const tabVariants = cva(
 );
 
 const tabPanelVariants = cva(
-  'rounded-lg bg-gray-800 p-3 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500',
+  'rounded-lg bg-gray-800 p-3 focus:outline-none',
   {
     variants: {
       variant: {
@@ -183,6 +183,7 @@ export function Tabs({
           {tabs.map((tab) => (
             <Tab.Panel
               key={tab.id}
+              tabIndex={-1}
               className={tabPanelVariants({ 
                 variant: panelVariant, 
                 spacing: panelSpacing, 
@@ -242,6 +243,7 @@ export function VerticalTabs({
           {tabs.map((tab) => (
             <Tab.Panel
               key={tab.id}
+              tabIndex={-1}
               className={tabPanelVariants({ 
                 variant: panelVariant, 
                 spacing: panelSpacing, 

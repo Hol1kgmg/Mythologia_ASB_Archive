@@ -19,3 +19,4 @@ export * from './interaction/Modal';
 export * from './interaction/Tabs';
 export * from './interaction/Popover';
 export * from './interaction/Accordion';
+export { HorizontalAccordion } from './interaction/Accordion';
