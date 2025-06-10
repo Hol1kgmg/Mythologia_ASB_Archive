@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useId } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronUpDownIcon, CheckIcon } from '@heroicons/react/20/solid';
 import { Box } from '../layout/Box';
@@ -35,7 +35,8 @@ export function Select({
   className = '',
 }: SelectProps) {
   const selectedOption = options.find(option => option.value === value);
-  const selectId = `select-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const selectId = `select-${generatedId}`;
 
   return (
     <Box className={`w-full ${className}`}>

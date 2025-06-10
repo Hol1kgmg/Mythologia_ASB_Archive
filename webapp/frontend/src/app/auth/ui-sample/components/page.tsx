@@ -1,11 +1,11 @@
-import UIComponentsDemo from '../../../../components/UIComponentsDemo';
+import UIComponentsSamplePage from '../../../../components/UIComponentsSamplePage';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box } from '../../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
 
-export default function UIComponentsSamplePage() {
+export default function UIComponentsPage() {
   // 本番環境ではUIサンプルページを無効化
   if (!isUISampleEnabled) {
     return <NotFoundPage />;
@@ -38,7 +38,7 @@ export default function UIComponentsSamplePage() {
             UIコンポーネントサンプル - Phase 1 基盤コンポーネント
           </h1>
           
-          <UIComponentsDemo />
+          <UIComponentsSamplePage />
         </Box>
       </Box>
     </div>

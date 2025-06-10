@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Input, Select } from './ui';
 
-export default function UIComponentsDemo() {
+export default function UIComponentsSamplePage() {
   const [inputValue, setInputValue] = useState('');
   const [selectValue, setSelectValue] = useState('');
 
@@ -87,8 +87,9 @@ export default function UIComponentsDemo() {
           <Input
             label="エラー状態"
             placeholder="エラーの例"
-            value=""
+            defaultValue=""
             error="入力内容に誤りがあります"
+            readOnly
           />
           
           <Box display="flex" className="gap-2">
@@ -99,8 +100,9 @@ export default function UIComponentsDemo() {
           
           <Input
             label="無効化された入力"
-            value="編集できません"
+            defaultValue="編集できません"
             disabled
+            readOnly
           />
         </Box>
       </Box>
