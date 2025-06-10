@@ -28,7 +28,7 @@ export default function UISampleIndexPage() {
       href: '/auth/ui-sample/layout',
       title: 'Phase 3: レイアウト系',
       description: 'Card, Grid, Stack - レイアウト用コンポーネント',
-      status: 'planned',
+      status: 'completed',
     },
     {
       href: '/auth/ui-sample/interaction',
