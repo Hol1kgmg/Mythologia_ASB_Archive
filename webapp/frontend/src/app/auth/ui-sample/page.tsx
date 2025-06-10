@@ -22,7 +22,7 @@ export default function UISampleIndexPage() {
       href: '/auth/ui-sample/form',
       title: 'Phase 2: フォーム系',
       description: 'Textarea, Checkbox, Radio - フォーム関連コンポーネント',
-      status: 'planned',
+      status: 'completed',
     },
     {
       href: '/auth/ui-sample/layout',
