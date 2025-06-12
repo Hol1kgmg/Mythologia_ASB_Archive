@@ -38,7 +38,7 @@ const captionVariants = cva(
 export interface CaptionProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof captionVariants> {
-  as?: 'figcaption' | 'caption' | 'span' | 'div' | 'p';
+  as?: 'figcaption' | 'caption' | 'span';
   children?: React.ReactNode;
 }
 
@@ -48,23 +48,62 @@ const Caption = React.forwardRef<HTMLElement, CaptionProps>(
     variant, 
     align,
     italic,
-    as: Component = 'figcaption',
+    as = 'figcaption',
     children, 
     ...props 
   }, ref) => {
+    const classes = captionVariants({ 
+      variant, 
+      align,
+      italic,
+      className 
+    });
+
+    if (as === 'figcaption') {
+      return (
+        <figcaption
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </figcaption>
+      );
+    }
+
+    if (as === 'caption') {
+      return (
+        <caption
+          ref={ref as React.ForwardedRef<HTMLTableCaptionElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </caption>
+      );
+    }
+
+    if (as === 'span') {
+      return (
+        <span
+          ref={ref as React.ForwardedRef<HTMLSpanElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </span>
+      );
+    }
+
+    // Default fallback
     return (
-      <Component
+      <figcaption
         ref={ref as React.ForwardedRef<HTMLElement>}
-        className={captionVariants({ 
-          variant, 
-          align,
-          italic,
-          className 
-        })}
+        className={classes}
         {...props}
       >
         {children}
-      </Component>
+      </figcaption>
     );
   }
 );
@@ -116,11 +155,11 @@ export const ImageCaption = React.forwardRef<HTMLElement, ImageCaptionProps>(
         className={`space-y-1 ${className || ''}`}
         {...props}
       >
-        {children && <div>{children}</div>}
+        {children}
         {credit && (
-          <div className="text-[10px] opacity-60">
+          <span className="text-[10px] opacity-60 block">
             Credit: {credit}
-          </div>
+          </span>
         )}
       </Caption>
     );

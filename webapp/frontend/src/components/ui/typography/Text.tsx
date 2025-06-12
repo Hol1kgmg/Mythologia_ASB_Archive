@@ -112,7 +112,7 @@ const Text = React.forwardRef<HTMLElement, TextProps>(
     transform,
     leading,
     tracking,
-    as: Component = 'p',
+    as = 'p',
     truncate = false,
     clamp,
     children, 
@@ -120,26 +120,160 @@ const Text = React.forwardRef<HTMLElement, TextProps>(
   }, ref) => {
     const truncateClass = truncate ? 'truncate' : '';
     const clampClass = clamp ? `line-clamp-${clamp}` : '';
+    const classes = `${textVariants({ 
+      size, 
+      variant, 
+      weight,
+      align,
+      italic,
+      decoration,
+      transform,
+      leading,
+      tracking,
+      className 
+    })} ${truncateClass} ${clampClass}`.trim();
 
+    if (as === 'p') {
+      return (
+        <p
+          ref={ref as React.ForwardedRef<HTMLParagraphElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </p>
+      );
+    }
+
+    if (as === 'span') {
+      return (
+        <span
+          ref={ref as React.ForwardedRef<HTMLSpanElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </span>
+      );
+    }
+
+    if (as === 'div') {
+      return (
+        <div
+          ref={ref as React.ForwardedRef<HTMLDivElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </div>
+      );
+    }
+
+    if (as === 'small') {
+      return (
+        <small
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </small>
+      );
+    }
+
+    if (as === 'strong') {
+      return (
+        <strong
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </strong>
+      );
+    }
+
+    if (as === 'em') {
+      return (
+        <em
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </em>
+      );
+    }
+
+    if (as === 'mark') {
+      return (
+        <mark
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </mark>
+      );
+    }
+
+    if (as === 'del') {
+      return (
+        <del
+          ref={ref as React.ForwardedRef<HTMLModElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </del>
+      );
+    }
+
+    if (as === 'ins') {
+      return (
+        <ins
+          ref={ref as React.ForwardedRef<HTMLModElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </ins>
+      );
+    }
+
+    if (as === 'sub') {
+      return (
+        <sub
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </sub>
+      );
+    }
+
+    if (as === 'sup') {
+      return (
+        <sup
+          ref={ref as React.ForwardedRef<HTMLElement>}
+          className={classes}
+          {...props}
+        >
+          {children}
+        </sup>
+      );
+    }
+
+    // Default fallback
     return (
-      <Component
-        ref={ref as React.ForwardedRef<HTMLElement>}
-        className={`${textVariants({ 
-          size, 
-          variant, 
-          weight,
-          align,
-          italic,
-          decoration,
-          transform,
-          leading,
-          tracking,
-          className 
-        })} ${truncateClass} ${clampClass}`.trim()}
+      <p
+        ref={ref as React.ForwardedRef<HTMLParagraphElement>}
+        className={classes}
         {...props}
       >
         {children}
-      </Component>
+      </p>
     );
   }
 );
@@ -153,27 +287,27 @@ export const Paragraph = React.forwardRef<HTMLParagraphElement, Omit<TextProps, 
 Paragraph.displayName = 'Paragraph';
 
 export const Span = React.forwardRef<HTMLSpanElement, Omit<TextProps, 'as'>>(
-  (props, ref) => <Text ref={ref as React.ForwardedRef<HTMLElement>} as="span" {...props} />
+  (props, ref) => <Text ref={ref as React.Ref<HTMLElement>} as="span" {...props} />
 );
 Span.displayName = 'Span';
 
 export const Strong = React.forwardRef<HTMLElement, Omit<TextProps, 'as' | 'weight'>>(
-  (props, ref) => <Text ref={ref as React.ForwardedRef<HTMLElement>} as="strong" weight="bold" {...props} />
+  (props, ref) => <Text ref={ref} as="strong" weight="bold" {...props} />
 );
 Strong.displayName = 'Strong';
 
 export const Em = React.forwardRef<HTMLElement, Omit<TextProps, 'as' | 'italic'>>(
-  (props, ref) => <Text ref={ref as React.ForwardedRef<HTMLElement>} as="em" italic {...props} />
+  (props, ref) => <Text ref={ref} as="em" italic {...props} />
 );
 Em.displayName = 'Em';
 
 export const Small = React.forwardRef<HTMLElement, Omit<TextProps, 'as' | 'size'>>(
-  (props, ref) => <Text ref={ref as React.ForwardedRef<HTMLElement>} as="small" size="sm" {...props} />
+  (props, ref) => <Text ref={ref} as="small" size="sm" {...props} />
 );
 Small.displayName = 'Small';
 
 export const Mark = React.forwardRef<HTMLElement, Omit<TextProps, 'as'>>(
-  (props, ref) => <Text ref={ref as React.ForwardedRef<HTMLElement>} as="mark" className="bg-yellow-400/20 px-1" {...props} />
+  (props, ref) => <Text ref={ref} as="mark" className="bg-yellow-400/20 px-1" {...props} />
 );
 Mark.displayName = 'Mark';
 
