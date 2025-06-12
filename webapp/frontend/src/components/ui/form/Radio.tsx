@@ -5,11 +5,11 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { Box } from '../layout/Box';
 
 const radioVariants = cva(
-  'h-4 w-4 rounded-full border-2 bg-gray-800 text-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:cursor-not-allowed disabled:opacity-50',
+  'h-4 w-4 rounded-full border-2 bg-zinc-700 text-zinc-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800 disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'border-gray-600 focus:ring-gray-500 checked:bg-gray-600 checked:border-gray-500',
+        default: 'border-zinc-500 focus:ring-zinc-400 checked:bg-zinc-500 checked:border-zinc-400',
         primary: 'border-blue-600 focus:ring-blue-500 checked:bg-blue-600 checked:border-blue-500',
         success: 'border-green-600 focus:ring-green-500 checked:bg-green-600 checked:border-green-500',
         error: 'border-red-600 focus:ring-red-500 checked:bg-red-600 checked:border-red-500',
@@ -65,7 +65,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               {label && (
                 <label
                   htmlFor={radioId}
-                  className="block text-sm font-medium text-gray-300 cursor-pointer"
+                  className="block text-sm font-medium text-zinc-200 cursor-pointer"
                 >
                   {label}
                 </label>
@@ -73,7 +73,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               {description && (
                 <p
                   id={`${radioId}-description`}
-                  className="mt-1 text-xs text-gray-400"
+                  className="mt-1 text-xs text-zinc-300"
                 >
                   {description}
                 </p>
@@ -87,7 +87,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
           </p>
         )}
         {helperText && !error && !description && (
-          <p id={`${radioId}-description`} className="mt-1 text-xs text-gray-400">
+          <p id={`${radioId}-description`} className="mt-1 text-xs text-zinc-300">
             {helperText}
           </p>
         )}

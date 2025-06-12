@@ -22,9 +22,9 @@ const modalVariants = cva(
         full: 'sm:my-8 sm:w-full sm:max-w-full sm:mx-4',
       },
       variant: {
-        default: 'bg-gray-800 border border-gray-700',
-        dark: 'bg-gray-900 border border-gray-600',
-        glass: 'bg-gray-800/90 backdrop-blur-sm border border-gray-700/50',
+        default: 'bg-zinc-700 border border-zinc-600',
+        dark: 'bg-zinc-800 border border-zinc-500',
+        glass: 'bg-zinc-700/90 backdrop-blur-sm border border-zinc-600/50',
       },
     },
     defaultVariants: {
@@ -101,12 +101,12 @@ export function Modal({
                   <Box className="flex items-center justify-between p-6 pb-4">
                     <Box>
                       {title && (
-                        <Dialog.Title as="h3" className="text-lg font-semibold text-gray-300">
+                        <Dialog.Title as="h3" className="text-lg font-semibold text-zinc-200">
                           {title}
                         </Dialog.Title>
                       )}
                       {description && (
-                        <Dialog.Description className="mt-1 text-sm text-gray-400">
+                        <Dialog.Description className="mt-1 text-sm text-zinc-300">
                           {description}
                         </Dialog.Description>
                       )}
@@ -128,7 +128,7 @@ export function Modal({
                 {/* Content */}
                 {children && (
                   <Box className={`px-6 ${title || closeButton ? '' : 'pt-6'} ${footer ? 'pb-4' : 'pb-6'}`}>
-                    <div className="text-gray-300">
+                    <div className="text-zinc-200">
                       {children}
                     </div>
                   </Box>
@@ -136,7 +136,7 @@ export function Modal({
 
                 {/* Footer */}
                 {footer && (
-                  <Box className="px-6 pb-6 pt-4 border-t border-gray-700">
+                  <Box className="px-6 pb-6 pt-4 border-t border-zinc-600">
                     {footer}
                   </Box>
                 )}

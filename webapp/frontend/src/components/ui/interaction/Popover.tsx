@@ -46,10 +46,10 @@ const popoverPanelVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 border border-gray-700',
-        dark: 'bg-gray-900 border border-gray-600',
-        glass: 'bg-gray-800/90 backdrop-blur-sm border border-gray-700/50',
-        tooltip: 'bg-gray-900 border border-gray-600 text-xs',
+        default: 'bg-gray-700 border border-gray-600',
+        dark: 'bg-gray-800 border border-gray-500',
+        glass: 'bg-gray-700/90 backdrop-blur-sm border border-gray-600/50',
+        tooltip: 'bg-gray-800 border border-gray-500 text-xs',
       },
       padding: {
         none: 'p-0',
@@ -117,7 +117,7 @@ export function Popover({
               static={!closeOnClickOutside}
             >
               <Box className={popoverPanelVariants({ variant, padding, className: panelClassName })}>
-                <div className="text-gray-300">
+                <div className="text-gray-200">
                   {typeof children === 'function' ? children({ close }) : children}
                 </div>
               </Box>
@@ -189,7 +189,7 @@ export function Tooltip({
       >
         <div className={popoverVariants({ placement, size: 'sm' })}>
           <Box className={popoverPanelVariants({ variant: 'tooltip', padding: 'sm' })}>
-            <div className="text-gray-300 text-xs whitespace-nowrap">
+            <div className="text-gray-200 text-xs whitespace-nowrap">
               {content}
             </div>
           </Box>
@@ -234,7 +234,7 @@ export function DropdownMenu({
         <Box className="py-1">
           {items.map((item) => (
             <Fragment key={item.id}>
-              {item.separator && <hr className="my-1 border-gray-700" />}
+              {item.separator && <hr className="my-1 border-gray-600" />}
               <button
                 onClick={() => {
                   if (!item.disabled) {
@@ -246,8 +246,8 @@ export function DropdownMenu({
                 className={`
                   w-full text-left px-4 py-2 text-sm transition-colors duration-200
                   ${item.disabled 
-                    ? 'text-gray-500 cursor-not-allowed' 
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    ? 'text-gray-400 cursor-not-allowed' 
+                    : 'text-gray-200 hover:bg-gray-600 hover:text-white'
                   }
                 `}
               >

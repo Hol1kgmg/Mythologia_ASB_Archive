@@ -41,7 +41,7 @@ export function Select({
   return (
     <Box className={`w-full ${className}`}>
       {label && (
-        <label htmlFor={selectId} className="mb-1 block text-sm font-medium text-gray-300">
+        <label htmlFor={selectId} className="mb-1 block text-sm font-medium text-zinc-200">
           {label}
         </label>
       )}
@@ -50,20 +50,20 @@ export function Select({
           <Listbox.Button
             id={selectId}
             className={`
-              relative w-full cursor-pointer rounded-lg bg-gray-800 py-2 pl-3 pr-10 text-left text-sm
+              relative w-full cursor-pointer rounded-lg bg-zinc-700 py-2 pl-3 pr-10 text-left text-sm
               shadow-sm transition-all duration-200
-              ${error ? 'border border-red-600 focus:border-red-500 focus:ring-red-500' : 'border border-gray-600 focus:border-gray-500 focus:ring-gray-500'}
+              ${error ? 'border border-red-600 focus:border-red-500 focus:ring-red-500' : 'border border-zinc-500 focus:border-zinc-400 focus:ring-zinc-400'}
               focus:outline-none focus:ring-2
               ${disabled ? 'cursor-not-allowed opacity-50' : ''}
             `}
             aria-invalid={!!error}
             aria-describedby={error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined}
           >
-            <span className={`block truncate ${selectedOption ? 'text-gray-300' : 'text-gray-500'}`}>
+            <span className={`block truncate ${selectedOption ? 'text-zinc-200' : 'text-zinc-400'}`}>
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <ChevronUpDownIcon className="h-5 w-5 text-zinc-300" aria-hidden="true" />
             </span>
           </Listbox.Button>
           <Transition
@@ -73,7 +73,7 @@ export function Select({
             leaveTo="opacity-0"
           >
             <Listbox.Options 
-              className="absolute z-[100] mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-gray-800 py-1 text-sm shadow-lg ring-1 ring-gray-700 focus:outline-none scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600"
+              className="absolute z-[100] mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-zinc-700 py-1 text-sm shadow-lg ring-1 ring-zinc-600 focus:outline-none scrollbar-thin scrollbar-track-zinc-700 scrollbar-thumb-zinc-500"
               static
               modal={false}
             >
@@ -82,7 +82,7 @@ export function Select({
                   key={option.value}
                   className={({ active }) =>
                     `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-gray-700 text-white' : 'text-gray-300'
+                      active ? 'bg-zinc-600 text-white' : 'text-zinc-200'
                     } ${option.disabled ? 'cursor-not-allowed opacity-50' : ''}`
                   }
                   value={option.value}
@@ -96,7 +96,7 @@ export function Select({
                       {selected ? (
                         <span
                           className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                            active ? 'text-white' : 'text-gray-400'
+                            active ? 'text-white' : 'text-zinc-300'
                           }`}
                         >
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -116,7 +116,7 @@ export function Select({
         </p>
       )}
       {helperText && !error && (
-        <p id={`${selectId}-helper`} className="mt-1 text-xs text-gray-400">
+        <p id={`${selectId}-helper`} className="mt-1 text-xs text-zinc-300">
           {helperText}
         </p>
       )}

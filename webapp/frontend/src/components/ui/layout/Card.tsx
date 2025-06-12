@@ -7,11 +7,11 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 border-gray-700',
-        elevated: 'bg-gray-800 border-gray-700 shadow-lg',
-        outlined: 'bg-transparent border-gray-600',
-        filled: 'bg-gray-700 border-gray-600',
-        gradient: 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700',
+        default: 'bg-zinc-700 border-zinc-600',
+        elevated: 'bg-zinc-700 border-zinc-600 shadow-lg',
+        outlined: 'bg-transparent border-zinc-500',
+        filled: 'bg-zinc-600 border-zinc-500',
+        gradient: 'bg-gradient-to-br from-zinc-700 to-zinc-800 border-zinc-600',
       },
       padding: {
         none: 'p-0',
@@ -23,8 +23,8 @@ const cardVariants = cva(
       hover: {
         none: '',
         lift: 'hover:shadow-lg hover:-translate-y-1',
-        glow: 'hover:shadow-lg hover:shadow-gray-500/20',
-        border: 'hover:border-gray-500',
+        glow: 'hover:shadow-lg hover:shadow-zinc-400/20',
+        border: 'hover:border-zinc-400',
         scale: 'hover:scale-105',
       },
       clickable: {
@@ -58,9 +58,9 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         {...props}
       >
         {header && (
-          <Box className="border-b border-gray-700 pb-3 mb-4">
+          <Box className="border-b border-zinc-600 pb-3 mb-4">
             {typeof header === 'string' ? (
-              <h3 className="text-lg font-semibold text-gray-300">{header}</h3>
+              <h3 className="text-lg font-semibold text-zinc-200">{header}</h3>
             ) : (
               header
             )}
@@ -68,13 +68,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         )}
         
         {children && (
-          <Box className="text-gray-300">
+          <Box className="text-zinc-200">
             {children}
           </Box>
         )}
         
         {footer && (
-          <Box className="border-t border-gray-700 pt-3 mt-4">
+          <Box className="border-t border-zinc-600 pt-3 mt-4">
             {footer}
           </Box>
         )}

@@ -11,9 +11,9 @@ const accordionVariants = cva(
   {
     variants: {
       variant: {
-        default: 'divide-y divide-gray-700',
+        default: 'divide-y divide-gray-600',
         bordered: 'space-y-2',
-        flush: 'divide-y divide-gray-700',
+        flush: 'divide-y divide-gray-600',
         borderless: 'space-y-1',
       },
       size: {
@@ -57,7 +57,7 @@ const accordionItemVariants = cva(
     variants: {
       variant: {
         default: '',
-        bordered: 'border border-gray-700 rounded-lg overflow-hidden',
+        bordered: 'border border-gray-600 rounded-lg overflow-hidden',
         flush: '',
         borderless: '',
       },
@@ -85,10 +85,10 @@ const accordionButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'py-3 px-2 hover:text-gray-200',
-        bordered: 'py-4 px-6 hover:bg-gray-700/50',
-        flush: 'py-3 px-2 hover:text-gray-200',
-        borderless: 'py-3 px-2 hover:text-gray-200',
+        default: 'py-3 px-2 hover:text-gray-100',
+        bordered: 'py-4 px-6 hover:bg-gray-600/50',
+        flush: 'py-3 px-2 hover:text-gray-100',
+        borderless: 'py-3 px-2 hover:text-gray-100',
       },
       size: {
         sm: 'py-3 text-sm',
@@ -104,7 +104,7 @@ const accordionButtonVariants = cva(
 );
 
 const accordionContentVariants = cva(
-  'overflow-hidden text-gray-400',
+  'overflow-hidden text-gray-200',
   {
     variants: {
       variant: {
@@ -188,12 +188,12 @@ export function Accordion({
                       {item.icon && (
                         <span className="flex-shrink-0">{item.icon}</span>
                       )}
-                      <span className={`font-medium text-gray-300 ${item.disabled ? 'opacity-50' : ''}`}>
+                      <span className={`font-medium text-gray-200 ${item.disabled ? 'opacity-50' : ''}`}>
                         {item.title}
                       </span>
                     </Box>
                     <ChevronDownIcon
-                      className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                      className={`h-5 w-5 text-gray-200 transition-transform duration-200 ${
                         open ? 'rotate-180' : ''
                       } ${item.disabled ? 'opacity-50' : ''}`}
                     />
@@ -235,12 +235,12 @@ export function Accordion({
                 {item.icon && (
                   <span className="flex-shrink-0">{item.icon}</span>
                 )}
-                <span className={`font-medium text-gray-300 ${item.disabled ? 'opacity-50' : ''}`}>
+                <span className={`font-medium text-gray-200 ${item.disabled ? 'opacity-50' : ''}`}>
                   {item.title}
                 </span>
               </Box>
               <ChevronDownIcon
-                className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                className={`h-5 w-5 text-gray-300 transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
                 } ${item.disabled ? 'opacity-50' : ''}`}
               />
@@ -299,12 +299,12 @@ export function AccordionItem({
                 {icon && (
                   <span className="flex-shrink-0">{icon}</span>
                 )}
-                <span className={`font-medium text-gray-300 ${disabled ? 'opacity-50' : ''}`}>
+                <span className={`font-medium text-gray-200 ${disabled ? 'opacity-50' : ''}`}>
                   {title}
                 </span>
               </Box>
               <ChevronDownIcon
-                className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                className={`h-5 w-5 text-gray-300 transition-transform duration-200 ${
                   open ? 'rotate-180' : ''
                 } ${disabled ? 'opacity-50' : ''}`}
               />
@@ -355,8 +355,8 @@ const horizontalAccordionItemVariants = cva(
   {
     variants: {
       direction: {
-        left: 'border-r border-gray-700 last:border-r-0',
-        right: 'border-l border-gray-700 first:border-l-0 flex-row-reverse',
+        left: 'border-r border-gray-600 last:border-r-0',
+        right: 'border-l border-gray-600 first:border-l-0 flex-row-reverse',
       },
       isOpen: {
         true: '',
@@ -388,12 +388,12 @@ const horizontalAccordionItemVariants = cva(
 );
 
 const horizontalAccordionButtonVariants = cva(
-  'flex flex-col items-center justify-center text-center transition-all duration-200 focus:outline-none bg-gray-800 hover:bg-gray-700',
+  'flex flex-col items-center justify-center text-center transition-all duration-200 focus:outline-none bg-gray-600 hover:bg-gray-600',
   {
     variants: {
       isOpen: {
-        true: 'bg-gray-700',
-        false: 'bg-gray-800',
+        true: 'bg-gray-600',
+        false: 'bg-gray-600',
       },
     },
     defaultVariants: {
@@ -403,12 +403,12 @@ const horizontalAccordionButtonVariants = cva(
 );
 
 const horizontalAccordionContentVariants = cva(
-  'overflow-hidden bg-gray-800',
+  'overflow-hidden bg-gray-600',
   {
     variants: {
       direction: {
-        left: 'border-l border-gray-700',
-        right: 'border-r border-gray-700',
+        left: 'border-l border-gray-600',
+        right: 'border-r border-gray-600',
       },
       variant: {
         default: 'p-4',
@@ -472,7 +472,7 @@ export function HorizontalAccordion({
   if (allowMultiple) {
     // Multiple items can be open - use individual Disclosure components
     return (
-      <Box className={`flex h-96 ${showBorder ? 'border border-gray-700 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+      <Box className={`flex h-96 ${showBorder ? 'border border-gray-600 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
         {items.map((item) => (
           <Box key={item.id} className={horizontalAccordionItemVariants({ direction, showBorder, className: itemClassName })}>
             <Disclosure defaultOpen={item.defaultOpen}>
@@ -484,9 +484,9 @@ export function HorizontalAccordion({
                   >
                     <Box className="flex flex-col items-center justify-center h-full p-2">
                       {item.icon ? (
-                        <span className="text-gray-300">{item.icon}</span>
+                        <span className="text-gray-200">{item.icon}</span>
                       ) : (
-                        <span className="font-medium text-gray-300 text-xs">
+                        <span className="font-medium text-gray-200 text-xs">
                           {item.title.charAt(0)}
                         </span>
                       )}
@@ -501,7 +501,7 @@ export function HorizontalAccordion({
                     leaveTo="w-0 opacity-0"
                   >
                     <Disclosure.Panel className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                      <div className="text-gray-300 h-full overflow-y-auto">
+                      <div className="text-gray-200 h-full overflow-y-auto">
                         {item.content}
                       </div>
                     </Disclosure.Panel>
@@ -517,7 +517,7 @@ export function HorizontalAccordion({
 
   // Single item open at a time - use controlled state
   return (
-    <Box className={`flex h-96 ${showBorder ? 'border border-gray-700 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+    <Box className={`flex h-96 ${showBorder ? 'border border-gray-600 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
@@ -530,9 +530,9 @@ export function HorizontalAccordion({
               >
                 <Box className="flex flex-col items-center justify-center h-full p-2">
                   {item.icon ? (
-                    <span className="text-gray-300">{item.icon}</span>
+                    <span className="text-gray-200">{item.icon}</span>
                   ) : (
-                    <span className="font-medium text-gray-300 text-xs">
+                    <span className="font-medium text-gray-200 text-xs">
                       {item.title.charAt(0)}
                     </span>
                   )}
@@ -548,7 +548,7 @@ export function HorizontalAccordion({
                 leaveTo="w-0 opacity-0"
               >
                 <Box className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                  <div className="text-gray-300 h-full overflow-y-auto">
+                  <div className="text-gray-200 h-full overflow-y-auto">
                     {item.content}
                   </div>
                 </Box>

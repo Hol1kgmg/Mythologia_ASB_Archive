@@ -6,9 +6,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-gray-700 text-white hover:bg-gray-600',
-        secondary: 'bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700 hover:border-gray-500',
-        ghost: 'text-gray-300 hover:bg-gray-800 hover:text-white',
+        primary: 'bg-zinc-600 text-white hover:bg-zinc-500',
+        secondary: 'bg-zinc-700 text-zinc-300 border border-zinc-500 hover:bg-zinc-600 hover:border-zinc-400',
+        ghost: 'text-zinc-300 hover:bg-zinc-700 hover:text-white',
         danger: 'bg-red-900 text-red-100 hover:bg-red-800',
         success: 'bg-green-900 text-green-100 hover:bg-green-800',
       },
@@ -24,7 +24,7 @@ const buttonVariants = cva(
         false: '',
       },
       focusRing: {
-        true: 'focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900',
+        true: 'focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800',
         false: '',
       },
     },
@@ -33,17 +33,17 @@ const buttonVariants = cva(
       {
         variant: 'primary',
         focusRing: true,
-        className: 'focus:ring-gray-500',
+        className: 'focus:ring-zinc-400',
       },
       {
         variant: 'secondary',
         focusRing: true,
-        className: 'focus:ring-gray-500',
+        className: 'focus:ring-zinc-400',
       },
       {
         variant: 'ghost',
         focusRing: true,
-        className: 'focus:ring-gray-500',
+        className: 'focus:ring-zinc-400',
       },
       {
         variant: 'danger',

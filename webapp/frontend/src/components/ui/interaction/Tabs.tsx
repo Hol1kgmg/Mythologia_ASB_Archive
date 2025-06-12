@@ -10,9 +10,9 @@ const tabListVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 border border-gray-700',
-        underline: 'bg-transparent border-b border-gray-700',
-        pills: 'bg-gray-800/50 backdrop-blur-sm',
+        default: 'bg-zinc-700 border border-zinc-600',
+        underline: 'bg-transparent border-b border-zinc-600',
+        pills: 'bg-zinc-700/50 backdrop-blur-sm',
         minimal: 'bg-transparent',
       },
       size: {
@@ -29,11 +29,11 @@ const tabListVariants = cva(
 );
 
 const tabVariants = cva(
-  'w-full rounded-lg py-2.5 font-medium leading-5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900',
+  'w-full rounded-lg py-2.5 font-medium leading-5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800',
   {
     variants: {
       variant: {
-        default: 'focus:ring-gray-500',
+        default: 'focus:ring-zinc-400',
         underline: 'focus:ring-blue-500',
         pills: 'focus:ring-white/20',
         minimal: 'focus:ring-blue-500',
@@ -53,12 +53,12 @@ const tabVariants = cva(
       {
         variant: 'default',
         selected: true,
-        className: 'bg-gray-700 text-white shadow',
+        className: 'bg-zinc-600 text-white shadow',
       },
       {
         variant: 'default',
         selected: false,
-        className: 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-300',
+        className: 'text-zinc-300 hover:bg-zinc-600/50 hover:text-zinc-200',
       },
       // Underline variant
       {
@@ -69,18 +69,18 @@ const tabVariants = cva(
       {
         variant: 'underline',
         selected: false,
-        className: 'text-gray-400 hover:text-gray-300 border-b-2 border-transparent',
+        className: 'text-zinc-300 hover:text-zinc-200 border-b-2 border-transparent',
       },
       // Pills variant
       {
         variant: 'pills',
         selected: true,
-        className: 'bg-white text-gray-900 shadow-sm',
+        className: 'bg-white text-zinc-900 shadow-sm',
       },
       {
         variant: 'pills',
         selected: false,
-        className: 'text-gray-400 hover:bg-white/10 hover:text-white',
+        className: 'text-zinc-300 hover:bg-white/10 hover:text-white',
       },
       // Minimal variant
       {
@@ -91,7 +91,7 @@ const tabVariants = cva(
       {
         variant: 'minimal',
         selected: false,
-        className: 'text-gray-400 hover:text-gray-300',
+        className: 'text-zinc-300 hover:text-zinc-200',
       },
     ],
     defaultVariants: {
@@ -103,12 +103,12 @@ const tabVariants = cva(
 );
 
 const tabPanelVariants = cva(
-  'rounded-lg bg-gray-800 p-3 focus:outline-none',
+  'rounded-lg bg-zinc-700 p-3 focus:outline-none',
   {
     variants: {
       variant: {
-        default: 'bg-gray-800 border border-gray-700',
-        glass: 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50',
+        default: 'bg-zinc-700 border border-zinc-600',
+        glass: 'bg-zinc-700/50 backdrop-blur-sm border border-zinc-600/50',
         minimal: 'bg-transparent border-none p-0',
       },
       spacing: {
@@ -219,7 +219,7 @@ export function VerticalTabs({
   return (
     <Box className={`flex gap-4 ${className || ''}`}>
       <Tab.Group defaultIndex={defaultIndex} onChange={onChange}>
-        <Tab.List className={`${tabWidth} flex flex-col space-y-1 rounded-lg bg-gray-800 border border-gray-700 p-1 ${tabListClassName || ''}`}>
+        <Tab.List className={`${tabWidth} flex flex-col space-y-1 rounded-lg bg-zinc-700 border border-zinc-600 p-1 ${tabListClassName || ''}`}>
           {tabs.map((tab) => (
             <Tab
               key={tab.id}
