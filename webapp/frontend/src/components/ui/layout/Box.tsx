@@ -23,6 +23,7 @@ const boxVariants = cva('', {
       none: '',
       default: 'bg-zinc-700',
       darker: 'bg-zinc-800',
+      truedark: 'bg-zinc-900',
       lighter: 'bg-zinc-600',
       transparent: 'bg-transparent',
       gradient: 'bg-gradient-to-b from-zinc-800 to-zinc-900',
