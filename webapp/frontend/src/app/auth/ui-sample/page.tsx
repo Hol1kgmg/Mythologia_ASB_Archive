@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import NotFoundPage from '../../../components/NotFoundPage';
-import { Box, BackgroundPattern } from '../../../components/ui';
+import { Box, BackgroundPattern, Alert } from '../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
@@ -70,6 +70,14 @@ export default function UISampleIndexPage() {
           <p className="text-center text-gray-400 mb-8">
             Headless UIを使用した共通コンポーネントライブラリ
           </p>
+
+          <Alert
+            variant="warning"
+            title="開発者向け機能"
+            className="w-full max-w-3xl mx-auto my-8"
+          >
+            共通UIコンポーネントのサンプルページです
+          </Alert>
           
           <Box className="space-y-6">
             {samplePages.map((page) => (

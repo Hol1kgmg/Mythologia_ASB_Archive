@@ -1,6 +1,6 @@
 import Phase6TypographySampleContainer from '../../../../feature/authOther/UISample/components/Phase6TypographySampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
-import { Box, BackgroundPattern } from '../../../../components/ui';
+import { Box, BackgroundPattern, Alert } from '../../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
@@ -22,6 +22,14 @@ export default function TypographySamplePage() {
           <h1 className="text-3xl font-bold text-center text-gray-300 mb-8">
             UIコンポーネントサンプル - Phase 6 タイポグラフィ系
           </h1>
+          
+          <Alert
+            variant="warning"
+            title="開発者向け機能"
+            className="w-full max-w-6xl mx-auto my-8"
+          >
+            共通UIコンポーネントのサンプルページです
+          </Alert>
           
           <Phase6TypographySampleContainer />
         </Box>
