@@ -30,3 +30,10 @@ export { HorizontalAccordion } from './interaction/Accordion';
 export * from './common/BackgroundPattern';
 export * from './common/Container';
 export * from './common/Section';
+
+// Typography Components
+export * from './typography/Heading';
+export * from './typography/Text';
+export * from './typography/Label';
+export * from './typography/Caption';
+export * from './typography/Code';

@@ -45,8 +45,8 @@ export default function UISampleIndexPage() {
     {
       href: '/auth/ui-sample/typography',
       title: 'Phase 6: タイポグラフィ系',
-      description: 'Heading, Text, Label, Caption - テキスト表示コンポーネント',
-      status: 'planned',
+      description: 'Heading, Text, Label, Caption, Code - テキスト表示コンポーネント',
+      status: 'completed',
     },
     {
       href: '/auth/ui-sample/common',
