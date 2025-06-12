@@ -2,6 +2,19 @@
 
 import React, { useEffect } from 'react';
 import HomeButton from './HomeButton';
+import { 
+  Box, 
+  PageContainer, 
+  Container, 
+  VStack, 
+  HStack,
+  Heading, 
+  Text, 
+  Button,
+  Card,
+  Code,
+  BackgroundPattern 
+} from './ui';
 
 interface ErrorPageProps {
   title?: string;
@@ -31,104 +44,98 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden text-white bg-gradient-to-b from-black via-gray-900 to-black">
+    <PageContainer className="min-h-screen relative overflow-x-hidden">
       {/* 背景パターン */}
-      <div 
+      <BackgroundPattern />
+      
+      {/* 追加の装飾的背景 */}
+      <Box 
         className="fixed inset-0 opacity-5 pointer-events-none"
         style={{
           background: `
             radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
-            repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 10px,
-              rgba(255, 255, 255, 0.01) 10px,
-              rgba(255, 255, 255, 0.01) 20px
-            )
+            radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.2) 0%, transparent 50%)
           `
         }}
       />
 
       {/* メインコンテナ */}
-      <div className="relative z-10 min-h-screen flex flex-col justify-center items-center p-5 text-center">
-        
-        <div className="max-w-2xl mx-auto">
+      <Container className="relative z-10 min-h-screen flex items-center justify-center">
+        <VStack spacing="xl" align="center" className="text-center max-w-2xl">
           {/* エラータイトル */}
-          <h1 
-            className="mb-6"
+          <Heading 
+            level="h1"
+            className="text-8xl md:text-9xl font-bold tracking-wider text-red-500"
             aria-label={`エラー: ${title}`}
-            style={{
-              fontSize: '6rem',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              color: '#ef4444',
-            }}
           >
             {title}
-          </h1>
+          </Heading>
           
           {/* エラーメッセージ */}
-          <p 
-            className="text-xl text-slate-300 mb-4 font-light tracking-wide"
-            role="alert"
-            aria-live="polite"
-          >
-            {message}
-          </p>
-          
-          {subMessage && (
-            <p className="text-slate-400 mb-12">
-              {subMessage}
-            </p>
-          )}
+          <VStack spacing="sm">
+            <Text 
+              size="xl"
+              color="primary"
+              className="font-light tracking-wide"
+              role="alert"
+              aria-live="polite"
+            >
+              {message}
+            </Text>
+            
+            {subMessage && (
+              <Text color="muted">
+                {subMessage}
+              </Text>
+            )}
+          </VStack>
 
-          {/* 再試行ボタン */}
-          {showRetryButton && onRetry && (
-            <div className="flex justify-center mb-8">
-              <button
+          {/* アクションボタン */}
+          <HStack spacing="md" className="mt-8">
+            {/* 再試行ボタン */}
+            {showRetryButton && onRetry && (
+              <Button
                 onClick={onRetry}
-                className="text-slate-400 no-underline py-3 px-12 border border-white border-opacity-20 rounded-md transition-all duration-300 text-sm hover:text-red-400 hover:border-red-400 hover:bg-opacity-5 focus:outline-none focus:ring-2 focus:ring-red-500"
+                variant="danger"
+                size="lg"
+                leftIcon={<span>🔄</span>}
                 aria-label="ページを再試行"
               >
-                🔄 再試行
-              </button>
-            </div>
-          )}
+                再試行
+              </Button>
+            )}
+
+            {/* ホームボタン */}
+            {showHomeButton && (
+              <HomeButton size="lg" variant="secondary">
+                ← ホームに戻る
+              </HomeButton>
+            )}
+          </HStack>
 
           {/* ステージング環境でのみエラー詳細を表示 */}
           {showErrorDetails && error && process.env.NEXT_PUBLIC_IS_STAGING === 'true' && (
-            <details className="text-left bg-black/30 rounded-xl p-6 border border-red-500/20 mb-8">
-              <summary className="cursor-pointer text-red-300 mb-3 font-semibold">
-                🐛 エラー詳細 (ステージング環境)
-              </summary>
-              <pre className="text-red-400 whitespace-pre-wrap overflow-auto text-sm bg-gray-900 rounded p-4">
-                {error.message}
-                {error.stack}
-              </pre>
-            </details>
+            <Box className="w-full mt-8">
+              <details>
+                <summary className="cursor-pointer text-red-400 mb-3 font-semibold flex items-center gap-2">
+                  <span>🐛</span>
+                  <Text color="error">エラー詳細 (ステージング環境)</Text>
+                </summary>
+                <Card 
+                  variant="outlined" 
+                  padding="md" 
+                  className="border-red-500/20 bg-zinc-900/50"
+                >
+                  <Code variant="block" className="text-red-400 text-sm">
+                    {error.message}
+                    {error.stack && `\n\n${error.stack}`}
+                  </Code>
+                </Card>
+              </details>
+            </Box>
           )}
-
-          {/* ホームボタン */}
-          {showHomeButton && (
-            <div className="flex justify-center mt-8">
-              <HomeButton>
-                ← ホームに戻る
-              </HomeButton>
-            </div>
-          )}
-
-        </div>
-      </div>
-
-      {/* レスポンシブ対応 */}
-      <style jsx>{`
-        @media (max-width: 768px) {
-          h1 {
-            font-size: 4rem !important;
-          }
-        }
-      `}</style>
-    </div>
+        </VStack>
+      </Container>
+    </PageContainer>
   );
 }

@@ -1,5 +1,5 @@
-import ErrorTestPage from '../../components/ErrorTestPage';
-import NotFoundPage from '../../components/NotFoundPage';
+import ErrorTestPage from '../../../components/ErrorTestPage';
+import NotFoundPage from '../../../components/NotFoundPage';
 
 // ステージング環境（開発・ステージング両方）でのみエラーテストページを有効化
 const isErrorTestEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';

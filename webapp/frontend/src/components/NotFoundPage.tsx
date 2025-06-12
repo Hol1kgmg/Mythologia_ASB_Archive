@@ -2,6 +2,15 @@
 
 import React from 'react';
 import HomeButton from './HomeButton';
+import { 
+  Box, 
+  PageContainer, 
+  Container, 
+  VStack, 
+  Heading, 
+  Text, 
+  BackgroundPattern 
+} from './ui';
 
 interface NotFoundPageProps {
   title?: string;
@@ -18,79 +27,62 @@ export default function NotFoundPage({
 }: NotFoundPageProps) {
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden text-white bg-gradient-to-b from-black via-gray-900 to-black">
+    <PageContainer className="min-h-screen relative overflow-x-hidden">
       {/* 背景パターン */}
-      <div 
+      <BackgroundPattern />
+      
+      {/* 追加の装飾的背景 */}
+      <Box 
         className="fixed inset-0 opacity-5 pointer-events-none"
         style={{
           background: `
             radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
-            repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 10px,
-              rgba(255, 255, 255, 0.01) 10px,
-              rgba(255, 255, 255, 0.01) 20px
-            )
+            radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.2) 0%, transparent 50%)
           `
         }}
       />
 
       {/* メインコンテナ */}
-      <div className="relative z-10 min-h-screen flex flex-col justify-center items-center p-5 text-center">
-        
-        <div className="max-w-2xl mx-auto">
+      <Container className="relative z-10 min-h-screen flex items-center justify-center">
+        <VStack spacing="2xl" align="center" className="text-center">
           {/* エラーコード */}
-          <h1 
-            className="mb-6"
+          <Heading 
+            level="h1"
+            className="text-8xl md:text-9xl font-bold tracking-wider text-zinc-200"
             aria-label={`エラーコード ${title}`}
-            style={{
-              fontSize: '6rem',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              color: '#e0e0e0',
-            }}
           >
             {title}
-          </h1>
+          </Heading>
           
           {/* エラーメッセージ */}
-          <p 
-            className="text-xl text-slate-300 mb-12 font-light tracking-wide"
+          <Text 
+            size="xl"
+            color="muted"
+            className="font-light tracking-wide"
             role="alert"
             aria-live="polite"
           >
             {message}
-          </p>
+          </Text>
 
-          {/* ホームリンク */}
-          {showHomeLink && (
-            <div className="mb-8">
-              <HomeButton>
+          {/* アクションエリア */}
+          <VStack spacing="lg" className="mt-8">
+            {/* ホームリンク */}
+            {showHomeLink && (
+              <HomeButton size="lg" variant="primary">
                 ← ホームに戻る
               </HomeButton>
-            </div>
-          )}
+            )}
 
-          {/* カスタムアクション */}
-          {customActions && (
-            <div className="mb-12">
-              {customActions}
-            </div>
-          )}
-
-        </div>
-      </div>
-
-      {/* レスポンシブ対応 */}
-      <style jsx>{`
-        @media (max-width: 768px) {
-          h1 {
-            font-size: 4rem !important;
-          }
-        }
-      `}</style>
-    </div>
+            {/* カスタムアクション */}
+            {customActions && (
+              <Box>
+                {customActions}
+              </Box>
+            )}
+          </VStack>
+        </VStack>
+      </Container>
+    </PageContainer>
   );
 }
