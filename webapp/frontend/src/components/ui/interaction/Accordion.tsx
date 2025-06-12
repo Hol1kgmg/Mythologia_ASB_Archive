@@ -355,8 +355,8 @@ const horizontalAccordionItemVariants = cva(
   {
     variants: {
       direction: {
-        left: 'border-r border-gray-600 last:border-r-0',
-        right: 'border-l border-gray-600 first:border-l-0 flex-row-reverse',
+        left: 'border-r border-gray-500 last:border-r-0',
+        right: 'border-l border-gray-500 first:border-l-0 flex-row-reverse',
       },
       isOpen: {
         true: '',
@@ -388,12 +388,12 @@ const horizontalAccordionItemVariants = cva(
 );
 
 const horizontalAccordionButtonVariants = cva(
-  'flex flex-col items-center justify-center text-center transition-all duration-200 focus:outline-none bg-gray-600 hover:bg-gray-600',
+  'flex flex-col items-center justify-center text-center transition-all duration-200 focus:outline-none bg-transparent hover:bg-gray-500/20',
   {
     variants: {
       isOpen: {
-        true: 'bg-gray-600',
-        false: 'bg-gray-600',
+        true: 'bg-gray-500/30',
+        false: 'bg-transparent',
       },
     },
     defaultVariants: {
@@ -403,12 +403,12 @@ const horizontalAccordionButtonVariants = cva(
 );
 
 const horizontalAccordionContentVariants = cva(
-  'overflow-hidden bg-gray-600',
+  'overflow-hidden bg-transparent',
   {
     variants: {
       direction: {
-        left: 'border-l border-gray-600',
-        right: 'border-r border-gray-600',
+        left: 'border-l border-gray-500',
+        right: 'border-r border-gray-500',
       },
       variant: {
         default: 'p-4',
@@ -472,7 +472,7 @@ export function HorizontalAccordion({
   if (allowMultiple) {
     // Multiple items can be open - use individual Disclosure components
     return (
-      <Box className={`flex h-96 ${showBorder ? 'border border-gray-600 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+      <Box className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
         {items.map((item) => (
           <Box key={item.id} className={horizontalAccordionItemVariants({ direction, showBorder, className: itemClassName })}>
             <Disclosure defaultOpen={item.defaultOpen}>
@@ -484,9 +484,9 @@ export function HorizontalAccordion({
                   >
                     <Box className="flex flex-col items-center justify-center h-full p-2">
                       {item.icon ? (
-                        <span className="text-gray-200">{item.icon}</span>
+                        <span className="text-gray-100">{item.icon}</span>
                       ) : (
-                        <span className="font-medium text-gray-200 text-xs">
+                        <span className="font-medium text-gray-100 text-xs">
                           {item.title.charAt(0)}
                         </span>
                       )}
@@ -501,7 +501,7 @@ export function HorizontalAccordion({
                     leaveTo="w-0 opacity-0"
                   >
                     <Disclosure.Panel className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                      <div className="text-gray-200 h-full overflow-y-auto">
+                      <div className="text-gray-100 h-full overflow-y-auto">
                         {item.content}
                       </div>
                     </Disclosure.Panel>
@@ -517,7 +517,7 @@ export function HorizontalAccordion({
 
   // Single item open at a time - use controlled state
   return (
-    <Box className={`flex h-96 ${showBorder ? 'border border-gray-600 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+    <Box className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
@@ -530,9 +530,9 @@ export function HorizontalAccordion({
               >
                 <Box className="flex flex-col items-center justify-center h-full p-2">
                   {item.icon ? (
-                    <span className="text-gray-200">{item.icon}</span>
+                    <span className="text-gray-100">{item.icon}</span>
                   ) : (
-                    <span className="font-medium text-gray-200 text-xs">
+                    <span className="font-medium text-gray-100 text-xs">
                       {item.title.charAt(0)}
                     </span>
                   )}
@@ -548,7 +548,7 @@ export function HorizontalAccordion({
                 leaveTo="w-0 opacity-0"
               >
                 <Box className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                  <div className="text-gray-200 h-full overflow-y-auto">
+                  <div className="text-gray-100 h-full overflow-y-auto">
                     {item.content}
                   </div>
                 </Box>
