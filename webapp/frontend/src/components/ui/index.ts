@@ -20,3 +20,8 @@ export * from './interaction/Tabs';
 export * from './interaction/Popover';
 export * from './interaction/Accordion';
 export { HorizontalAccordion } from './interaction/Accordion';
+
+// Common Components
+export * from './common/BackgroundPattern';
+export * from './common/Container';
+export * from './common/Section';

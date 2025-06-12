@@ -88,6 +88,7 @@ const accordionButtonVariants = cva(
         default: 'py-3 px-2 hover:text-gray-200',
         bordered: 'py-4 px-6 hover:bg-gray-700/50',
         flush: 'py-3 px-2 hover:text-gray-200',
+        borderless: 'py-3 px-2 hover:text-gray-200',
       },
       size: {
         sm: 'py-3 text-sm',
@@ -110,6 +111,7 @@ const accordionContentVariants = cva(
         default: 'pb-3 pl-2 pr-2',
         bordered: 'px-4 pb-3',
         flush: 'pb-3 pl-2 pr-2',
+        borderless: 'pb-3 pl-2 pr-2',
       },
       size: {
         sm: 'text-sm',
