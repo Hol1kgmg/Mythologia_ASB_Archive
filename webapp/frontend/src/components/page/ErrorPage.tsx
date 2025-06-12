@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import HomeButton from './HomeButton';
+import HomeButton from '../ui/feedback/HomeButton';
 import { 
   Box, 
   PageContainer, 
@@ -14,7 +14,7 @@ import {
   Card,
   Code,
   BackgroundPattern 
-} from './ui';
+} from '../ui';
 
 interface ErrorPageProps {
   title?: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import HomeButton from './HomeButton';
+import HomeButton from '../../../components/ui/feedback/HomeButton';
 
 export default function ErrorTestPage() {
   const [shouldThrow, setShouldThrow] = useState(false);

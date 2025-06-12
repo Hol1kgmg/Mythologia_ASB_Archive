@@ -1,5 +1,5 @@
 import Phase2FormSampleContainer from '../../../../feature/authOther/UISample/components/Phase2FormSampleContainer';
-import NotFoundPage from '../../../../components/NotFoundPage';
+import NotFoundPage from '../../../../components/page/NotFoundPage';
 import { Box, BackgroundPattern, Alert } from '../../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化

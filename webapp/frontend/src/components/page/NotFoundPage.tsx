@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import HomeButton from './HomeButton';
+import HomeButton from '../ui/feedback/HomeButton';
 import { 
   Box, 
   PageContainer, 
@@ -10,7 +10,7 @@ import {
   Heading, 
   Text, 
   BackgroundPattern 
-} from './ui';
+} from '../ui';
 
 interface NotFoundPageProps {
   title?: string;

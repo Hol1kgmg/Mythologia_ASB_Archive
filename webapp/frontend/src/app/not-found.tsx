@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import NotFoundPage from '../components/NotFoundPage';
-import PageFooter from '../components/PageFooter';
+import NotFoundPage from '../components/page/NotFoundPage';
+import PageFooter from '../components/ui/layout/PageFooter';
 
 export const metadata: Metadata = {
   title: '404 - ページが見つかりません | Mythologia ASB',

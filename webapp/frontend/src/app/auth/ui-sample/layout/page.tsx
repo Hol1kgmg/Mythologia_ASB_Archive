@@ -1,5 +1,5 @@
 import Phase3LayoutSampleContainer from '../../../../feature/authOther/UISample/components/Phase3LayoutSampleContainer';
-import NotFoundPage from '../../../../components/NotFoundPage';
+import NotFoundPage from '../../../../components/page/NotFoundPage';
 import { Box, BackgroundPattern, Alert } from '../../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
