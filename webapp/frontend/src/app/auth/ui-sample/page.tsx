@@ -39,8 +39,8 @@ export default function UISampleIndexPage() {
     {
       href: '/auth/ui-sample/feedback',
       title: 'Phase 5: フィードバック系',
-      description: 'Badge, Alert, Loading - フィードバック表示コンポーネント',
-      status: 'planned',
+      description: 'Alert, Toast, Progress, Skeleton, Spinner - フィードバック表示コンポーネント',
+      status: 'completed',
     },
     {
       href: '/auth/ui-sample/typography',
