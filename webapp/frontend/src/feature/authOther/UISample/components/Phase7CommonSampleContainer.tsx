@@ -13,7 +13,8 @@ import {
   PageContainer,
   Section,
   HeroSection,
-  FeatureSection
+  FeatureSection,
+  Alert
 } from '../../../../components/ui';
 import { 
   SparklesIcon,
@@ -51,6 +52,14 @@ export default function Phase7CommonSampleContainer() {
               </HStack>
             }
           />
+
+          <Alert
+            variant="warning"
+            title="開発者向け機能"
+            className="w-full max-w-6xl mx-auto my-8"
+          >
+            共通UIコンポーネントのサンプルページです
+          </Alert>
 
           {/* Background Pattern Controls */}
           <Section spacing="lg" background="none" border="bottom">
