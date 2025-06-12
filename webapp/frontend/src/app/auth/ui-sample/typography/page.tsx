@@ -1,4 +1,4 @@
-import Phase6TypographySamplePage from '../../../../components/Phase6TypographySamplePage';
+import Phase6TypographySampleContainer from '../../../../feature/authOther/UISample/components/Phase6TypographySampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern } from '../../../../components/ui';
 
@@ -23,7 +23,7 @@ export default function TypographySamplePage() {
             UIコンポーネントサンプル - Phase 6 タイポグラフィ系
           </h1>
           
-          <Phase6TypographySamplePage />
+          <Phase6TypographySampleContainer />
         </Box>
       </Box>
     </div>

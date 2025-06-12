@@ -22,12 +22,12 @@ import {
   useToast,
   Section,
   Container
-} from './ui';
+} from '../../../../components/ui';
 import { 
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 
-export default function Phase5FeedbackSamplePage() {
+export default function Phase5FeedbackSampleContainer() {
   const [alertVisible, setAlertVisible] = useState<Record<string, boolean>>({
     info: true,
     success: true,

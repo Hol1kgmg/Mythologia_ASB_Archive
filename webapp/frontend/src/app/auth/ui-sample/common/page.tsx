@@ -1,4 +1,4 @@
-import Phase7CommonSamplePage from '../../../../components/Phase7CommonSamplePage';
+import Phase7CommonSampleContainer from '../../../../feature/authOther/UISample/components/Phase7CommonSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
@@ -10,5 +10,5 @@ export default function UISampleCommonPage() {
     return <NotFoundPage />;
   }
 
-  return <Phase7CommonSamplePage />;
+  return <Phase7CommonSampleContainer />;
 }

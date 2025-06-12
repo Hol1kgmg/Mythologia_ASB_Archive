@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Textarea, Checkbox, Radio } from './ui';
+import { Box, Textarea, Checkbox, Radio } from '../../../../components/ui';
 
-export default function Phase2FormSamplePage() {
+export default function Phase2FormSampleContainer() {
   const [textareaValue, setTextareaValue] = useState('');
   const [checkboxStates, setCheckboxStates] = useState({
     basic: false,

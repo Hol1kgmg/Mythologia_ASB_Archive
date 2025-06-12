@@ -14,7 +14,7 @@ import {
   Section,
   HeroSection,
   FeatureSection
-} from './ui';
+} from '../../../../components/ui';
 import { 
   SparklesIcon,
   CubeIcon,
@@ -24,7 +24,7 @@ import {
   CodeBracketIcon
 } from '@heroicons/react/24/outline';
 
-export default function Phase7CommonSamplePage() {
+export default function Phase7CommonSampleContainer() {
   return (
     <Box className="relative min-h-screen">
       {/* Global Background Pattern Demo */}

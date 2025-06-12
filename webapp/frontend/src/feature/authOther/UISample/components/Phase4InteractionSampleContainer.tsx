@@ -17,7 +17,7 @@ import {
   HorizontalAccordion,
   VStack,
   HStack
-} from './ui';
+} from '../../../../components/ui';
 import { 
   CogIcon, 
   UserIcon, 
@@ -31,7 +31,7 @@ import {
   CubeIcon
 } from '@heroicons/react/24/outline';
 
-export default function Phase4InteractionSamplePage() {
+export default function Phase4InteractionSampleContainer() {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [glassModalOpen, setGlassModalOpen] = useState(false);

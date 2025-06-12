@@ -1,4 +1,4 @@
-import Phase5FeedbackSamplePage from '../../../../components/Phase5FeedbackSamplePage';
+import Phase5FeedbackSampleContainer from '../../../../feature/authOther/UISample/components/Phase5FeedbackSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern, ToastProvider } from '../../../../components/ui';
 
@@ -24,7 +24,7 @@ export default function FeedbackSamplePage() {
               UIコンポーネントサンプル - Phase 5 フィードバック系
             </h1>
             
-            <Phase5FeedbackSamplePage />
+            <Phase5FeedbackSampleContainer />
           </Box>
         </Box>
       </div>

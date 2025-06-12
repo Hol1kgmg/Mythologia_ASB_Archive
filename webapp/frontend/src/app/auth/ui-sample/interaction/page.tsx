@@ -1,4 +1,4 @@
-import Phase4InteractionSamplePage from '../../../../components/Phase4InteractionSamplePage';
+import Phase4InteractionSampleContainer from '../../../../feature/authOther/UISample/components/Phase4InteractionSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern } from '../../../../components/ui';
 
@@ -23,7 +23,7 @@ export default function InteractionSamplePage() {
             UIコンポーネントサンプル - Phase 4 インタラクション系
           </h1>
           
-          <Phase4InteractionSamplePage />
+          <Phase4InteractionSampleContainer />
         </Box>
       </Box>
     </div>

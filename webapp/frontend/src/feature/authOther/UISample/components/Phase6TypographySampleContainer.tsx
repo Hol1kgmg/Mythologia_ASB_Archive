@@ -30,14 +30,14 @@ import {
   CodeBlock,
   Kbd,
   Var
-} from './ui';
+} from '../../../../components/ui';
 import { 
   StarIcon,
   UserIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
-export default function Phase6TypographySamplePage() {
+export default function Phase6TypographySampleContainer() {
   const [headingVariant, setHeadingVariant] = useState<'default' | 'gradient' | 'primary' | 'secondary' | 'muted'>('default');
   const [textSize, setTextSize] = useState<'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'>('base');
   

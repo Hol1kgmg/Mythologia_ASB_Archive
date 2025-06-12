@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Card, Grid, GridItem, HStack, VStack, Spacer, Button } from './ui';
+import { Box, Card, Grid, GridItem, HStack, VStack, Spacer, Button } from '../../../../components/ui';
 
-export default function Phase3LayoutSamplePage() {
+export default function Phase3LayoutSampleContainer() {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
 
   const cardItems = [

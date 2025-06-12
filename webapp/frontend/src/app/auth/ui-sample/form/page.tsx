@@ -1,4 +1,4 @@
-import Phase2FormSamplePage from '../../../../components/Phase2FormSamplePage';
+import Phase2FormSampleContainer from '../../../../feature/authOther/UISample/components/Phase2FormSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern } from '../../../../components/ui';
 
@@ -23,7 +23,7 @@ export default function FormSamplePage() {
             UIコンポーネントサンプル - Phase 2 フォーム系
           </h1>
           
-          <Phase2FormSamplePage />
+          <Phase2FormSampleContainer />
         </Box>
       </Box>
     </div>

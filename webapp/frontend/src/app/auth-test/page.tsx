@@ -1,4 +1,4 @@
-import ApplicationLevelTestPage from '../../feature/authOther/applicationLevelTest/conponents/ApplicationLevelTestPage';
+import ApplicationLevelTestPage from '../../feature/authOther/applicationLevelTest/components/ApplicationLevelTestPage';
 import NotFoundPage from '../../components/NotFoundPage';
 
 // ステージング環境（開発・ステージング両方）でのみ認証テストページを有効化

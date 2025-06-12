@@ -1,4 +1,4 @@
-import UIComponentsSamplePage from '../../../../components/UIComponentsSamplePage';
+import Phase1BasicSampleContainer from '../../../../feature/authOther/UISample/components/Phase1BasicSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern } from '../../../../components/ui';
 
@@ -23,7 +23,7 @@ export default function UIComponentsPage() {
             UIコンポーネントサンプル - Phase 1 基盤コンポーネント
           </h1>
           
-          <UIComponentsSamplePage />
+          <Phase1BasicSampleContainer />
         </Box>
       </Box>
     </div>

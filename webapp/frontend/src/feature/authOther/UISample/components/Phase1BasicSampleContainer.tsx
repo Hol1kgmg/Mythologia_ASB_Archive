@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Button, Input, Select } from './ui';
+import { Box, Button, Input, Select } from '../../../../components/ui';
 
-export default function UIComponentsSamplePage() {
+export default function Phase1BasicSampleContainer() {
   const [inputValue, setInputValue] = useState('');
   const [selectValue, setSelectValue] = useState('');
 
@@ -31,7 +31,7 @@ export default function UIComponentsSamplePage() {
       border="default"
       className="w-full max-w-4xl mx-auto my-8 overflow-visible"
     >
-      <h2 className="text-2xl font-bold text-gray-300 mb-6">UIコンポーネントデモ</h2>
+      <h2 className="text-2xl font-bold text-gray-300 mb-6">Phase 1: 基本コンポーネント</h2>
       
       {/* Button Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">

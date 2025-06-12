@@ -1,4 +1,4 @@
-import Phase3LayoutSamplePage from '../../../../components/Phase3LayoutSamplePage';
+import Phase3LayoutSampleContainer from '../../../../feature/authOther/UISample/components/Phase3LayoutSampleContainer';
 import NotFoundPage from '../../../../components/NotFoundPage';
 import { Box, BackgroundPattern } from '../../../../components/ui';
 
@@ -23,7 +23,7 @@ export default function LayoutSamplePage() {
             UIコンポーネントサンプル - Phase 3 レイアウト系
           </h1>
           
-          <Phase3LayoutSamplePage />
+          <Phase3LayoutSampleContainer />
         </Box>
       </Box>
     </div>
