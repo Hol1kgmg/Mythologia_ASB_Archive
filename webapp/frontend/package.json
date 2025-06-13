@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.12",
+    "@headlessui/react": "^2.2.4",
+    "@heroicons/react": "^2.2.0",
+    "class-variance-authority": "^0.7.1",
     "jose": "^6.0.11",
     "next": "15.3.3",
     "react": "^19.0.0",

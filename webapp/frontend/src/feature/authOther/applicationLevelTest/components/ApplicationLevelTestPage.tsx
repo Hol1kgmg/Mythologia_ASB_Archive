@@ -3,7 +3,7 @@
 import React from 'react';
 import AuthTestButton from './AuthTestButton';
 import WarningCard from './WarningCard';
-import HomeButton from '../../../../components/HomeButton';
+import HomeButton from '../../../../components/ui/feedback/HomeButton';
 
 export default function ApplicationLevelTestPage() {
   return (

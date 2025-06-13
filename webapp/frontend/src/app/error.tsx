@@ -1,7 +1,7 @@
 'use client';
 
-import ErrorPage from '../components/ErrorPage';
-import PageFooter from '../components/PageFooter';
+import ErrorPage from '../components/page/ErrorPage';
+import PageFooter from '../components/ui/layout/PageFooter';
 
 interface AppErrorProps {
   error: Error & { digest?: string };
