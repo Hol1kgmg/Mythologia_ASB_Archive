@@ -73,8 +73,13 @@ npm run db:test
 ```
 🔍 Testing database connection...
 ✅ Database connection successful!
-📊 Database info: { current_database: 'railway', version: 'PostgreSQL 16.x ...' }
-📋 Existing tables: []
+📊 Database info: Result(1) [
+  {
+    current_database: 'railway',
+    version: 'PostgreSQL 16.x on x86_64-pc-linux-gnu, compiled by gcc ...'
+  }
+]
+📋 Existing tables: Result(0) []
 🔒 Connection closed
 ```
 
@@ -86,6 +91,66 @@ npm run db:test
 
 ```bash
 npm run db:push
+# または確認なしで強制適用
+npx drizzle-kit push --force
+```
+
+#### 期待される結果
+
+```
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/path/to/drizzle.config.ts'
+Using 'postgres' driver for database querying
+[✓] Pulling schema from database...
+
+ Warning  You are about to execute current statements:
+
+CREATE TYPE "public"."admin_role" AS ENUM('super_admin', 'admin', 'viewer');
+CREATE TABLE "admin_activity_logs" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"admin_id" uuid NOT NULL,
+	"action" varchar(100) NOT NULL,
+	"target_type" varchar(50),
+	"target_id" varchar(36),
+	"details" json,
+	"ip_address" varchar(45),
+	"user_agent" varchar(500),
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+
+CREATE TABLE "admin_sessions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"admin_id" uuid NOT NULL,
+	"token" varchar(255) NOT NULL,
+	"ip_address" varchar(45),
+	"user_agent" varchar(500),
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "admin_sessions_token_unique" UNIQUE("token")
+);
+
+CREATE TABLE "admins" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"username" varchar(50) NOT NULL,
+	"email" varchar(100) NOT NULL,
+	"password_hash" varchar(255) NOT NULL,
+	"role" "admin_role" DEFAULT 'admin' NOT NULL,
+	"permissions" json DEFAULT '[]'::json NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"is_super_admin" boolean DEFAULT false NOT NULL,
+	"created_by" uuid,
+	"last_login_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "admins_username_unique" UNIQUE("username"),
+	CONSTRAINT "admins_email_unique" UNIQUE("email")
+);
+
+ALTER TABLE "admin_activity_logs" ADD CONSTRAINT "admin_activity_logs_admin_id_admins_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."admins"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "admin_sessions" ADD CONSTRAINT "admin_sessions_admin_id_admins_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."admins"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "admins" ADD CONSTRAINT "admins_created_by_admins_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."admins"("id") ON DELETE no action ON UPDATE no action;
+
+[✓] Changes applied
 ```
 
 ### 本番環境向け
@@ -100,6 +165,26 @@ npm run db:generate
 npm run db:migrate
 ```
 
+#### 期待される結果
+
+**マイグレーション生成時:**
+```
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/path/to/drizzle.config.ts'
+3 tables
+admin_activity_logs 9 columns 0 indexes 1 fks
+admin_sessions 7 columns 0 indexes 1 fks
+admins 12 columns 0 indexes 1 fks
+
+[✓] Your SQL migration file ➜ drizzle/0000_admin_tables.sql 🚀
+```
+
+**マイグレーション実行時:**
+```
+Starting database migrations...
+Migrations completed successfully!
+```
+
 ## 5. Drizzle Studio でのデータ確認
 
 ```bash
@@ -109,9 +194,55 @@ npm run db:studio
 # ブラウザで http://localhost:4983 を開く
 ```
 
+### 期待される結果
+
+**コンソール出力:**
+```
+Drizzle Studio is running on http://localhost:4983
+```
+
+**ブラウザ画面:**
+- 左サイドバーに以下のテーブルが表示される:
+  - `admins` - 管理者アカウント
+  - `admin_sessions` - セッション管理
+  - `admin_activity_logs` - 活動ログ
+- 各テーブルのスキーマとデータが確認可能
+- クエリエディタでSQLを直接実行可能
+
 ## 6. トラブルシューティング
 
 ### 接続エラーが発生する場合
+
+#### エラーパターンと解決方法
+
+**1. DATABASE_URL設定エラー**
+```
+❌ DATABASE_URL environment variable is not set
+💡 Please create .env file with your database connection string
+```
+→ `.env`ファイルを作成してDATABASE_URLを設定
+
+**2. サンプル値検出エラー**
+```
+❌ DATABASE_URL appears to be using sample values
+💡 Please update .env with your actual database credentials
+```
+→ RailwayダッシュボードからDATABASE_URLを取得して設定
+
+**3. 認証エラー**
+```
+❌ Database reset failed: PostgresError: password authentication failed
+```
+→ DATABASE_URLの認証情報を確認
+
+**4. 接続タイムアウト**
+```
+❌ Cannot connect to database
+💡 Please check your DATABASE_URL and database server
+```
+→ ネットワーク接続とRailwayサービスの状態を確認
+
+#### 確認手順
 
 1. **DATABASE_URL の確認**
    ```bash
@@ -119,15 +250,47 @@ npm run db:studio
    echo $DATABASE_URL
    ```
 
-2. **ネットワーク接続**
+2. **接続テスト**
+   ```bash
+   npm run db:test
+   ```
+
+3. **Railway サービス状態確認**
+   - Railwayダッシュボードでサービスが稼働中か確認
+   - PostgreSQLサービスのログを確認
+
+4. **ネットワーク接続**
    - VPNやファイアウォールの設定を確認
    - Railway PostgreSQLは外部からの接続を許可しています
 
-3. **SSL接続**
+5. **SSL接続**
    - RailwayのPostgreSQLはSSL接続がデフォルトで有効
    - 接続文字列に `?sslmode=require` を追加する場合もあります
 
 ### スキーマ適用エラー
+
+#### エラーパターンと解決方法
+
+**1. テーブル作成エラー**
+```
+ERROR: relation "admins" already exists
+```
+→ テーブルが既に存在している場合
+```bash
+npm run db:reset  # 既存テーブルを削除
+npm run db:push   # 新しいスキーマを適用
+```
+
+**2. 外部キー制約エラー**
+```
+ERROR: cannot add foreign key constraint
+```
+→ 参照テーブルが存在しない場合
+```bash
+npm run db:fresh  # 全テーブル削除後に再作成
+```
+
+#### 確認手順
 
 1. **権限の確認**
    - Railway PostgreSQLのユーザーには全権限があります
@@ -135,6 +298,12 @@ npm run db:studio
 2. **既存テーブルとの競合**
    - `npm run db:push` は既存のスキーマを上書きします
    - 本番環境では必ずマイグレーションを使用してください
+
+3. **テーブル作成確認**
+   ```bash
+   npm run db:test
+   # 📋 Existing tables: に作成されたテーブルが表示される
+   ```
 
 ## 7. セキュリティベストプラクティス
 
@@ -164,7 +333,102 @@ sql = postgres(connectionString, {
 });
 ```
 
-## 8. 開発ワークフロー
+## 8. 完全動作確認手順
+
+### Railway環境での完全テスト
+
+```bash
+# 1. 環境設定
+cd webapp/backend
+cp .env.example .env
+# DATABASE_URL=postgresql://postgres:xxx@xxx.railway.app:5432/railway
+
+# 2. 接続確認
+npm run db:test
+```
+
+**期待される結果:**
+```
+🔍 Testing database connection...
+✅ Database connection successful!
+📊 Database info: Result(1) [
+  {
+    current_database: 'railway',
+    version: 'PostgreSQL 16.x on x86_64-pc-linux-gnu'
+  }
+]
+📋 Existing tables: Result(0) []
+🔒 Connection closed
+```
+
+```bash
+# 3. スキーマ適用
+npx drizzle-kit push --force
+```
+
+**期待される結果:**
+```
+[✓] Changes applied
+```
+
+```bash
+# 4. テーブル作成確認
+npm run db:test
+```
+
+**期待される結果:**
+```
+📋 Existing tables: Result(3) [
+  { table_name: 'admins' },
+  { table_name: 'admin_activity_logs' },
+  { table_name: 'admin_sessions' }
+]
+```
+
+```bash
+# 5. リセット機能テスト
+npm run db:reset
+```
+
+**期待される結果:**
+```
+⚠️  WARNING: This will delete ALL admin data!
+🔍 Database: xxx.railway.app:5432/railway
+⏰ Starting reset in 3 seconds... (Ctrl+C to cancel)
+🗑️  Starting database reset...
+🔍 Testing database connection...
+📋 Dropping admin tables...
+🔄 Dropping migration tracking...
+✅ Database reset completed!
+```
+
+```bash
+# 6. リセット確認
+npm run db:test
+```
+
+**期待される結果:**
+```
+📋 Existing tables: Result(0) []
+```
+
+### ローカル環境での完全テスト
+
+```bash
+# 1. Docker PostgreSQL起動
+docker-compose up -d postgres
+
+# 2. 環境設定
+DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev
+
+# 3. 完全動作確認
+npm run db:test          # 接続確認
+npm run db:fresh         # スキーマ適用
+npm run db:test          # テーブル確認
+npm run db:studio        # UI確認
+```
+
+## 9. 開発ワークフロー
 
 ### 日常的な開発
 
