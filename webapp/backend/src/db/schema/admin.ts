@@ -1,6 +1,5 @@
 import { pgTable, varchar, boolean, timestamp, json, uuid, pgEnum } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
 
 // Enum for admin roles
 export const adminRoleEnum = pgEnum('admin_role', ['super_admin', 'admin', 'viewer']);

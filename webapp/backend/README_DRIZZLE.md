@@ -84,6 +84,7 @@ const newAdmin = await db
 - `npm run db:migrate` - マイグレーションの実行
 - `npm run db:push` - スキーマの直接プッシュ（開発用）
 - `npm run db:studio` - Drizzle Studio の起動
+- `npm run db:test` - データベース接続テスト
 
 ## 注意事項
 

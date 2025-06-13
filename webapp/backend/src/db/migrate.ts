@@ -1,5 +1,9 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { getDb, closeDb } from './client';
+import { getDb, closeDb } from './client.js';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 async function runMigrations() {
   console.log('Starting database migrations...');
@@ -20,6 +24,4 @@ async function runMigrations() {
 }
 
 // Run migrations if this file is executed directly
-if (require.main === module) {
-  runMigrations();
-}
+runMigrations();
