@@ -10,12 +10,9 @@
     "railway:build": "npm run build",
     "railway:start": "npm run start",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate.ts",
+    "db:migrate": "tsx src/migrate.ts",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "db:test": "tsx scripts/test-db-connection.ts",
-    "db:reset": "tsx scripts/reset-db.ts",
-    "db:fresh": "npm run db:reset && npx drizzle-kit push --force"
+    "db:test": "tsx src/test-connection.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
