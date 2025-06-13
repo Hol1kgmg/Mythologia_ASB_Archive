@@ -3,23 +3,23 @@ FROM node:20-alpine AS base
 
 # Prepare dependencies
 FROM base AS deps
-WORKDIR /app
-COPY package*.json ./
+WORKDIR /app/backend
+COPY webapp/backend/package*.json ./
 RUN npm ci --only=production
 
-# Build Stage
+# Build Stage  
 FROM base AS builder
-WORKDIR /app
+WORKDIR /app/backend
 
-COPY package*.json ./
-COPY . .
+COPY webapp/backend/package*.json ./
+COPY webapp/backend/ ./
 
 RUN npm ci
 RUN npm run build
 
 # Runtime
 FROM base AS runner
-WORKDIR /app
+WORKDIR /app/backend
 
 ENV NODE_ENV=production
 
@@ -27,9 +27,9 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 honojs
 
-COPY --from=deps --chown=honojs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=honojs:nodejs /app/dist ./dist
-COPY --from=builder --chown=honojs:nodejs /app/package.json ./package.json
+COPY --from=deps --chown=honojs:nodejs /app/backend/node_modules ./node_modules
+COPY --from=builder --chown=honojs:nodejs /app/backend/dist ./dist
+COPY --from=builder --chown=honojs:nodejs /app/backend/package.json ./package.json
 
 USER honojs
 EXPOSE 8787

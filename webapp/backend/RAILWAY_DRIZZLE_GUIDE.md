@@ -28,6 +28,20 @@ CREATE TABLE "admins" (
 
 **マイグレーションファイル**: `drizzle/0000_large_kabuki.sql`
 
+## 🔧 事前準備: PostgreSQL追加
+
+### Railway PostgreSQLサービスの追加手順
+1. Railwayダッシュボードでプロジェクトを開く
+2. 「New Service」→「Database」→「Add PostgreSQL」を選択
+3. PostgreSQLサービスが追加される
+4. バックエンドサービスの「Variables」タブで`DATABASE_URL`が自動追加されることを確認
+
+### 環境変数の確認
+```bash
+railway variables
+# DATABASE_URL が表示されることを確認
+```
+
 ## 📋 Railway でのマイグレーション実行手順
 
 ### 方法1: Railway CLI でコンテナ接続
