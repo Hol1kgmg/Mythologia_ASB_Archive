@@ -37,6 +37,14 @@ Mythologia Admiral Ship Bridgeプロジェクトの開発環境セットアッ�
 - **DB操作確認**: API経由でのデータベース動作テスト
 - **トラブルシューティング**: 接続問題・設定エラーの解決
 
+### [railway-postgresql-setup.md](railway-postgresql-setup.md)
+**Railway PostgreSQL セットアップガイド**
+- **Railway接続設定**: DATABASE_URLの取得と設定方法
+- **Drizzle ORM統合**: スキーマ適用とマイグレーション
+- **接続テスト**: 接続確認とトラブルシューティング
+- **セキュリティ**: 環境変数管理のベストプラクティス
+- **開発ワークフロー**: 日常的な開発からデプロイまで
+
 ## 技術スタック概要
 
 ```

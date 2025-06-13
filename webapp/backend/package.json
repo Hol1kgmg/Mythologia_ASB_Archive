@@ -8,16 +8,29 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "railway:build": "npm run build",
-    "railway:start": "npm run start"
+    "railway:start": "npm run start",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:test": "tsx scripts/test-db-connection.ts",
+    "db:reset": "tsx scripts/reset-db.ts",
+    "db:fresh": "npm run db:reset && npx drizzle-kit push --force"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
     "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.44.2",
+    "drizzle-zod": "^0.8.2",
     "hono": "^4.7.11",
-    "jose": "^6.0.11"
+    "jose": "^6.0.11",
+    "postgres": "^3.4.7",
+    "zod": "^3.25.64"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@types/pg": "^8.15.4",
+    "drizzle-kit": "^0.31.1",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   },
