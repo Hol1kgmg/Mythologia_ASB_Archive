@@ -100,6 +100,28 @@ railway variables
 railway variables | grep DATABASE_URL
 ```
 
+### Railway CLI のプロジェクトリンク管理
+
+```bash
+# 現在のリンク状態を確認
+railway status
+
+# プロジェクトのリンクを解除
+railway unlink
+
+# 別のプロジェクトにリンクする場合
+railway link
+# プロジェクト一覧から選択
+
+# 特定のサービスを指定してリンク
+railway link --service mythologia-backend
+```
+
+**リンク解除が必要な場合**:
+- 複数のRailwayプロジェクトを切り替える時
+- 誤って別のプロジェクトにリンクした時
+- ローカル開発環境をクリーンにしたい時
+
 ## 🔍 動作確認
 
 ### マイグレーション成功時の出力
