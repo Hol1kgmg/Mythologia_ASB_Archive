@@ -1,31 +1,40 @@
-# Backend + Shared Build Image
+# Backend Build Image
 FROM node:20-alpine AS base
 
 # Prepare dependencies
 FROM base AS deps
 WORKDIR /app
-COPY package*.json ./
-COPY shared/package.json ./shared/
-RUN npm ci --only=production
+# Copy package files for dependency installation
+COPY backend/package*.json ./backend/
+COPY shared/package*.json ./shared/ 2>/dev/null || echo "No shared package.json found"
+
+# Install production dependencies
+RUN cd backend && npm ci --only=production
 
 # Build Stage
 FROM base AS builder
 WORKDIR /app
 
-COPY package*.json ./
-COPY shared ./shared
+# Copy everything from webapp directory
 COPY . .
 
-RUN npm ci
+# Install all dependencies (including dev dependencies for building)
+RUN cd backend && npm ci
 
-# Build shared first
-RUN npm run build --workspace=@mythologia-asb/shared
-# Then backend
-RUN npm run build --workspace=@mythologia-asb/backend
+# Build shared first if it exists
+RUN if [ -d "shared" ] && [ -f "shared/package.json" ]; then \
+        cd shared && npm ci && npm run build; \
+    fi
+
+# Build backend
+RUN cd backend && npm run build
+
+# Verify build output
+RUN ls -la backend/dist/ && test -f backend/dist/index.js || (echo "❌ backend/dist/index.js not found!" && exit 1)
 
 # Runtime
 FROM base AS runner
-WORKDIR /app
+WORKDIR /app/backend
 
 ENV NODE_ENV=production
 
@@ -33,11 +42,18 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 honojs
 
-COPY --from=deps --chown=honojs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=honojs:nodejs /app/backend/dist ./backend/dist
-COPY --from=builder --chown=honojs:nodejs /app/shared/dist ./shared/dist
-COPY --from=builder --chown=honojs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=honojs:nodejs /app/backend/package.json ./backend/package.json
+# Copy backend files to current directory
+COPY --from=builder --chown=honojs:nodejs /app/backend/dist ./dist
+COPY --from=builder --chown=honojs:nodejs /app/backend/package.json ./package.json
+
+# Copy shared artifacts to parent directory (for monorepo dependencies)
+COPY --from=builder --chown=honojs:nodejs /app/shared/dist ../shared/dist 2>/dev/null || echo "No shared dist to copy"
+
+# Copy production dependencies
+COPY --from=deps --chown=honojs:nodejs /app/backend/node_modules ./node_modules
+
+# Final verification
+RUN ls -la ./dist/ && test -f ./dist/index.js && echo "✅ index.js confirmed"
 
 USER honojs
 EXPOSE 8787
@@ -45,4 +61,4 @@ EXPOSE 8787
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "const http = require('http'); const options = { host: 'localhost', port: process.env.PORT || 8787, path: '/health', timeout: 2000 }; const req = http.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();"
 
-CMD ["node", "backend/dist/index.js"]
+CMD ["npm", "start"]
