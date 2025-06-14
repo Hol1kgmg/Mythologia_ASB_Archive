@@ -1,6 +1,10 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { admins } from './schema.js';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 async function testConnection() {
   console.log('🔍 Testing Railway connection...');

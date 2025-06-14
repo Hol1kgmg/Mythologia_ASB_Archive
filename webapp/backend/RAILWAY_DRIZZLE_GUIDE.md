@@ -44,7 +44,7 @@ railway variables
 
 ## 📋 Railway でのマイグレーション実行手順
 
-### 方法1: Railway CLI でコンテナ接続
+### 方法1: Railway CLI でコンテナ接続（推奨）
 
 ```bash
 # 1. Railway にログイン
@@ -58,25 +58,46 @@ railway shell
 
 # 4. マイグレーション実行
 npm run db:migrate
+
+# 5. テーブル確認
+npm run db:test
 ```
 
-### 方法2: Railway での環境変数確認
+**メリット**:
+- Railway内部DNS（`postgres.railway.internal`）が使用可能
+- 本番環境と同じ条件で実行
+- セキュアな内部接続
+
+### 方法2: ローカルから Railway DB に接続
 
 ```bash
-# Railway 環境変数を確認
+# 1. Railway の公開URLを取得
 railway variables
 
-# DATABASE_URL が設定されていることを確認
+# 2. .env ファイルに公開URLを設定
+# 注意: 内部URL (postgres.railway.internal) ではなく公開URL (xxx.proxy.rlwy.net) を使用
+DATABASE_URL=postgresql://postgres:password@nozomi.proxy.rlwy.net:33024/railway
+
+# 3. ローカルからマイグレーション実行
+npm run db:migrate
+
+# 4. テーブル確認
+npm run db:test
 ```
 
-### 方法3: ローカルから Railway DB に接続
+**注意点**:
+- ⚠️ 内部URL（`postgres.railway.internal`）はローカルから接続不可
+- ⚠️ 公開URLはIPアドレス制限やファイアウォール設定に注意
+- ⚠️ 本番環境では内部URLを使用すべき
+
+### 環境変数の確認方法
 
 ```bash
-# .env ファイルに Railway の DATABASE_URL を設定
-echo "DATABASE_URL=postgresql://postgres:xxx@xxx.railway.app:5432/railway" > .env
+# Railway CLI で環境変数一覧を表示
+railway variables
 
-# ローカルからマイグレーション実行
-npm run db:migrate
+# 特定の環境変数を確認
+railway variables | grep DATABASE_URL
 ```
 
 ## 🔍 動作確認
@@ -104,8 +125,22 @@ Railway shell または psql で確認：
 # Railway 環境変数を確認
 railway variables
 
-# または環境変数をローカルで設定
-export DATABASE_URL="postgresql://..."
+# dotenv が読み込まれているか確認
+# src/migrate.ts と src/test-connection.ts に以下が必要:
+import * as dotenv from 'dotenv';
+dotenv.config();
+```
+
+### エラー: getaddrinfo ENOTFOUND postgres.railway.internal
+```bash
+# ローカルから実行している場合、内部URLは使用不可
+# 公開URLに変更する必要がある:
+
+# ❌ 内部URL（ローカルから接続不可）
+DATABASE_URL=postgresql://postgres:pass@postgres.railway.internal:5432/railway
+
+# ✅ 公開URL（ローカルから接続可能）
+DATABASE_URL=postgresql://postgres:pass@nozomi.proxy.rlwy.net:33024/railway
 ```
 
 ### エラー: Migration failed
@@ -115,6 +150,16 @@ npm run db:migrate
 
 # 必要に応じてテーブルを削除して再実行
 # psql $DATABASE_URL -c "DROP TABLE IF EXISTS admins CASCADE;"
+```
+
+### Railway shell で環境変数が読み込まれない場合
+```bash
+# Railway shell 内では環境変数は自動的に設定されているはず
+# 確認方法:
+echo $DATABASE_URL
+
+# もし設定されていない場合は、Railway の設定を確認
+railway variables
 ```
 
 ## 📈 次のステップ
