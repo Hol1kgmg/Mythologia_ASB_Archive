@@ -1,4 +1,4 @@
-import { pgTable, varchar, boolean, timestamp, json, uuid, pgEnum, foreignKey } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, boolean, timestamp, json, uuid, pgEnum, foreignKey, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
@@ -40,6 +40,9 @@ export const adminSessions = pgTable('admin_sessions', {
     columns: [table.adminId],
     foreignColumns: [admins.id],
   }),
+  adminIdIdx: index('admin_sessions_admin_id_idx').on(table.adminId),
+  expiresAtIdx: index('admin_sessions_expires_at_idx').on(table.expiresAt),
+  adminExpiresIdx: index('admin_sessions_admin_expires_idx').on(table.adminId, table.expiresAt),
 }));
 
 // Admin activity logs table
@@ -58,6 +61,12 @@ export const adminActivityLogs = pgTable('admin_activity_logs', {
     columns: [table.adminId],
     foreignColumns: [admins.id],
   }),
+  adminIdIdx: index('admin_activity_logs_admin_id_idx').on(table.adminId),
+  createdAtIdx: index('admin_activity_logs_created_at_idx').on(table.createdAt),
+  adminCreatedIdx: index('admin_activity_logs_admin_created_idx').on(table.adminId, table.createdAt),
+  actionIdx: index('admin_activity_logs_action_idx').on(table.action),
+  actionCreatedIdx: index('admin_activity_logs_action_created_idx').on(table.action, table.createdAt),
+  targetIdx: index('admin_activity_logs_target_idx').on(table.targetType, table.targetId),
 }));
 
 // Relations (defined separately to avoid circular references)
