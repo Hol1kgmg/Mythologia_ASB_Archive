@@ -68,7 +68,7 @@ npm run db:test
 - 本番環境と同じ条件で実行
 - セキュアな内部接続
 
-### 方法2: ローカルから Railway DB に接続
+### 方法2: ローカルから Railway DB に接続（本番作業用）
 
 ```bash
 # 1. Railway の公開URLを取得
@@ -89,6 +89,33 @@ npm run db:test
 - ⚠️ 内部URL（`postgres.railway.internal`）はローカルから接続不可
 - ⚠️ 公開URLはIPアドレス制限やファイアウォール設定に注意
 - ⚠️ 本番環境では内部URLを使用すべき
+- ⚠️ **誤って本番DBに接続しないよう注意**
+
+### 方法3: ローカルDocker環境でのテスト（推奨）
+
+```bash
+# 1. Docker環境を起動
+docker-compose up -d
+
+# 2. .env.local を作成（本番の.envとは別）
+cat > .env.local << EOF
+DATABASE_URL=postgresql://user:password@localhost:5432/mythologia_local
+EOF
+
+# 3. ローカル環境変数を使用してマイグレーション
+dotenv -e .env.local npm run db:migrate
+
+# または環境変数を直接指定
+DATABASE_URL="postgresql://user:password@localhost:5432/mythologia_local" npm run db:migrate
+
+# 4. テーブル確認
+dotenv -e .env.local npm run db:test
+```
+
+**環境分離のベストプラクティス**:
+- `.env` - Railway本番環境接続用（gitignore対象）
+- `.env.local` - ローカルDocker環境用（gitignore対象）
+- `.env.example` - 環境変数のテンプレート（git管理対象）
 
 ### 環境変数の確認方法
 
