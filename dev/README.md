@@ -220,7 +220,7 @@ Railway環境でマイグレーションを実行する際の手順：
 
 ```bash
 # 1. Railway DATABASE_URLを環境変数に設定
-export DATABASE_URL="postgresql://postgres:xxxxx@xxxxx.railway.app:5432/railway"
+export DATABASE_URL=="{Railway_PostgreSQL_DATABASE_PUBLIC_URL}"
 
 # 2. 確認
 echo $DATABASE_URL

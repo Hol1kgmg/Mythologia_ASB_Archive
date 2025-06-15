@@ -30,7 +30,7 @@ railway variables | grep DATABASE_URL
 
 ```bash
 # DATABASE_URLを環境変数にエクスポート
-export DATABASE_URL="postgresql://postgres:xxxxx@xxxxx.railway.app:5432/railway"
+export DATABASE_URL="{Railway_PostgreSQL_DATABASE_PUBLIC_URL}"
 
 # 設定確認
 echo $DATABASE_URL
