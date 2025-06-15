@@ -10,12 +10,9 @@
     "railway:build": "npm run build",
     "railway:start": "npm run start",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/migrate.ts",
-    "db:migrate:local": "dotenv -e .env.local -- tsx src/migrate.ts",
-    "db:push": "drizzle-kit push",
-    "db:push:local": "dotenv -e .env.local -- drizzle-kit push",
-    "db:test": "tsx src/test-connection.ts",
-    "db:test:local": "dotenv -e .env.local -- tsx src/test-connection.ts"
+    "db:migrate": "dotenv -e .env.local -- tsx src/migrate.ts",
+    "db:push": "dotenv -e .env.local -- drizzle-kit push",
+    "db:test": "dotenv -e .env.local -- tsx src/test-connection.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",

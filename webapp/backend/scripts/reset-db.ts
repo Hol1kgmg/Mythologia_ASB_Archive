@@ -1,4 +1,4 @@
-import { getDb, closeDb } from '../src/db/client.js';
+import { db, closeDb } from '../src/db/client.js';
 import { sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
 
@@ -7,7 +7,6 @@ dotenv.config();
 
 async function checkDatabaseConnection() {
   try {
-    const db = getDb();
     await db.execute(sql`SELECT 1`);
     return true;
   } catch (error) {
@@ -43,8 +42,6 @@ async function resetDatabase() {
   }
   
   try {
-    const db = getDb();
-    
     // Drop all admin-related tables and types
     console.log('📋 Dropping admin tables...');
     await db.execute(sql`DROP TABLE IF EXISTS admin_activity_logs CASCADE`);

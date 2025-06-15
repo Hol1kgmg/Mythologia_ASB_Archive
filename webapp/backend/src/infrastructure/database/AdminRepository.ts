@@ -1,6 +1,6 @@
 import { eq, and, or, like, desc, ne, count } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { admins, type Admin, type NewAdmin } from '../../db/schema/admin.js';
+import { admins, type Admin, type NewAdmin } from '../../db/schema/index.js';
 
 export interface AdminSearchParams {
   username?: string;

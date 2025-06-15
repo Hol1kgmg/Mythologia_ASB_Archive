@@ -1,6 +1,6 @@
 import { eq, and, desc, asc, gte, lte, like, or, count } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { adminActivityLogs, type AdminActivityLog, type NewAdminActivityLog } from '../../db/schema/admin.js';
+import { adminActivityLogs, type AdminActivityLog, type NewAdminActivityLog } from '../../db/schema/index.js';
 
 export interface ActivityLogSearchParams {
   adminId?: string;

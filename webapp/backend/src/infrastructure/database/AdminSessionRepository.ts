@@ -1,6 +1,6 @@
 import { eq, and, gt, lt, count } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { adminSessions, type AdminSession, type NewAdminSession } from '../../db/schema/admin.js';
+import { adminSessions, type AdminSession, type NewAdminSession } from '../../db/schema/index.js';
 
 export class AdminSessionRepository {
   /**
