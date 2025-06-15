@@ -11,13 +11,14 @@
     "railway:start": "npm run start",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- tsx src/migrate.ts",
-    "db:migrate:docker": "docker-compose run --rm backend npm run db:migrate:local",
-
+    "db:migrate:local": "dotenv -e .env.local -- tsx src/migrate.ts",
+    "db:migrate:docker": "echo '🐳 Docker経由でマイグレーション実行中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx src/migrate.ts'",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
-    "db:push:docker": "docker-compose run --rm backend npm run db:push:local",
-    
+    "db:push:local": "dotenv -e .env.local -- drizzle-kit push",
+    "db:push:docker": "echo '🐳 Docker経由でスキーマプッシュ中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install drizzle-kit dotenv-cli -g && npx dotenv -e .env.local -- npx drizzle-kit push'",
     "db:test": "dotenv -e .env.local -- tsx src/test-connection.ts",
-    "db:test:docker": "docker-compose run --rm backend npm run db:test:local"
+    "db:test:local": "dotenv -e .env.local -- tsx src/test-connection.ts",
+    "db:test:docker": "echo '🐳 Docker経由でDB接続テスト中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx src/test-connection.ts'"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",

@@ -58,6 +58,34 @@ services:
       ADMINER_DEFAULT_SERVER: postgres
       ADMINER_DESIGN: pepa-linha
 
+  # Backend API - Hono (Docker環境用)
+  backend:
+    build:
+      context: ./webapp/backend
+      dockerfile: Dockerfile
+    container_name: mythologia-backend
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://mythologia_user:mythologia_pass@postgres:5432/mythologia_dev
+      REDIS_URL: redis://:mythologia_redis_pass@redis:6379
+    networks:
+      - mythologia-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./webapp/backend/src:/app/src:ro
+      - ./webapp/backend/.env.local:/app/.env.local:ro
+    working_dir: /app
+    command: npm run dev
+    profiles:
+      - fullstack
+
   # RedisInsight - Redis管理UI（オプション）
   redis-insight:
     image: redislabs/redisinsight:latest

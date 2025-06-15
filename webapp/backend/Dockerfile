@@ -6,7 +6,7 @@ FROM base AS deps
 WORKDIR /app
 # Copy package files for dependency installation
 COPY backend/package*.json ./backend/
-COPY shared/package*.json ./shared/ 2>/dev/null || echo "No shared package.json found"
+COPY shared/package*.json ./shared/ || true
 
 # Install production dependencies
 RUN cd backend && npm ci --only=production
@@ -47,7 +47,7 @@ COPY --from=builder --chown=honojs:nodejs /app/backend/dist ./dist
 COPY --from=builder --chown=honojs:nodejs /app/backend/package.json ./package.json
 
 # Copy shared artifacts to parent directory (for monorepo dependencies)
-COPY --from=builder --chown=honojs:nodejs /app/shared/dist ../shared/dist 2>/dev/null || echo "No shared dist to copy"
+COPY --from=builder --chown=honojs:nodejs /app/shared/dist ../shared/dist || true
 
 # Copy production dependencies
 COPY --from=deps --chown=honojs:nodejs /app/backend/node_modules ./node_modules
