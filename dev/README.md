@@ -69,6 +69,14 @@ Mythologia Admiral Ship Bridgeプロジェクトの開発環境セットアッ�
 - **セキュリティ**: 環境変数管理のベストプラクティス
 - **開発ワークフロー**: 日常的な開発からデプロイまで
 
+#### [railway-migration-guide.md](railway-migration-guide.md) 🚂 **NEW**
+**Railway環境でのマイグレーション実行ガイド**
+- **環境変数の一時設定**: export/unsetによる安全な設定方法
+- **Railway Shell使用**: 自動環境変数設定での実行
+- **トラブルシューティング**: よくあるエラーと解決方法
+- **セキュリティ考慮**: DATABASE_URLの安全な取り扱い
+- **ベストプラクティス**: チーム開発での推奨手順
+
 ### 📋 認証・アプリケーションテスト
 
 #### [application-auth-testing.md](application-auth-testing.md)
@@ -206,6 +214,32 @@ docker exec -it mythologia-postgres psql -U mythologia_user -d mythologia_dev
 open http://localhost:8080  # Adminer でテーブル確認
 ```
 
+### Railway環境での一時的なDATABASE_URL設定
+
+Railway環境でマイグレーションを実行する際の手順：
+
+```bash
+# 1. Railway DATABASE_URLを環境変数に設定
+export DATABASE_URL="postgresql://postgres:xxxxx@xxxxx.railway.app:5432/railway"
+
+# 2. 確認
+echo $DATABASE_URL
+
+# 3. マイグレーション実行
+npm run db:migrate
+
+# 4. 環境変数をクリア（重要！）
+unset DATABASE_URL
+
+# 5. クリアされたことを確認
+echo $DATABASE_URL  # 何も表示されないことを確認
+```
+
+**注意**: 
+- `export`で設定した環境変数は現在のターミナルセッションでのみ有効です
+- 必ずマイグレーション完了後は`unset`でクリアしてください
+- 新しいターミナルを開けば自動的にリセットされます
+
 ### 3. 動作確認手順
 ```bash
 # Phase別確認（詳細は verification-procedures.md 参照）
@@ -315,6 +349,7 @@ open http://localhost:8001           # RedisInsight
 ### 新規作成ドキュメント
 - [database-operations-manual.md](./database-operations-manual.md) - SQL操作完全ガイド
 - [verification-procedures.md](./verification-procedures.md) - 動作確認手順書
+- [railway-migration-guide.md](./railway-migration-guide.md) - Railway環境マイグレーションガイド
 
 ## 🆘 サポート・トラブルシューティング
 
@@ -357,4 +392,4 @@ docker-compose logs postgres redis  # Docker logs
 
 ---
 
-**最終更新**: 2024年6月 - Issue #35 Phase 2 完了時点
+**最終更新**: 2024年6月 - Issue #35 Phase 2 完了・Railway環境マイグレーションガイド追加
