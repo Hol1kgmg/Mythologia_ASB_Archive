@@ -12,7 +12,7 @@
 ## フロントエンド
 
 ### コア技術
-- **Framework**: Next.js 14+ (App Router)
+- **Framework**: Next.js 15+ (App Router)
   - 理由: Vercelに最適化、優れた開発体験
   - Vercelの自動最適化を活用
   - App RouterによるサーバーコンポーネントとRSC対応
@@ -53,7 +53,7 @@
 - **Language**: TypeScript 5.3+
   - 理由: 型安全性、最新ECMAScript機能
 - **ORM/クエリビルダー**: 
-  - **Prisma 5.7+**: PostgreSQL対応
+  - **Drizzle ORM 0.29+**: PostgreSQL対応
   - **リポジトリパターン**: ビジネスロジックとデータアクセスの分離
 
 ### 認証・セキュリティ
@@ -63,17 +63,17 @@
 - **Password Hashing**: bcrypt (saltRounds: 12)
 - **Validation**: Zod 3.22+
   - スキーマベースバリデーション、型推論
-- **Rate Limiting**: @fastify/rate-limit
+- **Rate Limiting**: 自実装（Hono対応）
   - DDoS防止、API保護
-- **CORS**: @fastify/cors
+- **CORS**: @hono/cors
   - クロスオリジン制御
 
 ### APIドキュメント
-- **Documentation**: @fastify/swagger + @fastify/swagger-ui
+- **Documentation**: @hono/swagger-ui
   - OpenAPI 3.0準拠、自動生成
 - **Type Sharing**: tRPC 10.45+
   - 型安全なAPI、自動補完
-  - React QueryとのシームレスLAPな統合
+  - React Queryとのシームレス統合
 
 ## データベース
 
@@ -101,9 +101,9 @@ interface Repository<T> {
   delete(id: string): Promise<void>;
 }
 
-// Prismaを使用した実装
-export class PrismaRepository<T> implements Repository<T> {
-  constructor(private model: any) {}
+// Drizzle ORMを使用した実装
+export class DrizzleRepository<T> implements Repository<T> {
+  constructor(private schema: any, private db: any) {}
   // 実装...
 }
 ```
@@ -145,7 +145,7 @@ export class PrismaRepository<T> implements Repository<T> {
   - 高速実行、ESM対応、TypeScript統合
 - **E2E**: Playwright 1.40+
   - クロスブラウザテスト、並列実行
-- **API Testing**: @fastify/testing
+- **API Testing**: Hono/testing
   - インジェクションテスト、モック対応
 
 ## インフラ・デプロイ
