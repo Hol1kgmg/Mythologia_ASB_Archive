@@ -11,8 +11,13 @@
     "railway:start": "npm run start",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- tsx src/migrate.ts",
+    "db:migrate:docker": "docker-compose run --rm backend npm run db:migrate:local",
+
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
-    "db:test": "dotenv -e .env.local -- tsx src/test-connection.ts"
+    "db:push:docker": "docker-compose run --rm backend npm run db:push:local",
+    
+    "db:test": "dotenv -e .env.local -- tsx src/test-connection.ts",
+    "db:test:docker": "docker-compose run --rm backend npm run db:test:local"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
@@ -25,7 +30,7 @@
     "zod": "^3.25.64"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.19.0",
     "@types/pg": "^8.15.4",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.31.1",

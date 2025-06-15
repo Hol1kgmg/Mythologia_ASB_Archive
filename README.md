@@ -220,31 +220,29 @@ curl http://localhost:8787/debug/db-status
 - **中期キャッシュ**: セット別・リーダー別カード（1時間）
 - **短期キャッシュ**: 検索結果（5分）
 
-## Docker開発環境
+## 🚀 クイックスタート
 
-### 🐳 開発用データベース環境
-
-#### 🚀 クイックスタート
 ```bash
 # 1. リポジトリクローン
-git clone <repository>
+git clone <repository-url>
 cd Mythologia_AdmiralsShipBridge
 
-# 2. 環境変数設定
-cp .env.local.example .env.local
-vim .env.local  # 個人の機密情報を設定
+# 2. Docker環境起動
+docker-compose up -d postgres redis
 
-# 3. データベース環境起動
-docker-compose up -d
+# 3. セットアップ
+cd webapp/backend && npm install
+npm run db:migrate:docker
 
-# 4. 依存関係インストール
-cd webapp && npm install
-
-# 5. 開発サーバー起動
+# 4. 開発サーバー起動
 npm run dev
 ```
 
-#### サービス構成
+詳細な開発環境セットアップとトラブルシューティングは [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+## 🐳 Docker環境
+
+### サービス構成
 ```yaml
 services:
   postgres:      # PostgreSQL 16

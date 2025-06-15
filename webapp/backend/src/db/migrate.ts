@@ -9,7 +9,6 @@ async function runMigrations() {
   console.log('Starting database migrations...');
   
   try {
-    
     // Run migrations
     await migrate(db, { migrationsFolder: './drizzle' });
     

@@ -149,38 +149,11 @@ CREATE TABLE categories (
             └── lib/           # ユーティリティ
 ```
 
-## Docker管理構成
+## Docker環境の使い分け
 
-### Docker環境の使い分け
-
-#### 1. データベースのみ（推奨開発方法）
-```bash
-# PostgreSQL + Redis + 管理ツールのみ起動
-docker-compose up -d
-
-# 各アプリは個別に起動
-cd webapp/backend && npm run dev    # バックエンド開発サーバー
-cd webapp/frontend && npm run dev   # フロントエンド開発サーバー
-```
-
-#### 2. フルスタック統合環境
-```bash
-# 全サービスを一括起動（開発効率化・新規参加者向け）
-docker-compose -f docker-compose.full.yml up -d
-```
-
-#### 3. 個別Docker実行（本番環境テスト用）
-```bash
-# バックエンド（Railway環境テスト）
-cd webapp/backend
-docker build -t mythologia-backend .
-docker run -p 8787:8787 mythologia-backend
-
-# フロントエンド（ローカルテスト）
-cd webapp/frontend
-docker build -t mythologia-frontend .
-docker run -p 3000:3000 mythologia-frontend
-```
+- **通常開発**: `docker-compose up -d postgres redis` → データベースのみ起動
+- **統合テスト**: `docker-compose -f docker-compose.full.yml up -d` → フルスタック環境
+- **本番テスト**: 個別Dockerfileでビルド・実行
 
 ### Dockerファイル管理
 ```
@@ -224,31 +197,24 @@ services:
 - **統合テスト**: `docker-compose.full.yml`でフルスタック環境
 - **新規参加者**: `docker-compose.full.yml`でワンコマンド環境構築
 
-## 開発コマンド（実装後）
+## 開発コマンド
+
+主要なコマンドは以下の通り。詳細は[CONTRIBUTING.md](CONTRIBUTING.md)を参照。
 
 ```bash
-# ローカル開発
-npm run dev              # 開発サーバー起動
-npm run dev:docker       # Docker環境での開発
+# データベース操作（Docker経由 - チーム標準）
+npm run db:migrate:docker    # マイグレーション実行
+npm run db:push:docker       # スキーマ直接プッシュ
+npm run db:test:docker       # DB接続テスト
+
+# 開発サーバー
+npm run dev                  # 開発サーバー起動
 
 # ビルド・テスト
 npm run build
 npm run test
 npm run lint
 npm run typecheck
-
-# データベース関連
-npm run db:generate      # マイグレーションファイル生成
-npm run db:migrate       # マイグレーション実行
-npm run db:push          # スキーマを直接プッシュ（開発用）
-npm run db:studio        # Drizzle Studio起動
-npm run db:seed          # シードデータ投入
-
-# Docker関連
-docker-compose up -d                    # DB環境のみ起動（推奨）
-docker-compose -f docker-compose.full.yml up -d  # フルスタック環境起動
-npm run docker:backend   # バックエンドDocker起動
-npm run docker:frontend  # フロントエンドDocker起動
 ```
 
 ## 設計原則・開発方針
@@ -381,6 +347,24 @@ npm run docker:frontend  # フロントエンドDocker起動
 6. **環境分離**を意識した設定管理（Local/Staging/Production）
 7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
 8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
+
+### データベース操作の重要な注意事項
+
+**チーム開発標準:**
+- **マイグレーション**: 必ず`npm run db:migrate:docker`を使用
+- **スキーマプッシュ**: 必ず`npm run db:push:docker`を使用  
+- **接続テスト**: 必ず`npm run db:test:docker`を使用
+
+**理由:**
+- 環境一致性の保証（チーム全員同じ結果）
+- 本番環境との整合性確保
+- トラブルシューティングの統一化
+- 新規参加者のオンボーディング簡素化
+
+**個人開発時の例外:**
+- 高速プロトタイピング時のみ`npm run db:*:local`の使用を許可
+- ただし、重要な変更前には必ずDockerでの動作確認を実行
+
 
 ## 設定ファイル
 

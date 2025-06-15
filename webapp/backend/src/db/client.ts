@@ -13,6 +13,7 @@ const sql = postgres(connectionString, {
   max: 10, // Maximum number of connections
   idle_timeout: 20,
   connect_timeout: 10,
+  onnotice: () => {}, // Ignore notices
 });
 
 // Create drizzle instance
