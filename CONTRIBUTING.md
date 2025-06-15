@@ -39,6 +39,11 @@ hotfix/#023_memory-leak-fix
 git checkout develop
 git pull origin develop
 git checkout -b feature/#005_admin-auth-system
+
+# 開発環境セットアップ（チーム標準）
+docker-compose up -d postgres redis
+cd webapp/backend
+npm run db:migrate:docker  # 重要: Docker使用
 ```
 
 ### コミットメッセージ規約

@@ -1,5 +1,5 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { getDb, closeDb } from './client.js';
+import { db, closeDb } from './client.js';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -9,10 +9,10 @@ async function runMigrations() {
   console.log('Starting database migrations...');
   
   try {
-    const db = getDb();
-    
-    // Run migrations
-    await migrate(db, { migrationsFolder: './drizzle' });
+    // Run migrations without creating drizzle schema
+    await migrate(db, { 
+      migrationsFolder: './drizzle'
+    });
     
     console.log('Migrations completed successfully!');
   } catch (error) {

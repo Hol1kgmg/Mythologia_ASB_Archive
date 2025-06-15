@@ -224,12 +224,22 @@ services:
 - **統合テスト**: `docker-compose.full.yml`でフルスタック環境
 - **新規参加者**: `docker-compose.full.yml`でワンコマンド環境構築
 
-## 開発コマンド（実装後）
+## 開発コマンド（チーム標準）
 
+### ローカル開発標準手順
 ```bash
-# ローカル開発
-npm run dev              # 開発サーバー起動
-npm run dev:docker       # Docker環境での開発
+# 1. データベース環境起動（必須）
+docker-compose up -d postgres redis
+
+# 2. データベース操作（Docker使用 - チーム標準）
+npm run db:migrate:docker    # マイグレーション実行（推奨）
+npm run db:push:docker       # スキーマ直接プッシュ
+npm run db:test:docker       # DB接続テスト
+
+# 3. 開発サーバー起動（選択可能）
+npm run dev                  # 高速開発（推奨）
+# または
+docker-compose -f docker-compose.full.yml up -d  # 完全統合環境
 
 # ビルド・テスト
 npm run build
@@ -237,18 +247,25 @@ npm run test
 npm run lint
 npm run typecheck
 
-# データベース関連
-npm run db:generate      # マイグレーションファイル生成
-npm run db:migrate       # マイグレーション実行
-npm run db:push          # スキーマを直接プッシュ（開発用）
-npm run db:studio        # Drizzle Studio起動
-npm run db:seed          # シードデータ投入
+# データベース関連（従来方式 - 個人開発時のみ）
+npm run db:generate          # マイグレーションファイル生成
+npm run db:migrate:local     # ローカルマイグレーション（非推奨）
+npm run db:push:local        # ローカルプッシュ（非推奨）
+npm run db:studio            # Drizzle Studio起動
+npm run db:seed              # シードデータ投入
+```
 
-# Docker関連
-docker-compose up -d                    # DB環境のみ起動（推奨）
-docker-compose -f docker-compose.full.yml up -d  # フルスタック環境起動
-npm run docker:backend   # バックエンドDocker起動
-npm run docker:frontend  # フロントエンドDocker起動
+### Docker環境管理
+```bash
+# データベースのみ起動（推奨開発方法）
+docker-compose up -d postgres redis
+
+# フルスタック統合環境
+docker-compose -f docker-compose.full.yml up -d
+
+# 環境停止
+docker-compose down
+docker-compose -f docker-compose.full.yml down
 ```
 
 ## 設計原則・開発方針
@@ -381,6 +398,23 @@ npm run docker:frontend  # フロントエンドDocker起動
 6. **環境分離**を意識した設定管理（Local/Staging/Production）
 7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
 8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
+
+### データベース操作の重要な注意事項
+
+**チーム開発標準:**
+- **マイグレーション**: 必ず`npm run db:migrate:docker`を使用
+- **スキーマプッシュ**: 必ず`npm run db:push:docker`を使用  
+- **接続テスト**: 必ず`npm run db:test:docker`を使用
+
+**理由:**
+- 環境一致性の保証（チーム全員同じ結果）
+- 本番環境との整合性確保
+- トラブルシューティングの統一化
+- 新規参加者のオンボーディング簡素化
+
+**個人開発時の例外:**
+- 高速プロトタイピング時のみ`npm run db:*:local`の使用を許可
+- ただし、重要な変更前には必ずDockerでの動作確認を実行
 
 ## 設定ファイル
 

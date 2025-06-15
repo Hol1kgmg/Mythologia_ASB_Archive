@@ -1,4 +1,4 @@
-import { getDb, closeDb } from '../src/db/client.js';
+import { db, closeDb } from '../src/db/client.js';
 import { sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
 
@@ -9,8 +9,6 @@ async function testConnection() {
   console.log('🔍 Testing database connection...');
   
   try {
-    const db = getDb();
-    
     // Test query
     const result = await db.execute(sql`SELECT current_database(), version()`);
     
