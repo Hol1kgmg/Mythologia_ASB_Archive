@@ -1,6 +1,12 @@
 # マイルストーン 1: システム管理者認証基盤
 
-## ステータス: 🔴 未開始
+## ステータス: 🟡 進行中（Phase 2完了）
+
+### 最新進捗 (2024年6月15日)
+- ✅ **Issue #35 Phase 2完了**: admin_sessionsとadmin_activity_logsテーブル実装
+- ✅ **データベース基盤**: 管理者認証に必要な全テーブル実装済み
+- ✅ **Repository層**: AdminSessionRepository, AdminActivityLogRepository実装済み
+- 🔄 **次段階**: Phase 3（認証API実装）に移行予定
 
 ## 概要
 システム管理者専用の認証システムと管理者アカウント管理機能を構築します。スーパー管理者による他の管理者アカウントのCRUD機能を含み、カードマスターデータを管理するための基盤を整備します。
@@ -31,40 +37,32 @@
 - [ ] プロジェクト基本構造の作成
 - [ ] 環境変数設定（.env.example）
 
-#### Day 3-4: データベースと認証テーブル
-- [ ] データベース接続設定（PostgreSQL/D1）
-- [ ] 管理者テーブルの作成
-  ```sql
-  CREATE TABLE admins (
-    id VARCHAR(36) PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(20) DEFAULT 'admin',
-    permissions JSON DEFAULT '[]',
-    is_active BOOLEAN DEFAULT TRUE,
-    is_super_admin BOOLEAN DEFAULT FALSE,
-    created_by VARCHAR(36),
-    last_login_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
+#### Day 3-4: データベースと認証テーブル ✅ **完了**
+- [x] データベース接続設定（PostgreSQL専用、Drizzle ORM使用）
+- [x] 管理者テーブルの作成（Drizzle ORM スキーマ）
+  ```typescript
+  // webapp/backend/src/db/schema/admin.ts
+  export const admins = pgTable('admins', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    username: varchar('username', { length: 50 }).notNull().unique(),
+    email: varchar('email', { length: 100 }).notNull().unique(),
+    passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+    role: adminRoleEnum('role').default('admin').notNull(),
+    permissions: json('permissions').$type<string[]>().default([]).notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+    isSuperAdmin: boolean('is_super_admin').default(false).notNull(),
+    createdBy: uuid('created_by').references(() => admins.id),
+    lastLoginAt: timestamp('last_login_at'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  });
   ```
-- [ ] セッションテーブルの作成
-- [ ] 管理者アクティビティログテーブルの作成
-  ```sql
-  CREATE TABLE admin_activity_logs (
-    id VARCHAR(36) PRIMARY KEY,
-    admin_id VARCHAR(36) NOT NULL,
-    action VARCHAR(100) NOT NULL,
-    target_type VARCHAR(50),
-    target_id VARCHAR(36),
-    details JSON,
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (admin_id) REFERENCES admins(id)
-  );
+- [x] セッションテーブルの作成（admin_sessions）
+- [x] 管理者アクティビティログテーブルの作成（admin_activity_logs）
+  ```typescript
+  // 実装済み: AdminSessionRepository, AdminActivityLogRepository
+  // マイグレーション: 0001_supreme_marauders.sql, 0002_previous_maelstrom.sql
+  // インデックス最適化済み（パフォーマンス重視設計）
   ```
 - [ ] 初期スーパー管理者アカウントのシーダー作成
 
@@ -190,8 +188,9 @@ export const rateLimiter = async (c: Context, next: Next) => {
     "@hono/jwt": "^1.x",
     "bcrypt": "^5.x",
     "zod": "^3.x",
-    "@neondatabase/serverless": "^0.x",
-    "@cloudflare/d1": "^1.x"
+    "drizzle-orm": "^0.29.x",
+    "drizzle-kit": "^0.20.x",
+    "@neondatabase/serverless": "^0.x"
   }
 }
 ```
@@ -206,7 +205,6 @@ JWT_REFRESH_EXPIRES_IN=7d
 
 # データベース
 DATABASE_URL=postgresql://...
-D1_DATABASE_ID=...
 
 # 初期スーパー管理者設定
 SUPER_ADMIN_EMAIL=super@example.com

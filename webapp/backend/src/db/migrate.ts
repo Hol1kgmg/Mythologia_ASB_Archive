@@ -9,10 +9,8 @@ async function runMigrations() {
   console.log('Starting database migrations...');
   
   try {
-    // Run migrations without creating drizzle schema
-    await migrate(db, { 
-      migrationsFolder: './drizzle'
-    });
+    // Run migrations
+    await migrate(db, { migrationsFolder: './drizzle' });
     
     console.log('Migrations completed successfully!');
   } catch (error) {

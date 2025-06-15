@@ -1,1 +1,1 @@
-export * from './db/schema/admin.js';
+export * from './db/schema/index.js';
