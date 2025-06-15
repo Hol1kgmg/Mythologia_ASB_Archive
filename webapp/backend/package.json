@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "echo '🔨 Building TypeScript...' && tsc && echo '✅ Build completed' && ls -la dist/",
     "start": "node dist/index.js",
     "railway:build": "npm run build",
     "railway:start": "npm run start",

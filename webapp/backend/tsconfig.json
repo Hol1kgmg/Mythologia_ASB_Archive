@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "strict": true,
-    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "sourceMap": false,
     "types": [
       "node"
     ],
@@ -13,8 +18,7 @@
     "outDir": "./dist"
   },
   "include": [
-    "src/**/*",
-    "drizzle.config.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -22,6 +26,7 @@
     "drizzle",
     "test",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "drizzle.config.ts"
   ]
 }
