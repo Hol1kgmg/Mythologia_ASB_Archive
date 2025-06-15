@@ -213,33 +213,190 @@ describe('AdminService', () => {
 
 ### 開発環境セットアップ
 
+#### 初期セットアップ（チーム標準）
+
 1. **リポジトリのクローン**
    ```bash
    git clone [private-repo-url]
    cd Mythologia_AdmiralsShipBridge
    ```
 
-2. **依存関係インストール**
+2. **Docker環境起動**
    ```bash
-   npm install
+   docker-compose up -d postgres redis
    ```
 
-3. **環境変数設定**
+3. **依存関係インストール**
    ```bash
+   cd webapp/backend && npm install
+   cd ../frontend && npm install
+   ```
+
+4. **環境変数設定**
+   ```bash
+   cd webapp/backend
    cp .env.example .env.local
    # .env.localを編集
    ```
 
-4. **データベース初期化**
+5. **データベース初期化（Docker経由）**
    ```bash
-   npm run db:migrate
-   npm run db:seed:super-admin
+   npm run db:migrate:docker
+   npm run db:seed:docker  # シードデータ投入
    ```
 
-5. **開発サーバー起動**
+6. **開発サーバー起動**
    ```bash
-   npm run dev
+   npm run dev  # バックエンド
+   # 別ターミナルで
+   cd webapp/frontend && npm run dev  # フロントエンド
    ```
+
+#### 開発前の動作確認
+
+**必須確認項目:**
+
+```bash
+# 1. Docker環境確認
+docker-compose ps  # 全サービスが "Up" であること
+
+# 2. DB接続確認
+cd webapp/backend
+npm run db:test:docker
+
+# 3. テーブル確認
+docker exec mythologia-postgres psql -U mythologia_user -d mythologia_dev -c "\dt"
+
+# 4. API動作確認（サーバー起動後）
+curl http://localhost:8787/health
+
+# 5. 管理UI確認
+open http://localhost:8080  # Adminer
+```
+
+### Docker環境の詳細
+
+#### 環境の使い分け
+
+1. **データベースのみ（推奨開発方法）**
+   ```bash
+   # PostgreSQL + Redis + 管理ツールのみ起動
+   docker-compose up -d postgres redis
+   
+   # 各アプリは個別に起動
+   cd webapp/backend && npm run dev    # バックエンド開発サーバー
+   cd webapp/frontend && npm run dev   # フロントエンド開発サーバー
+   ```
+
+2. **フルスタック統合環境**
+   ```bash
+   # 全サービスを一括起動（新規参加者向け）
+   docker-compose -f docker-compose.full.yml up -d
+   ```
+
+3. **個別Docker実行（本番環境テスト用）**
+   ```bash
+   # バックエンド（Railway環境テスト）
+   cd webapp/backend
+   docker build -t mythologia-backend .
+   docker run -p 8787:8787 mythologia-backend
+   ```
+
+#### 管理UIアクセス
+
+- **Adminer (PostgreSQL管理)**: http://localhost:8080
+  - Server: `postgres`
+  - Username: `mythologia_user`
+  - Password: `mythologia_pass`
+  - Database: `mythologia_dev`
+
+- **RedisInsight (Redis管理)**: http://localhost:8001
+  - Host: `localhost`
+  - Port: `6379`
+  - Password: `mythologia_redis_pass`
+
+### トラブルシューティング
+
+#### よくある問題と解決方法
+
+1. **"Cannot connect to database"エラー**
+   ```bash
+   # Dockerサービス確認
+   docker-compose ps
+   # postgresがUpでない場合、再起動
+   docker-compose restart postgres
+   ```
+
+2. **"relation already exists"エラー**
+   ```bash
+   # マイグレーション履歴確認
+   docker exec mythologia-postgres psql -U mythologia_user -d mythologia_dev -c "SELECT * FROM drizzle.__drizzle_migrations;"
+   # 必要に応じて手動でマーク
+   ```
+
+3. **"password authentication failed"エラー**
+   ```bash
+   # .env.localファイル確認
+   cat webapp/backend/.env.local
+   # DATABASE_URLが正しいことを確認
+   ```
+
+4. **Dockerコンテナが起動しない**
+   ```bash
+   # ログ確認
+   docker-compose logs postgres
+   # ボリューム初期化（データ削除注意）
+   docker-compose down -v
+   docker-compose up -d
+   ```
+
+5. **マイグレーションが適用されない**
+   ```bash
+   # 直接確認
+   docker exec -it mythologia-postgres psql -U mythologia_user -d mythologia_dev
+   # \dt でテーブル一覧確認
+   # \d admins でテーブル構造確認
+   ```
+
+#### データベース操作コマンド集
+
+```bash
+# PostgreSQL直接アクセス
+docker exec -it mythologia-postgres psql -U mythologia_user -d mythologia_dev
+
+# 基本的なPSQLコマンド
+\dt                    # テーブル一覧
+\d table_name          # テーブル構造
+\du                    # ユーザー一覧
+\l                     # データベース一覧
+\q                     # 終了
+
+# Redis直接アクセス
+docker exec -it mythologia-redis redis-cli -a mythologia_redis_pass
+
+# 基本的なRedisコマンド
+keys *                 # 全キー表示
+get key_name          # 値取得
+del key_name          # キー削除
+flushall              # 全データ削除（注意！）
+exit                  # 終了
+```
+
+#### Docker環境メンテナンス
+
+```bash
+# サービス停止
+docker-compose down
+
+# データ削除（初期化）
+docker-compose down -v
+
+# ログ確認
+docker-compose logs -f postgres redis
+
+# コンテナ再構築
+docker-compose build --no-cache
+```
 
 ### レビュープロセス
 

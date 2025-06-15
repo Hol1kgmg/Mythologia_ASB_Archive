@@ -220,75 +220,29 @@ curl http://localhost:8787/debug/db-status
 - **中期キャッシュ**: セット別・リーダー別カード（1時間）
 - **短期キャッシュ**: 検索結果（5分）
 
-## 開発環境セットアップ
+## 🚀 クイックスタート
 
-### 🎯 チーム標準開発手順
-
-#### 必須前提条件
-- Docker & Docker Compose
-- Node.js 18+ （開発サーバー用）
-
-#### 🚀 標準セットアップ
 ```bash
 # 1. リポジトリクローン
 git clone <repository-url>
 cd Mythologia_AdmiralsShipBridge
 
-# 2. データベース環境起動（Docker）
+# 2. Docker環境起動
 docker-compose up -d postgres redis
 
-# 3. 依存関係インストール
+# 3. セットアップ
 cd webapp/backend && npm install
-cd ../frontend && npm install
-
-# 4. データベース初期化（Docker経由 - 重要）
-cd webapp/backend
 npm run db:migrate:docker
 
-# 5. 開発サーバー起動
-npm run dev  # バックエンド
-# 別ターミナルで
-cd webapp/frontend && npm run dev  # フロントエンド
+# 4. 開発サーバー起動
+npm run dev
 ```
 
-#### 📋 データベース操作（チーム標準）
+詳細な開発環境セットアップとトラブルシューティングは [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
-**⚠️ 重要: データベース操作は必ずDockerを使用**
+## 🐳 Docker環境
 
-```bash
-# マイグレーション実行
-npm run db:migrate:docker
-
-# スキーマ直接適用
-npm run db:push:docker
-
-# 接続テスト
-npm run db:test:docker
-
-# データベース状態確認
-docker exec mythologia-postgres psql -U mythologia_user -d mythologia_dev -c "\dt"
-```
-
-**理由:**
-- ✅ チーム全員で同じ結果を保証
-- ✅ 本番環境との整合性確保
-- ✅ 新規参加者の環境構築簡素化
-- ✅ トラブルシューティングの統一化
-
-#### 代替環境（統合環境）
-
-新規参加者やフルスタック統合テスト用：
-
-```bash
-# 全サービス一括起動
-docker-compose -f docker-compose.full.yml up -d
-
-# フロントエンド: http://localhost:3000
-# バックエンド: http://localhost:8787
-# 管理UI: http://localhost:8080 (Adminer)
-```
-
-#### サービス構成
+### サービス構成
 ```yaml
 services:
   postgres:      # PostgreSQL 16

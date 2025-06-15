@@ -149,38 +149,11 @@ CREATE TABLE categories (
             └── lib/           # ユーティリティ
 ```
 
-## Docker管理構成
+## Docker環境の使い分け
 
-### Docker環境の使い分け
-
-#### 1. データベースのみ（推奨開発方法）
-```bash
-# PostgreSQL + Redis + 管理ツールのみ起動
-docker-compose up -d
-
-# 各アプリは個別に起動
-cd webapp/backend && npm run dev    # バックエンド開発サーバー
-cd webapp/frontend && npm run dev   # フロントエンド開発サーバー
-```
-
-#### 2. フルスタック統合環境
-```bash
-# 全サービスを一括起動（開発効率化・新規参加者向け）
-docker-compose -f docker-compose.full.yml up -d
-```
-
-#### 3. 個別Docker実行（本番環境テスト用）
-```bash
-# バックエンド（Railway環境テスト）
-cd webapp/backend
-docker build -t mythologia-backend .
-docker run -p 8787:8787 mythologia-backend
-
-# フロントエンド（ローカルテスト）
-cd webapp/frontend
-docker build -t mythologia-frontend .
-docker run -p 3000:3000 mythologia-frontend
-```
+- **通常開発**: `docker-compose up -d postgres redis` → データベースのみ起動
+- **統合テスト**: `docker-compose -f docker-compose.full.yml up -d` → フルスタック環境
+- **本番テスト**: 個別Dockerfileでビルド・実行
 
 ### Dockerファイル管理
 ```
@@ -224,48 +197,24 @@ services:
 - **統合テスト**: `docker-compose.full.yml`でフルスタック環境
 - **新規参加者**: `docker-compose.full.yml`でワンコマンド環境構築
 
-## 開発コマンド（チーム標準）
+## 開発コマンド
 
-### ローカル開発標準手順
+主要なコマンドは以下の通り。詳細は[CONTRIBUTING.md](CONTRIBUTING.md)を参照。
+
 ```bash
-# 1. データベース環境起動（必須）
-docker-compose up -d postgres redis
-
-# 2. データベース操作（Docker使用 - チーム標準）
-npm run db:migrate:docker    # マイグレーション実行（推奨）
+# データベース操作（Docker経由 - チーム標準）
+npm run db:migrate:docker    # マイグレーション実行
 npm run db:push:docker       # スキーマ直接プッシュ
 npm run db:test:docker       # DB接続テスト
 
-# 3. 開発サーバー起動（選択可能）
-npm run dev                  # 高速開発（推奨）
-# または
-docker-compose -f docker-compose.full.yml up -d  # 完全統合環境
+# 開発サーバー
+npm run dev                  # 開発サーバー起動
 
 # ビルド・テスト
 npm run build
 npm run test
 npm run lint
 npm run typecheck
-
-# データベース関連（従来方式 - 個人開発時のみ）
-npm run db:generate          # マイグレーションファイル生成
-npm run db:migrate:local     # ローカルマイグレーション（非推奨）
-npm run db:push:local        # ローカルプッシュ（非推奨）
-npm run db:studio            # Drizzle Studio起動
-npm run db:seed              # シードデータ投入
-```
-
-### Docker環境管理
-```bash
-# データベースのみ起動（推奨開発方法）
-docker-compose up -d postgres redis
-
-# フルスタック統合環境
-docker-compose -f docker-compose.full.yml up -d
-
-# 環境停止
-docker-compose down
-docker-compose -f docker-compose.full.yml down
 ```
 
 ## 設計原則・開発方針
@@ -415,6 +364,7 @@ docker-compose -f docker-compose.full.yml down
 **個人開発時の例外:**
 - 高速プロトタイピング時のみ`npm run db:*:local`の使用を許可
 - ただし、重要な変更前には必ずDockerでの動作確認を実行
+
 
 ## 設定ファイル
 
