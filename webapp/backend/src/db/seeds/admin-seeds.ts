@@ -2,10 +2,10 @@
  * 管理者テーブル用シードデータ生成
  */
 
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
-import { admins } from '../schema/admin';
+import { admins, type NewAdmin } from '../schema/admin';
 import { logger } from '../../utils/logger';
 
 // ダミーデータ生成用の定数
@@ -38,7 +38,7 @@ interface AdminSeedOptions {
  * 管理者ダミーデータを生成
  */
 export async function seedAdmins(
-  db: PostgresJsDatabase,
+  db: PostgresJsDatabase<any>,
   options: AdminSeedOptions = {}
 ): Promise<void> {
   const { clearExisting = false, count = 5 } = options;
@@ -54,7 +54,7 @@ export async function seedAdmins(
     const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
 
     // スーパー管理者を最初に作成
-    const superAdmin = await db.insert(admins).values({
+    const superAdminData: NewAdmin = {
       username: 'super_admin',
       email: 'super@mythologia.test',
       passwordHash,
@@ -62,15 +62,19 @@ export async function seedAdmins(
       permissions: PERMISSION_TEMPLATES.super_admin,
       isActive: true,
       isSuperAdmin: true,
-    }).returning();
+      createdBy: null,
+      lastLoginAt: null,
+    };
+
+    const superAdmin = await db.insert(admins).values(superAdminData).returning();
 
     logger.info(`Created super admin: ${superAdmin[0].username}`);
 
     // 追加の管理者を生成
-    const additionalAdmins = [];
+    const additionalAdmins: NewAdmin[] = [];
     for (let i = 1; i < count; i++) {
       const role = ADMIN_ROLES[i % ADMIN_ROLES.length];
-      const adminData = {
+      const adminData: NewAdmin = {
         username: `admin_${i}`,
         email: `admin${i}@mythologia.test`,
         passwordHash,
@@ -118,7 +122,7 @@ export async function seedAdmins(
  * 特定の管理者を作成（テスト用）
  */
 export async function createTestAdmin(
-  db: PostgresJsDatabase,
+  db: PostgresJsDatabase<any>,
   data: {
     username: string;
     email: string;
@@ -129,7 +133,7 @@ export async function createTestAdmin(
 ) {
   const passwordHash = await bcrypt.hash(data.password || DEMO_PASSWORD, 10);
   
-  const admin = await db.insert(admins).values({
+  const adminData: NewAdmin = {
     username: data.username,
     email: data.email,
     passwordHash,
@@ -137,7 +141,11 @@ export async function createTestAdmin(
     permissions: data.permissions || PERMISSION_TEMPLATES[data.role || 'admin'],
     isActive: true,
     isSuperAdmin: data.role === 'super_admin',
-  }).returning();
+    createdBy: null,
+    lastLoginAt: null,
+  };
+  
+  const admin = await db.insert(admins).values(adminData).returning();
 
   logger.info(`Created test admin: ${admin[0].username}`);
   return admin[0];
@@ -147,7 +155,7 @@ export async function createTestAdmin(
  * デモ用のログイン履歴を生成
  */
 export async function generateLoginHistory(
-  db: PostgresJsDatabase,
+  db: PostgresJsDatabase<any>,
   adminId: string,
   count: number = 10
 ) {

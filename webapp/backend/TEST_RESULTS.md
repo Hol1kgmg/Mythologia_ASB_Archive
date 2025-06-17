@@ -45,7 +45,7 @@ SELECT username, email, role, is_active FROM admins ORDER BY created_at;
 #### 基本オプション
 - ✅ `--admins-only`: 管理者テーブルのみシード
 - ✅ `--count-admins=N`: 指定した数の管理者を生成
-- ⬜ `--clear`: 既存データクリア（未テスト）
+- ✅ `--clear`: 既存データクリア後に新規生成
 
 #### 生成される権限
 - **super_admin**: `["*"]` (全権限)
@@ -93,6 +93,10 @@ Password: Demo123!@#
 
 ### データベース接続
 ✅ 接続失敗時は適切なエラーメッセージを表示
+
+### Drizzle ORM 型安全性
+✅ `NewAdmin`型を使用した型安全なデータ挿入
+✅ PostgresJsDatabase型の適切な処理
 
 ## 今後の拡張テスト項目
 
