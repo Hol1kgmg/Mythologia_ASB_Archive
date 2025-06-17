@@ -44,39 +44,60 @@ export async function seedAdmins(
   const { clearExisting = false, count = 5 } = options;
 
   try {
+    // パスワードハッシュを事前に生成（同じハッシュを使い回す）
+    const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
+
     // 既存データのクリア（オプション）
     if (clearExisting) {
       logger.warn('Clearing existing admin data...');
       await db.delete(admins);
     }
 
-    // パスワードハッシュを事前に生成（同じハッシュを使い回す）
-    const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
+    // 既存のスーパー管理者をチェック
+    const existingSuperAdmin = await db.select().from(admins).where(eq(admins.username, 'super_admin'));
+    
+    let superAdmin;
+    if (existingSuperAdmin.length > 0) {
+      logger.info('Super admin already exists, skipping creation');
+      superAdmin = existingSuperAdmin;
+    } else {
+      // スーパー管理者を新規作成
+      const superAdminData: NewAdmin = {
+        username: 'super_admin',
+        email: 'super@mythologia.test',
+        passwordHash,
+        role: 'super_admin',
+        permissions: PERMISSION_TEMPLATES.super_admin,
+        isActive: true,
+        isSuperAdmin: true,
+        createdBy: null,
+        lastLoginAt: null,
+      };
 
-    // スーパー管理者を最初に作成
-    const superAdminData: NewAdmin = {
-      username: 'super_admin',
-      email: 'super@mythologia.test',
-      passwordHash,
-      role: 'super_admin',
-      permissions: PERMISSION_TEMPLATES.super_admin,
-      isActive: true,
-      isSuperAdmin: true,
-      createdBy: null,
-      lastLoginAt: null,
-    };
-
-    const superAdmin = await db.insert(admins).values(superAdminData).returning();
-
-    logger.info(`Created super admin: ${superAdmin[0].username}`);
+      superAdmin = await db.insert(admins).values(superAdminData).returning();
+      logger.info(`Created super admin: ${superAdmin[0].username}`);
+    }
 
     // 追加の管理者を生成
     const additionalAdmins: NewAdmin[] = [];
+    let createdCount = 0;
+    
     for (let i = 1; i < count; i++) {
+      const username = `admin_${i}`;
+      const email = `admin${i}@mythologia.test`;
+      
+      // 既存の管理者をチェック
+      const existingAdmin = await db.select().from(admins).where(eq(admins.username, username));
+      
+      if (existingAdmin.length > 0) {
+        logger.info(`Admin ${username} already exists, skipping`);
+        continue;
+      }
+      
       const role = ADMIN_ROLES[i % ADMIN_ROLES.length];
       const adminData: NewAdmin = {
-        username: `admin_${i}`,
-        email: `admin${i}@mythologia.test`,
+        username,
+        email,
         passwordHash,
         role,
         permissions: PERMISSION_TEMPLATES[role],
@@ -85,12 +106,22 @@ export async function seedAdmins(
         createdBy: superAdmin[0].id,
         lastLoginAt: i % 3 === 0 ? new Date() : null, // 3人に1人は最近ログイン
       };
-      additionalAdmins.push(adminData);
+      
+      try {
+        const created = await db.insert(admins).values(adminData).returning();
+        logger.info(`Created admin: ${created[0].username}`);
+        createdCount++;
+      } catch (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          logger.warn(`Admin ${username} already exists (race condition), skipping`);
+        } else {
+          throw error;
+        }
+      }
     }
 
-    if (additionalAdmins.length > 0) {
-      const created = await db.insert(admins).values(additionalAdmins).returning();
-      logger.info(`Created ${created.length} additional admins`);
+    if (createdCount > 0) {
+      logger.info(`Created ${createdCount} additional admins`);
     }
 
     // 作成したデータのサマリーを表示
