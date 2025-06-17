@@ -21,7 +21,7 @@
     "db:test:docker": "echo '🐳 Docker経由でDB接続テスト中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx src/test-connection.ts'",
     "db:seed": "dotenv -e .env.local -- tsx src/db/seeds/index.ts",
     "db:seed:local": "dotenv -e .env.local -- tsx src/db/seeds/index.ts",
-    "db:seed:docker": "echo '🌱 Docker経由でシードデータ生成中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli bcrypt -g && npx dotenv -e .env.local -- npx tsx src/db/seeds/index.ts'"
+    "db:seed:docker": "./scripts/seed-docker.sh"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",

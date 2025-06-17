@@ -98,7 +98,8 @@ export async function clearTable(tableName: string) {
 }
 
 // CLIから直接実行された場合
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
   const args = process.argv.slice(2);
   const options: SeedOptions = {};
 
