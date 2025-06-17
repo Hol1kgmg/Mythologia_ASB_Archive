@@ -26,3 +26,7 @@ lerna-debug.log*
 
 # misc
 .DS_Store
+
+# database backups
+backups/*.json
+backups/*.sql
