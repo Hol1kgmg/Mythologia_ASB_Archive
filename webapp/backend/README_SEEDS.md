@@ -16,6 +16,20 @@ npm run db:seed:docker
 npm run db:seed:local
 ```
 
+### 重複データ処理
+
+シードスクリプトは既存データと共存できます：
+
+```bash
+# 既存データをスキップして新規データを追加
+npm run db:seed:docker -- --admins-only --count-admins=10
+# 既存5件 + 新規5件 = 10件になります
+
+# 既存データをクリアしてから新規生成
+npm run db:seed:docker -- --clear --admins-only --count-admins=5
+# 既存データ削除 + 新規5件生成
+```
+
 ### コマンドラインオプション
 
 ```bash
