@@ -64,6 +64,7 @@ npm run db:migrate:docker  # 重要: Docker使用
 - `refactor`: リファクタリング
 - `test`: テスト追加・修正
 - `chore`: ビルドプロセスや補助ツールの変更
+- `docs/branch-name`: ドキュメント更新
 
 #### 例
 ```
