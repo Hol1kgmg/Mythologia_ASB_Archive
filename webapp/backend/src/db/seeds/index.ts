@@ -32,6 +32,9 @@ export async function runAllSeeds(options: SeedOptions = {}) {
   logger.info('🌱 Starting seed process...');
 
   try {
+    // Railway環境での実行制限
+    await checkEnvironmentRestrictions();
+
     // デフォルトオプションの設定
     const opts: Required<SeedOptions> = {
       clearExisting: options.clearExisting ?? false,
@@ -77,6 +80,23 @@ export async function runAllSeeds(options: SeedOptions = {}) {
   } catch (error) {
     logger.error('❌ Seed failed:', error);
     throw error;
+  }
+}
+
+/**
+ * 環境制限のチェック
+ */
+async function checkEnvironmentRestrictions(): Promise<void> {
+  const nodeEnv = process.env.NODE_ENV;
+  
+  if (nodeEnv === 'production' || nodeEnv === 'staging') {
+    logger.error(`❌ ${nodeEnv}環境でのシード実行は禁止されています`);
+    logger.error('💡 シードデータはローカル開発環境専用です');
+    logger.error('🏠 ローカル環境でのみ実行してください:');
+    logger.error('   npm run db:seed:docker -- --admins-only');
+    logger.error('   npm run db:seed:local -- --admins-only');
+    
+    throw new Error(`SEED_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのシード実行は禁止されています`);
   }
 }
 

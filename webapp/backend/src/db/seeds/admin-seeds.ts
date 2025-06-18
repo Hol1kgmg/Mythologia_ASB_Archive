@@ -44,6 +44,9 @@ export async function seedAdmins(
   const { clearExisting = false, count = 5 } = options;
 
   try {
+    // 本番・ステージング環境での実行制限
+    checkEnvironmentRestrictions();
+    
     // パスワードハッシュを事前に生成（同じハッシュを使い回す）
     const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
 
@@ -112,7 +115,7 @@ export async function seedAdmins(
         logger.info(`Created admin: ${created[0].username}`);
         createdCount++;
       } catch (error) {
-        if (error.code === '23505') { // Unique constraint violation
+        if (error instanceof Error && 'code' in error && error.code === '23505') { // Unique constraint violation
           logger.warn(`Admin ${username} already exists (race condition), skipping`);
         } else {
           throw error;
@@ -206,4 +209,19 @@ export async function generateLoginHistory(
     .where(eq(admins.id, adminId));
 
   logger.info(`Generated ${count} login history entries for admin ${adminId}`);
+}
+
+/**
+ * 環境制限チェック（シード実行制限）
+ */
+function checkEnvironmentRestrictions(): void {
+  const nodeEnv = process.env.NODE_ENV;
+  
+  if (nodeEnv === 'production' || nodeEnv === 'staging') {
+    logger.error(`❌ ${nodeEnv}環境での管理者シード実行は禁止されています`);
+    logger.error('💡 管理者ダミーデータはローカル開発環境専用です');
+    logger.error('🔒 本番環境では手動で安全なアカウントを作成してください');
+    
+    throw new Error(`ADMIN_SEED_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境での管理者シード実行は禁止されています`);
+  }
 }

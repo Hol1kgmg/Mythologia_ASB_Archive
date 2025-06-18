@@ -28,6 +28,9 @@ export async function clearAllData(
   const { force = false, tables = [], createBackup = false } = options;
 
   try {
+    // 本番・ステージング環境での実行制限
+    checkEnvironmentRestrictions();
+
     // 安全確認
     if (!force && process.env.NODE_ENV === 'production') {
       throw new Error('本番環境での全削除は禁止されています。--force オプションが必要です。');
@@ -111,6 +114,9 @@ export async function clearTable(
   tableName: string,
   force: boolean = false
 ): Promise<void> {
+  // 本番・ステージング環境での実行制限
+  checkEnvironmentRestrictions();
+  
   logger.info(`🗑️  ${tableName} テーブルをクリアします...`);
 
   if (!force) {
@@ -151,7 +157,7 @@ async function resetSequences(
   logger.info('🔄 ID採番シーケンスをリセット中...');
 
   // PostgreSQLのシーケンスリセットクエリ
-  const sequenceResets = [];
+  const sequenceResets: string[] = [];
 
   if (tables.includes('admins')) {
     // UUIDの場合はシーケンスリセット不要
@@ -238,4 +244,21 @@ if (isMainModule) {
   }
 
   process.exit(0);
+}
+
+/**
+ * 環境制限チェック（クリア実行制限）
+ */
+function checkEnvironmentRestrictions(): void {
+  const nodeEnv = process.env.NODE_ENV;
+  
+  if (nodeEnv === 'production' || nodeEnv === 'staging') {
+    logger.error(`❌ ${nodeEnv}環境でのデータクリア実行は禁止されています`);
+    logger.error('💡 データクリア機能はローカル開発環境専用です');
+    logger.error('🔒 本番環境でのデータ削除は管理者が手動で行ってください');
+    logger.error('🏠 ローカル環境でのみ実行してください:');
+    logger.error('   npm run db:clear:docker -- --force');
+    
+    throw new Error(`CLEAR_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのデータクリア実行は禁止されています`);
+  }
 }
