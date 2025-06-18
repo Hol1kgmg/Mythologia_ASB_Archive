@@ -11,7 +11,7 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 進行中 🚧
-- **最新更新**: バックエンド基盤実装完了、認証システム実装、フロントエンド基盤構築済み
+- **最新更新**: 管理者シードデータ生成システム実装完了（issue#44）、認証システム実装、フロントエンド基盤構築済み
 
 ## 技術スタック
 
@@ -207,6 +207,10 @@ npm run db:migrate:docker    # マイグレーション実行
 npm run db:push:docker       # スキーマ直接プッシュ
 npm run db:test:docker       # DB接続テスト
 
+# シードデータ生成（管理者データ）✅
+npm run db:seed:docker -- --admins-only --count-admins=5
+npm run db:clear:docker -- --force --backup
+
 # 開発サーバー
 npm run dev                  # 開発サーバー起動
 
@@ -322,10 +326,12 @@ npm run typecheck
 - [x] バックエンド基盤（Hono + TypeScript）
 - [x] フロントエンド基盤（Next.js + TypeScript）
 - [x] 認証システム実装
+- [x] 管理者シードデータ生成システム（issue#44）
 - [ ] データベースアダプター実装
 - [ ] 基本的なCRUD API
 
 ### Phase 2: コア機能
+- [ ] ユーザー・カード・デッキシードデータ生成（issue#44 Phase2）
 - [ ] カード管理API
 - [ ] デッキ管理API
 - [ ] 検索・フィルタリング機能
@@ -354,12 +360,18 @@ npm run typecheck
 - **マイグレーション**: 必ず`npm run db:migrate:docker`を使用
 - **スキーマプッシュ**: 必ず`npm run db:push:docker`を使用  
 - **接続テスト**: 必ず`npm run db:test:docker`を使用
+- **シードデータ生成**: 必ず`npm run db:seed:docker`を使用
+- **データクリア**: 必ず`npm run db:clear:docker`を使用
 
 **理由:**
 - 環境一致性の保証（チーム全員同じ結果）
 - 本番環境との整合性確保
 - トラブルシューティングの統一化
 - 新規参加者のオンボーディング簡素化
+
+**環境保護:**
+- **本番・ステージング環境**: NODE_ENV=production/stagingでのシード・クリア実行は自動的にブロック
+- **セキュリティ**: 本番データの意図しない削除を防止
 
 **個人開発時の例外:**
 - 高速プロトタイピング時のみ`npm run db:*:local`の使用を許可
