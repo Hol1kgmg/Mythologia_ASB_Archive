@@ -18,10 +18,17 @@
     "db:push:docker": "echo '🐳 Docker経由でスキーマプッシュ中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install drizzle-kit dotenv-cli -g && npx dotenv -e .env.local -- npx drizzle-kit push'",
     "db:test": "dotenv -e .env.local -- tsx src/test-connection.ts",
     "db:test:local": "dotenv -e .env.local -- tsx src/test-connection.ts",
-    "db:test:docker": "echo '🐳 Docker経由でDB接続テスト中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx src/test-connection.ts'"
+    "db:test:docker": "echo '🐳 Docker経由でDB接続テスト中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx src/test-connection.ts'",
+    "db:seed": "dotenv -e .env.local -- tsx src/db/seeds/index.ts",
+    "db:seed:local": "dotenv -e .env.local -- tsx src/db/seeds/index.ts",
+    "db:seed:docker": "./scripts/seed-docker.sh",
+    "db:clear": "dotenv -e .env.local -- tsx src/db/seeds/clear-data.ts",
+    "db:clear:local": "dotenv -e .env.local -- tsx src/db/seeds/clear-data.ts",
+    "db:clear:docker": "./scripts/clear-docker.sh"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.2",
     "drizzle-zod": "^0.8.2",
@@ -31,6 +38,7 @@
     "zod": "^3.25.64"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.19.0",
     "@types/pg": "^8.15.4",
     "dotenv-cli": "^8.0.0",
