@@ -38,10 +38,9 @@ export class AdminAuthService {
   private jwtManager: AdminJWTManager;
 
   constructor(
-    private readonly db: PostgresJsDatabase<any>,
-    jwtSecret: string
+    private readonly db: PostgresJsDatabase<any>
   ) {
-    this.jwtManager = new AdminJWTManager(jwtSecret);
+    this.jwtManager = new AdminJWTManager();
   }
 
   /**

@@ -22,12 +22,6 @@ interface AdminAuthContext {
 export function adminAuth(): MiddlewareHandler<{ Variables: AdminAuthContext }> {
   return async (c, next) => {
     try {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        logger.error('JWT_SECRET environment variable is not set');
-        return c.json({ error: 'Server configuration error' }, 500);
-      }
-
       // Extract token from Authorization header
       const authHeader = c.req.header('Authorization');
       const token = AdminJWTManager.extractTokenFromHeader(authHeader);
@@ -40,7 +34,7 @@ export function adminAuth(): MiddlewareHandler<{ Variables: AdminAuthContext }> 
       }
 
       // Verify token and get admin info
-      const authService = new AdminAuthService(db, jwtSecret);
+      const authService = new AdminAuthService(db);
       const admin = await authService.verifyAccessToken(token);
 
       // Set admin in context

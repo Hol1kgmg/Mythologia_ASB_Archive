@@ -56,12 +56,9 @@ const refreshResponseSchema = z.object({
 export class AdminAuthController {
   private authService: AdminAuthService;
 
-  constructor() {
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET environment variable is required');
-    }
-    this.authService = new AdminAuthService(db, jwtSecret);
+  constructor(authService?: AdminAuthService) {
+    // Dependency injection with fallback
+    this.authService = authService || new AdminAuthService(db);
   }
 
   /**
@@ -164,14 +161,8 @@ export class AdminAuthController {
         }, 400);
       }
 
-      // Get JWT secret
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        throw new Error('JWT_SECRET not configured');
-      }
-
       // Verify token to get session ID
-      const jwtManager = new (await import('../../infrastructure/auth/utils/admin-jwt')).AdminJWTManager(jwtSecret);
+      const jwtManager = new (await import('../../infrastructure/auth/utils/admin-jwt')).AdminJWTManager();
       const payload = await jwtManager.verifyAccessToken(token);
 
       // Get client info

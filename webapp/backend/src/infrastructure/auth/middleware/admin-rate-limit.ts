@@ -1,5 +1,7 @@
 import type { Context, Next } from 'hono';
 import { logger } from '../../../utils/logger';
+import { createRateLimitStore, type RateLimitStore } from '../stores/RateLimitStore';
+import { authConfig } from '../../../config/auth';
 
 interface AdminRateLimitOptions {
   windowMs: number; // Time window in milliseconds
@@ -8,13 +10,8 @@ interface AdminRateLimitOptions {
   skipSuccessfulLogin?: boolean; // Skip rate limiting for successful logins
 }
 
-// Simple in-memory rate limiter for admin endpoints
-// For production, consider using Redis for distributed rate limiting
-const adminRateLimitStore = new Map<string, { 
-  count: number; 
-  resetTime: number;
-  blockedUntil?: number; // Account lockout time
-}>();
+// Rate limit store - uses Redis in production, in-memory for development
+const rateLimitStore: RateLimitStore = createRateLimitStore();
 
 export function adminRateLimit(options: AdminRateLimitOptions) {
   const { 
@@ -30,34 +27,22 @@ export function adminRateLimit(options: AdminRateLimitOptions) {
     
     // Clean up expired entries periodically
     if (Math.random() < 0.05) { // 5% chance
-      cleanupExpiredAdminEntries(now);
+      rateLimitStore.cleanup();
     }
     
-    // Get or create rate limit entry
-    let entry = adminRateLimitStore.get(key);
-    
     // Check if account is temporarily blocked
-    if (entry?.blockedUntil && now < entry.blockedUntil) {
-      const blockedFor = Math.ceil((entry.blockedUntil - now) / 1000 / 60); // minutes
-      logger.warn(`Admin login blocked for key: ${key} (blocked for ${blockedFor} more minutes)`);
+    const isBlocked = await rateLimitStore.isBlocked(key);
+    if (isBlocked) {
+      logger.warn(`Admin request blocked for key: ${key}`);
       return c.json({
         error: 'Account temporarily locked',
-        message: `Too many failed login attempts. Try again in ${blockedFor} minutes.`,
-        retryAfter: Math.ceil((entry.blockedUntil - now) / 1000),
+        message: 'Too many failed attempts. Please try again later.',
+        retryAfter: 300, // 5 minutes default
       }, 429);
     }
     
-    if (!entry || now > entry.resetTime) {
-      // Create new entry or reset expired entry
-      entry = {
-        count: 1,
-        resetTime: now + windowMs
-      };
-      adminRateLimitStore.set(key, entry);
-    } else {
-      // Increment count
-      entry.count++;
-    }
+    // Get or increment rate limit entry
+    const entry = await rateLimitStore.increment(key, windowMs);
     
     // Check if limit exceeded
     if (entry.count > maxRequests) {
@@ -67,7 +52,7 @@ export function adminRateLimit(options: AdminRateLimitOptions) {
       if (c.req.path.includes('/login')) {
         // Block account for increasing duration based on attempts
         const blockDuration = Math.min(entry.count - maxRequests, 10) * 5 * 60 * 1000; // 5-50 minutes
-        entry.blockedUntil = now + blockDuration;
+        await rateLimitStore.block(key, blockDuration);
         
         logger.warn(`Admin login rate limit exceeded for key: ${key} (${entry.count}/${maxRequests} requests, blocked for ${blockDuration / 1000 / 60} minutes)`);
         
@@ -97,12 +82,8 @@ export function adminRateLimit(options: AdminRateLimitOptions) {
     if (skipSuccessfulLogin && 
         c.req.path.includes('/login') && 
         c.res.status === 200) {
-      const successEntry = adminRateLimitStore.get(key);
-      if (successEntry) {
-        successEntry.count = 0;
-        delete successEntry.blockedUntil;
-        logger.info(`Rate limit reset for successful login: ${key}`);
-      }
+      await rateLimitStore.reset(key);
+      logger.info(`Rate limit reset for successful login: ${key}`);
     }
   };
 }
@@ -162,44 +143,30 @@ function defaultAdminKeyGenerator(c: Context): string {
   return `admin:${ip}`;
 }
 
-function cleanupExpiredAdminEntries(now: number): void {
-  for (const [key, entry] of adminRateLimitStore.entries()) {
-    // Remove expired entries (both rate limit and block time)
-    if (now > entry.resetTime && (!entry.blockedUntil || now > entry.blockedUntil)) {
-      adminRateLimitStore.delete(key);
-    }
-  }
-}
+// Note: This function is now handled by the RateLimitStore.cleanup() method
+// and is called automatically in the main middleware
 
 /**
  * Manually reset rate limit for a specific key (admin use)
  */
-export function resetAdminRateLimit(key: string): boolean {
-  const deleted = adminRateLimitStore.delete(key);
-  if (deleted) {
-    logger.info(`Admin rate limit manually reset for key: ${key}`);
-  }
-  return deleted;
+export async function resetAdminRateLimit(key: string): Promise<void> {
+  await rateLimitStore.reset(key);
+  logger.info(`Admin rate limit manually reset for key: ${key}`);
 }
 
 /**
  * Get current rate limit status for a key (admin use)
+ * Note: This function is now limited in functionality due to the abstracted store interface
+ * For detailed monitoring, use the store's management interface directly
  */
-export function getAdminRateLimitStatus(key: string): {
-  count: number;
-  maxRequests: number;
-  resetTime: number;
-  blockedUntil?: number;
-} | null {
-  const entry = adminRateLimitStore.get(key);
-  if (!entry) {
+export async function getAdminRateLimitStatus(key: string): Promise<{
+  isBlocked: boolean;
+} | null> {
+  try {
+    const isBlocked = await rateLimitStore.isBlocked(key);
+    return { isBlocked };
+  } catch (error) {
+    logger.warn(`Failed to get rate limit status for key: ${key}`, error);
     return null;
   }
-  
-  return {
-    count: entry.count,
-    maxRequests: 5, // Default max for login
-    resetTime: entry.resetTime,
-    blockedUntil: entry.blockedUntil,
-  };
 }

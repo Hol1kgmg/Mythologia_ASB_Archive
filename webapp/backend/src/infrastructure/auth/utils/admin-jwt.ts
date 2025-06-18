@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { z } from 'zod';
+import { authConfig } from '../../../config/auth';
 
 export interface AdminJWTPayload {
   sub: string; // Admin ID
@@ -35,15 +36,8 @@ export const adminJWTPayloadSchema = z.object({
 });
 
 export class AdminJWTManager {
-  private static readonly JWT_ISSUER = 'mythologia-admin-api';
-  private static readonly JWT_AUDIENCE = 'mythologia-admin';
-  private static readonly ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1 hour
-  private static readonly REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60; // 7 days
-
-  constructor(private readonly jwtSecret: string) {
-    if (!jwtSecret) {
-      throw new Error('JWT secret is required');
-    }
+  constructor() {
+    // Configuration is now handled by authConfig, no need for runtime validation
   }
 
   /**
@@ -62,14 +56,14 @@ export class AdminJWTManager {
       username,
       role,
       permissions,
-      iss: AdminJWTManager.JWT_ISSUER,
-      aud: AdminJWTManager.JWT_AUDIENCE,
-      exp: now + AdminJWTManager.ACCESS_TOKEN_EXPIRES_IN,
+      iss: authConfig.jwtIssuer,
+      aud: authConfig.jwtAudience,
+      exp: now + authConfig.accessTokenExpiresIn,
       iat: now,
       jti: sessionId,
     };
 
-    const secretKey = new TextEncoder().encode(this.jwtSecret);
+    const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
     
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
@@ -90,14 +84,14 @@ export class AdminJWTManager {
     
     const payload = {
       jti: sessionId,
-      iss: AdminJWTManager.JWT_ISSUER,
-      aud: AdminJWTManager.JWT_AUDIENCE,
-      exp: now + AdminJWTManager.REFRESH_TOKEN_EXPIRES_IN,
+      iss: authConfig.jwtIssuer,
+      aud: authConfig.jwtAudience,
+      exp: now + authConfig.refreshTokenExpiresIn,
       iat: now,
       type: 'refresh',
     };
 
-    const secretKey = new TextEncoder().encode(this.jwtSecret);
+    const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
     
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
@@ -127,7 +121,7 @@ export class AdminJWTManager {
     return {
       accessToken,
       refreshToken,
-      expiresIn: AdminJWTManager.ACCESS_TOKEN_EXPIRES_IN,
+      expiresIn: authConfig.accessTokenExpiresIn,
       tokenType: 'Bearer',
     };
   }
@@ -137,10 +131,10 @@ export class AdminJWTManager {
    */
   async verifyAccessToken(token: string): Promise<AdminJWTPayload> {
     try {
-      const secretKey = new TextEncoder().encode(this.jwtSecret);
+      const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
       const { payload } = await jwtVerify(token, secretKey, {
-        issuer: AdminJWTManager.JWT_ISSUER,
-        audience: AdminJWTManager.JWT_AUDIENCE,
+        issuer: authConfig.jwtIssuer,
+        audience: authConfig.jwtAudience,
       });
 
       // Validate payload structure
@@ -160,10 +154,10 @@ export class AdminJWTManager {
    */
   async verifyRefreshToken(token: string): Promise<{ sessionId: string }> {
     try {
-      const secretKey = new TextEncoder().encode(this.jwtSecret);
+      const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
       const { payload } = await jwtVerify(token, secretKey, {
-        issuer: AdminJWTManager.JWT_ISSUER,
-        audience: AdminJWTManager.JWT_AUDIENCE,
+        issuer: authConfig.jwtIssuer,
+        audience: authConfig.jwtAudience,
       });
 
       if (payload.type !== 'refresh') {
@@ -200,13 +194,13 @@ export class AdminJWTManager {
    * Get token expiration time
    */
   static getAccessTokenExpiresIn(): number {
-    return AdminJWTManager.ACCESS_TOKEN_EXPIRES_IN;
+    return authConfig.accessTokenExpiresIn;
   }
 
   /**
    * Get refresh token expiration time
    */
   static getRefreshTokenExpiresIn(): number {
-    return AdminJWTManager.REFRESH_TOKEN_EXPIRES_IN;
+    return authConfig.refreshTokenExpiresIn;
   }
 }
