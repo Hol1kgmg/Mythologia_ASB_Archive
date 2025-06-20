@@ -87,11 +87,14 @@ export class AdminAuthService {
       // Create session
       const sessionExpiresAt = new Date(Date.now() + AdminJWTManager.getRefreshTokenExpiresIn() * 1000);
       
+      // Generate temporary unique token to avoid UNIQUE constraint violation
+      const tempToken = `temp_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+      
       const sessionResult = await this.db
         .insert(adminSessions)
         .values({
           adminId: admin.id,
-          token: '', // Will be updated with refresh token
+          token: tempToken, // Temporary unique token, will be updated with refresh token
           ipAddress: ipAddress || null,
           userAgent: userAgent || null,
           expiresAt: sessionExpiresAt,

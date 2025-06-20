@@ -118,13 +118,23 @@ export class AdminAuthController {
       }
 
       if (error instanceof Error) {
-        // Don't expose sensitive error details
+        // Don't expose sensitive error details in production
         if (error.message === 'Invalid credentials' || 
             error.message === 'Account is inactive') {
           return c.json({
             success: false,
             error: error.message,
           }, 401);
+        }
+
+        // In development, show detailed error information for debugging
+        if (process.env.NODE_ENV === 'development') {
+          return c.json({
+            success: false,
+            error: 'Login failed',
+            message: error.message,
+            details: error.stack,
+          }, 500);
         }
       }
 

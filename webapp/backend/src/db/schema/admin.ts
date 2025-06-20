@@ -30,7 +30,7 @@ export const admins = pgTable('admins', {
 export const adminSessions = pgTable('admin_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
   adminId: uuid('admin_id').notNull(),
-  token: varchar('token', { length: 255 }).notNull().unique(),
+  token: varchar('token', { length: 500 }).notNull().unique(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: varchar('user_agent', { length: 500 }),
   expiresAt: timestamp('expires_at').notNull(),
