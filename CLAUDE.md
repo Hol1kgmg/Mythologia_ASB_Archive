@@ -326,8 +326,10 @@ npm run typecheck
 - [x] プロジェクト初期化（package.json, tsconfig.json等）
 - [x] バックエンド基盤（Hono + TypeScript）
 - [x] フロントエンド基盤（Next.js + TypeScript）
-- [x] 認証システム実装
+- [x] 認証システム実装（issue#46）
 - [x] 管理者シードデータ生成システム（issue#44）
+- [x] 管理者認証API実装完了（PR#49マージ済み）
+- [ ] 管理者認証セキュリティ強化（issue#50進行中）
 - [ ] データベースアダプター実装
 - [ ] 基本的なCRUD API
 
@@ -342,6 +344,28 @@ npm run typecheck
 - [ ] デッキ構築画面
 - [ ] レスポンシブ対応
 
+## 現在の開発状況
+
+### 🚨 緊急対応中: セキュリティ強化（Issue #50）
+**作業ブランチ**: `feature/#050_admin-api-security-enhancement`
+
+**問題**: 管理者認証API（`/api/admin/auth/*`）がCORS設定のみでアクセス制御を行っており、Originヘッダー偽装により容易に回避可能
+
+**対策内容**:
+- HMAC署名認証の実装
+- API Key認証システムの追加  
+- 時刻ベース認証（リプレイ攻撃対策）
+- セキュリティヘッダーの強化
+
+**動作確認**:
+```bash
+# 現在（問題）: 偽装Originでアクセス可能
+curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 200 OK
+
+# 対策後（理想）: 適切な認証なしで拒否
+curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 404/401
+```
+
 ## Claude Codeへの指示
 
 このプロジェクトで作業する際は：
@@ -354,6 +378,7 @@ npm run typecheck
 6. **環境分離**を意識した設定管理（Local/Staging/Production）
 7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
 8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
+9. **セキュリティ優先**：認証・認可機能は必ず多層防御を実装
 
 ### データベース操作の重要な注意事項
 
