@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "dotenv -e .env.local -- tsx watch src/index.ts",
     "build": "echo '🔨 Building TypeScript...' && tsc && echo '✅ Build completed' && ls -la dist/",
     "start": "node dist/index.js",
     "railway:build": "npm run build",

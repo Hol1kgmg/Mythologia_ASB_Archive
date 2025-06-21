@@ -2,19 +2,13 @@ import 'dotenv/config'
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { rateLimit } from './infrastructure/auth/middleware/rate-limit.js'
+import { validateAuthEnvironment } from './config/auth.js'
 import { apiRoutes } from './routes/index.js'
 
 const app = new Hono()
 
 // Environment variables validation
-const JWT_SECRET = process.env.JWT_SECRET;
-const HMAC_SECRET = process.env.HMAC_SECRET;
-
-if (!JWT_SECRET || !HMAC_SECRET) {
-  console.error('Missing required environment variables: JWT_SECRET, HMAC_SECRET');
-  process.exit(1);
-}
+validateAuthEnvironment();
 
 // CORS middleware
 const allowedOrigins = process.env.CORS_ORIGINS
@@ -27,11 +21,7 @@ app.use('*', cors({
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
 
-// Rate limiting for all routes
-app.use('*', rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  maxRequests: 50 // 50 requests per minute
-}))
+// Rate limiting is handled by individual route middlewares
 
 // Public routes (no authentication required)
 app.get('/', (c) => {
