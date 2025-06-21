@@ -10,7 +10,7 @@ import { logger } from '../../utils/logger';
 
 // ダミーデータ生成用の定数
 const ADMIN_ROLES = ['super_admin', 'admin', 'viewer'] as const;
-const DEMO_PASSWORD = 'Demo123!@#'; // 開発環境用の共通パスワード
+const DEMO_PASSWORD = 'Demo123Secure'; // 開発環境用の共通パスワード
 
 // 権限のテンプレート
 const PERMISSION_TEMPLATES = {

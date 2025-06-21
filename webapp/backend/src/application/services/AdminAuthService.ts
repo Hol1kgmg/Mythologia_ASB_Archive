@@ -77,6 +77,7 @@ export class AdminAuthService {
 
       // Verify password
       const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
+      
       if (!isPasswordValid) {
         await this.logActivity(admin.id, 'login_failed', 'authentication', undefined, {
           reason: 'invalid_password',
