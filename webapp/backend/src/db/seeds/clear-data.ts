@@ -6,8 +6,8 @@
  */
 
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { admins, adminSessions, adminActivityLogs } from '../schema/admin';
-import { logger } from '../../utils/logger';
+import { admins, adminSessions, adminActivityLogs } from '../schema/admin.js';
+import { logger } from '../../utils/logger.js';
 
 interface ClearOptions {
   // 確認スキップ（自動化用）

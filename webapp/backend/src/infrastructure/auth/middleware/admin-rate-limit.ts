@@ -1,7 +1,7 @@
 import type { Context, Next } from 'hono';
-import { logger } from '../../../utils/logger';
-import { createRateLimitStore, type RateLimitStore } from '../stores/RateLimitStore';
-import { authConfig } from '../../../config/auth';
+import { logger } from '../../../utils/logger.js';
+import { createRateLimitStore, type RateLimitStore } from '../stores/RateLimitStore.js';
+import { authConfig } from '../../../config/auth.js';
 
 interface AdminRateLimitOptions {
   windowMs: number; // Time window in milliseconds

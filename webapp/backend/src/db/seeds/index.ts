@@ -5,9 +5,9 @@
  * 各テーブル用のシード関数を呼び出し、順序を制御します。
  */
 
-import { db } from '../client';
-import { seedAdmins } from './admin-seeds';
-import { logger } from '../../utils/logger';
+import { db } from '../client.js';
+import { seedAdmins } from './admin-seeds.js';
+import { logger } from '../../utils/logger.js';
 
 // シード実行のオプション
 export interface SeedOptions {

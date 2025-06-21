@@ -1,8 +1,8 @@
 import type { MiddlewareHandler } from 'hono';
-import { AdminJWTManager } from '../utils/admin-jwt';
-import { AdminAuthService } from '../../../application/services/AdminAuthService';
-import { db } from '../../../db/client';
-import { logger } from '../../../utils/logger';
+import { AdminJWTManager } from '../utils/admin-jwt.js';
+import { AdminAuthService } from '../../../application/services/AdminAuthService.js';
+import { db } from '../../../db/client.js';
+import { logger } from '../../../utils/logger.js';
 
 interface AdminAuthContext {
   admin: {

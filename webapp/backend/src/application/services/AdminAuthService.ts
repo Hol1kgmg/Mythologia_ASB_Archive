@@ -1,9 +1,9 @@
 import { eq, and, gt, lt } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { admins, adminSessions, adminActivityLogs } from '../../db/schema/admin';
-import { AdminJWTManager, type AdminTokenPair } from '../../infrastructure/auth/utils/admin-jwt';
-import { logger } from '../../utils/logger';
+import { admins, adminSessions, adminActivityLogs } from '../../db/schema/admin.js';
+import { AdminJWTManager, type AdminTokenPair } from '../../infrastructure/auth/utils/admin-jwt.js';
+import { logger } from '../../utils/logger.js';
 
 export interface LoginCredentials {
   username: string;

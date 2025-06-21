@@ -5,8 +5,8 @@
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
-import { admins, type NewAdmin } from '../schema/admin';
-import { logger } from '../../utils/logger';
+import { admins, type NewAdmin } from '../schema/admin.js';
+import { logger } from '../../utils/logger.js';
 
 // ダミーデータ生成用の定数
 const ADMIN_ROLES = ['super_admin', 'admin', 'viewer'] as const;

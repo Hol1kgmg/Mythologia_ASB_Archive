@@ -1,8 +1,8 @@
 import type { Context } from 'hono';
 import { z } from 'zod';
-import { AdminAuthService } from '../../application/services/AdminAuthService';
-import { db } from '../../db/client';
-import { logger } from '../../utils/logger';
+import { AdminAuthService } from '../../application/services/AdminAuthService.js';
+import { db } from '../../db/client.js';
+import { logger } from '../../utils/logger.js';
 
 // Request schemas
 const loginRequestSchema = z.object({

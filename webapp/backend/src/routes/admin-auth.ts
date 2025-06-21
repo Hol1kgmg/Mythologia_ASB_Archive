@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
-import { AdminAuthController } from '../auth/controllers/AdminAuthController';
-import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/admin-auth';
+import { AdminAuthController } from '../auth/controllers/AdminAuthController.js';
+import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/admin-auth.js';
 import { 
   adminLoginRateLimit, 
   adminRefreshRateLimit, 
   adminGeneralRateLimit 
-} from '../infrastructure/auth/middleware/admin-rate-limit';
+} from '../infrastructure/auth/middleware/admin-rate-limit.js';
 
 const adminAuthRoutes = new Hono();
 const adminAuthController = new AdminAuthController();

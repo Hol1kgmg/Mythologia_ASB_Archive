@@ -2,8 +2,8 @@ import 'dotenv/config'
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { validateAuthEnvironment } from './config/auth'
-import { apiRoutes } from './routes/index'
+import { validateAuthEnvironment } from './config/auth.js'
+import { apiRoutes } from './routes/index.js'
 
 const app = new Hono()
 

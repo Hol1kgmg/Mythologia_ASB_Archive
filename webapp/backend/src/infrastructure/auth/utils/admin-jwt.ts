@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { z } from 'zod';
-import { authConfig } from '../../../config/auth';
+import { authConfig } from '../../../config/auth.js';
 
 export interface AdminJWTPayload {
   sub: string; // Admin ID
