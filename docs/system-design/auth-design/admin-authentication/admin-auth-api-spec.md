@@ -312,19 +312,22 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 #### ログイン
 ```bash
-curl -X POST https://api.example.com/api/admin/auth/login \
+# Railway ステージ環境での動作確認
+curl -X POST https://mythologiaadmiralsshipbridge-stage.up.railway.app/api/admin/auth/login \
   -H "Content-Type: application/json" \
+  -H "Origin: https://stage-mythologia-asb.vercel.app" \
   -d '{
-    "email": "admin@example.com",
-    "password": "SecurePassword123!",
-    "rememberMe": true
+    "username": "super_admin",
+    "password": "Demo123Secure"
   }'
 ```
 
 #### トークンリフレッシュ
 ```bash
-curl -X POST https://api.example.com/api/admin/auth/refresh \
+# Railway ステージ環境での動作確認
+curl -X POST https://mythologiaadmiralsshipbridge-stage.up.railway.app/api/admin/auth/refresh \
   -H "Content-Type: application/json" \
+  -H "Origin: https://stage-mythologia-asb.vercel.app" \
   -d '{
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }'
