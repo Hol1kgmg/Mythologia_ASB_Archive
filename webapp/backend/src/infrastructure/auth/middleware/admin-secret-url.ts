@@ -136,9 +136,9 @@ function validateSecretURL(c: any, requestPath: string, secretPath?: string): bo
   const nextPath = process.env.ADMIN_SECRET_PATH_NEXT;
 
   // 管理関連パスの検証パターン
-  const adminAPIPattern = /^\/api\/admin\//;      // 管理APIパス
-  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+\//;  // 管理画面パス
-  
+  const adminAPIPattern = /^\/api\/admin\//; // 管理APIパス
+  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+\//; // 管理画面パス
+
   const isAdminAPIPath = adminAPIPattern.test(requestPath);
   const isAdminPath = adminPathPattern.test(requestPath);
 
@@ -177,17 +177,17 @@ function validateAdminAPIAccess(c: any, currentPath?: string, nextPath?: string)
     try {
       const refererUrl = new URL(referer);
       const refererPath = refererUrl.pathname;
-      
+
       const validSecretPaths = [
         `/admin-${currentPath}/`,
         ...(nextPath ? [`/admin-${nextPath}/`] : []),
       ];
-      
-      if (validSecretPaths.some(path => refererPath.startsWith(path))) {
+
+      if (validSecretPaths.some((path) => refererPath.startsWith(path))) {
         logger.info('Admin API access validated via Referer header');
         return true;
       }
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Invalid Referer header format:', referer);
     }
   }
