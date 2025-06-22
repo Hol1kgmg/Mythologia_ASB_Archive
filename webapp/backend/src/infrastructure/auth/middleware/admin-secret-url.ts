@@ -36,7 +36,7 @@ export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareH
     const userAgent = c.req.header('User-Agent') || 'Unknown';
 
     // 秘匿URLの検証
-    const isValidSecretURL = validateSecretURL(requestPath, secretPath);
+    const isValidSecretURL = validateSecretURL(c, requestPath, secretPath);
 
     // アクセス試行をログに記録
     if (enableAccessLogging) {
@@ -125,7 +125,7 @@ export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareH
 /**
  * 秘匿URLの検証
  */
-function validateSecretURL(requestPath: string, secretPath?: string): boolean {
+function validateSecretURL(c: any, requestPath: string, secretPath?: string): boolean {
   if (!secretPath) {
     logger.warn('ADMIN_SECRET_PATH not configured - allowing access for development');
     return true; // 設定なしの場合は開発環境として扱う
@@ -135,20 +135,76 @@ function validateSecretURL(requestPath: string, secretPath?: string): boolean {
   const currentPath = secretPath;
   const nextPath = process.env.ADMIN_SECRET_PATH_NEXT;
 
-  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+\//;
+  // 管理関連パスの検証パターン
+  const adminAPIPattern = /^\/api\/admin\//;      // 管理APIパス
+  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+\//;  // 管理画面パス
+  
+  const isAdminAPIPath = adminAPIPattern.test(requestPath);
   const isAdminPath = adminPathPattern.test(requestPath);
 
-  if (!isAdminPath) {
-    return true; // 管理パス以外はスルー
+  // 管理関連パス（API + 画面）以外はスルー
+  if (!isAdminAPIPath && !isAdminPath) {
+    return true;
   }
 
-  // 正しい秘匿URLかチェック
+  // 管理APIパスの場合は特別な検証ロジック
+  if (isAdminAPIPath) {
+    return validateAdminAPIAccess(c, currentPath, nextPath);
+  }
+
+  // 管理画面パスの場合は従来の検証
   const expectedPaths: string[] = [
     `/admin-${currentPath}/`,
     ...(nextPath ? [`/admin-${nextPath}/`] : []),
   ];
 
   return expectedPaths.some((path) => requestPath.startsWith(path));
+}
+
+/**
+ * 管理APIアクセス時の秘匿URL検証
+ * ReferrerヘッダーまたはX-Admin-Secret-Pathヘッダーで検証
+ */
+function validateAdminAPIAccess(c: any, currentPath?: string, nextPath?: string): boolean {
+  if (!currentPath) {
+    logger.warn('ADMIN_SECRET_PATH not configured for API access - allowing for development');
+    return true;
+  }
+
+  // 方法1: Referrerヘッダーによる検証
+  const referer = c.req.header('referer') || c.req.header('referrer');
+  if (referer) {
+    try {
+      const refererUrl = new URL(referer);
+      const refererPath = refererUrl.pathname;
+      
+      const validSecretPaths = [
+        `/admin-${currentPath}/`,
+        ...(nextPath ? [`/admin-${nextPath}/`] : []),
+      ];
+      
+      if (validSecretPaths.some(path => refererPath.startsWith(path))) {
+        logger.info('Admin API access validated via Referer header');
+        return true;
+      }
+    } catch (error) {
+      logger.warn('Invalid Referer header format:', referer);
+    }
+  }
+
+  // 方法2: 専用ヘッダーによる検証
+  const adminSecretHeader = c.req.header('X-Admin-Secret-Path');
+  if (adminSecretHeader) {
+    const validSecrets = [currentPath, ...(nextPath ? [nextPath] : [])];
+    if (validSecrets.includes(adminSecretHeader)) {
+      logger.info('Admin API access validated via X-Admin-Secret-Path header');
+      return true;
+    }
+  }
+
+  // 全ての検証に失敗
+  logger.warn('Admin API access denied: No valid secret URL context found');
+  return false;
 }
 
 /**

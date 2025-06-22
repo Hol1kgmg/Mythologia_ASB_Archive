@@ -33,6 +33,7 @@ export class ApiClient {
           method,
           path,
           body: requestBody,
+          referrer: window.location.pathname, // 現在のページパスを送信
         }),
       });
 
