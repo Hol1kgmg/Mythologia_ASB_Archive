@@ -54,6 +54,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         </div>
         {closable && (
           <button
+            type="button"
             onClick={onClose}
             className="flex-shrink-0 ml-2 p-1 rounded hover:bg-white/10 transition-colors"
             aria-label="Close alert"

@@ -1,4 +1,4 @@
-import { createHash, createHmac } from 'crypto';
+import { createHash, createHmac } from 'node:crypto';
 
 export interface HMACValidationOptions {
   method: string;

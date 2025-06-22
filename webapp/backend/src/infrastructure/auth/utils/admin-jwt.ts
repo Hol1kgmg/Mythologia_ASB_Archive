@@ -36,10 +36,6 @@ export const adminJWTPayloadSchema = z.object({
 });
 
 export class AdminJWTManager {
-  constructor() {
-    // Configuration is now handled by authConfig, no need for runtime validation
-  }
-
   /**
    * Generate admin access token
    */
@@ -169,7 +165,7 @@ export class AdminJWTManager {
       }
 
       return { sessionId: payload.jti };
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Invalid or expired refresh token');
     }
   }

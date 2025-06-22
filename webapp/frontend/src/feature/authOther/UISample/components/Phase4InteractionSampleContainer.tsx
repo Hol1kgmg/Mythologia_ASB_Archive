@@ -12,7 +12,7 @@ import {
   TrashIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Accordion,
   AccordionItem,

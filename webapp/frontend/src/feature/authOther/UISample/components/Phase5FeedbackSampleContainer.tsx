@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Alert, Box, Button, Progress, Spinner, useToast } from '../../../../components/ui';
 
 export default function Phase5FeedbackSampleContainer() {

@@ -25,6 +25,7 @@ export default function ErrorTestPage() {
             </p>
 
             <button
+              type="button"
               onClick={() => setShouldThrow(true)}
               className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-300 font-semibold"
             >

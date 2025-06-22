@@ -26,7 +26,7 @@ const adminResponseSchema = z.object({
   lastLoginAt: z.date().nullable(),
 });
 
-const loginResponseSchema = z.object({
+const _loginResponseSchema = z.object({
   success: z.boolean(),
   data: z.object({
     admin: adminResponseSchema,
@@ -40,7 +40,7 @@ const loginResponseSchema = z.object({
   }),
 });
 
-const refreshResponseSchema = z.object({
+const _refreshResponseSchema = z.object({
   success: z.boolean(),
   data: z.object({
     admin: adminResponseSchema,

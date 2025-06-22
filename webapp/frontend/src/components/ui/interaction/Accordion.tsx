@@ -224,6 +224,7 @@ export function Accordion({
             className={accordionItemVariants({ variant, showBorder, className: itemClassName })}
           >
             <button
+              type="button"
               onClick={() => !item.disabled && toggleItem(item.id)}
               disabled={item.disabled}
               className={accordionButtonVariants({ variant, size })}
@@ -525,6 +526,7 @@ export function HorizontalAccordion({
           >
             <div className={`flex h-full ${direction === 'right' ? '' : 'flex-row-reverse'}`}>
               <button
+                type="button"
                 onClick={() => !item.disabled && toggleItem(item.id)}
                 disabled={item.disabled}
                 className={`${horizontalAccordionButtonVariants({ isOpen })} ${buttonWidth} ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}

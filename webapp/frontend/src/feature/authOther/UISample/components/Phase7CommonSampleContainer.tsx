@@ -1,7 +1,6 @@
 'use client';
 
 import { BeakerIcon, ChartBarIcon, CubeIcon } from '@heroicons/react/24/outline';
-import React from 'react';
 import {
   BackgroundPattern,
   Box,

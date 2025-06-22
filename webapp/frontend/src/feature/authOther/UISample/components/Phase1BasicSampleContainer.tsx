@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, Input, Select } from '../../../../components/ui';
 
 export default function Phase1BasicSampleContainer() {

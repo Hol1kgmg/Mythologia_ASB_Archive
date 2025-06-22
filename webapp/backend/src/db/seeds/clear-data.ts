@@ -197,8 +197,8 @@ async function createDataBackup(db: PostgresJsDatabase<any>): Promise<void> {
     const backupPath = `./backups/backup_${timestamp}.json`;
 
     // バックアップディレクトリ作成
-    const fs = await import('fs');
-    const path = await import('path');
+    const fs = await import('node:fs');
+    const path = await import('node:path');
 
     const backupDir = path.dirname(backupPath);
     if (!fs.existsSync(backupDir)) {

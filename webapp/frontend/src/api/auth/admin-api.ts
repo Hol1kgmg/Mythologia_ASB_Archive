@@ -47,7 +47,7 @@ export async function generateAdminAPIHeaders(
 
   // JWTトークンが提供されている場合は追加
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   return headers;

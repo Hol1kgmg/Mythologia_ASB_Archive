@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import HomeButton from '../../../../components/ui/feedback/HomeButton';
 import AuthTestButton from './AuthTestButton';
 import WarningCard from './WarningCard';

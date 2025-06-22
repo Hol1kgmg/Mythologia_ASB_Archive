@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, like, lte, or } from 'drizzle-orm';
+import { and, count, desc, eq, gte, like, lte } from 'drizzle-orm';
 import { db } from '../../db/client.js';
 import {
   type AdminActivityLog,
@@ -201,7 +201,7 @@ export class AdminActivityLogRepository {
    */
   async findSuspiciousActivity(
     timeWindowMinutes: number = 10,
-    actionThreshold: number = 20
+    _actionThreshold: number = 20
   ): Promise<AdminActivityLog[]> {
     const timeWindow = new Date(Date.now() - timeWindowMinutes * 60 * 1000);
 

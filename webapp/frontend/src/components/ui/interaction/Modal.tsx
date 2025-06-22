@@ -85,6 +85,9 @@ export function Modal({
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             onClick={handleOverlayClick}
+            role="button"
+            tabIndex={-1}
+            aria-label="Close modal"
           />
         </Transition.Child>
 

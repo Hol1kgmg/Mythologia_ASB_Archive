@@ -75,7 +75,7 @@ export async function seedAdmins(
     }
 
     // 追加の管理者を生成
-    const additionalAdmins: NewAdmin[] = [];
+    const _additionalAdmins: NewAdmin[] = [];
     let createdCount = 0;
 
     for (let i = 1; i < count; i++) {

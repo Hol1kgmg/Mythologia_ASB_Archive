@@ -2,7 +2,7 @@
 
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
-import React, { Fragment, useId } from 'react';
+import { Fragment, useId } from 'react';
 import { Box } from '../layout/Box';
 
 export interface SelectOption {

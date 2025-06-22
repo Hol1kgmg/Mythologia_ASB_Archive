@@ -9,7 +9,7 @@ async function checkDatabaseConnection() {
   try {
     await db.execute(sql`SELECT 1`);
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

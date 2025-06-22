@@ -229,6 +229,7 @@ export function DropdownMenu({
             <Fragment key={item.id}>
               {item.separator && <hr className="my-1 border-gray-600" />}
               <button
+                type="button"
                 onClick={() => {
                   if (!item.disabled) {
                     item.onClick();

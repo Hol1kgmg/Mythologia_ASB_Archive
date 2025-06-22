@@ -66,6 +66,7 @@ const Code = React.forwardRef<HTMLElement, CodeProps>(
         )}
         {copyable && (
           <button
+            type="button"
             onClick={handleCopy}
             className="absolute top-2 right-2 p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800"
             aria-label="Copy code"

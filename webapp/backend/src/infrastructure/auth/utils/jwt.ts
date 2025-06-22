@@ -18,7 +18,7 @@ export async function verifyJWT(token: string, secret: string): Promise<Applicat
       iat: payload.iat as number,
       jti: payload.jti as string,
     };
-  } catch (error) {
+  } catch (_error) {
     throw new Error('Invalid JWT token');
   }
 }

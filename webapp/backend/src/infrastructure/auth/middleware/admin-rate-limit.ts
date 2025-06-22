@@ -1,5 +1,4 @@
 import type { Context, Next } from 'hono';
-import { authConfig } from '../../../config/auth.js';
 import { logger } from '../../../utils/logger.js';
 import { createRateLimitStore, type RateLimitStore } from '../stores/RateLimitStore.js';
 

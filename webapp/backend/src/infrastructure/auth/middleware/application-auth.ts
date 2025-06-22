@@ -34,7 +34,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
       try {
         jwtPayload = await verifyJWT(token, options.jwtSecret);
         validateJWTPayload(jwtPayload, options.allowedAppIds);
-      } catch (error) {
+      } catch (_error) {
         console.log('Authentication failed: Invalid JWT token');
         return c.json({ error: 'Invalid JWT token' }, 401);
       }
@@ -54,7 +54,7 @@ export function applicationAuth(options: ApplicationAuthOptions) {
           secret: options.hmacSecret,
           maxAge: 300000, // 5 minutes
         });
-      } catch (error) {
+      } catch (_error) {
         console.log('Authentication failed: Invalid HMAC signature');
         return c.json({ error: 'Invalid HMAC signature' }, 401);
       }

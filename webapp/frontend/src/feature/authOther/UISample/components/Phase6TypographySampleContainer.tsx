@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Box, Caption, Code, Heading, Label, Text } from '../../../../components/ui';
 
 export default function Phase6TypographySampleContainer() {

@@ -9,7 +9,7 @@ export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 class Logger {
   private isDevelopment = process.env.NODE_ENV !== 'production';
 
-  private formatMessage(level: LogLevel, message: string, ...args: any[]): string {
+  private formatMessage(level: LogLevel, message: string, ..._args: any[]): string {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
     return `${prefix} ${message}`;

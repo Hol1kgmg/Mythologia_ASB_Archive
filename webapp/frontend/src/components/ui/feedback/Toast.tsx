@@ -93,6 +93,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         </div>
         {closable && (
           <button
+            type="button"
             onClick={handleClose}
             className="flex-shrink-0 ml-2 p-1 rounded hover:bg-white/10 transition-colors"
             aria-label="Close toast"

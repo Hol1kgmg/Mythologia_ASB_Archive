@@ -54,6 +54,7 @@ const AuthTestButton: React.FC = () => {
       </h3>
 
       <button
+        type="button"
         onClick={testAuthentication}
         disabled={isLoading}
         className={`w-full px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
