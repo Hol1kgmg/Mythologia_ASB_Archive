@@ -1,17 +1,17 @@
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { db, closeDb } from './client.js';
 import dotenv from 'dotenv';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { closeDb, db } from './client.js';
 
 // Load environment variables
 dotenv.config();
 
 async function runMigrations() {
   console.log('Starting database migrations...');
-  
+
   try {
     // Run migrations
     await migrate(db, { migrationsFolder: './drizzle' });
-    
+
     console.log('Migrations completed successfully!');
   } catch (error) {
     console.error('Migration failed:', error);

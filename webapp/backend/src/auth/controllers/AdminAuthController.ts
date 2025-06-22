@@ -72,10 +72,8 @@ export class AdminAuthController {
       const { username, password } = loginRequestSchema.parse(body);
 
       // Get client info
-      const ipAddress = c.req.header('x-forwarded-for') || 
-                       c.req.header('x-real-ip') || 
-                       c.env?.ip || 
-                       'unknown';
+      const ipAddress =
+        c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || c.env?.ip || 'unknown';
       const userAgent = c.req.header('user-agent') || 'unknown';
 
       // Authenticate admin
@@ -88,61 +86,74 @@ export class AdminAuthController {
 
       logger.info(`Admin login successful: ${username}`);
 
-      return c.json({
-        success: true,
-        data: {
-          admin: {
-            id: result.admin.id,
-            username: result.admin.username,
-            email: result.admin.email,
-            role: result.admin.role,
-            permissions: result.admin.permissions,
-            isActive: result.admin.isActive,
-            isSuperAdmin: result.admin.isSuperAdmin,
-            lastLoginAt: result.admin.lastLoginAt,
+      return c.json(
+        {
+          success: true,
+          data: {
+            admin: {
+              id: result.admin.id,
+              username: result.admin.username,
+              email: result.admin.email,
+              role: result.admin.role,
+              permissions: result.admin.permissions,
+              isActive: result.admin.isActive,
+              isSuperAdmin: result.admin.isSuperAdmin,
+              lastLoginAt: result.admin.lastLoginAt,
+            },
+            tokens: result.tokens,
+            sessionId: result.sessionId,
           },
-          tokens: result.tokens,
-          sessionId: result.sessionId,
         },
-      }, 200);
-
+        200
+      );
     } catch (error) {
       logger.error('Admin login error:', error);
 
       if (error instanceof z.ZodError) {
-        return c.json({
-          success: false,
-          error: 'Validation error',
-          details: error.errors,
-        }, 400);
+        return c.json(
+          {
+            success: false,
+            error: 'Validation error',
+            details: error.errors,
+          },
+          400
+        );
       }
 
       if (error instanceof Error) {
         // Don't expose sensitive error details in production
-        if (error.message === 'Invalid credentials' || 
-            error.message === 'Account is inactive') {
-          return c.json({
-            success: false,
-            error: error.message,
-          }, 401);
+        if (error.message === 'Invalid credentials' || error.message === 'Account is inactive') {
+          return c.json(
+            {
+              success: false,
+              error: error.message,
+            },
+            401
+          );
         }
 
         // In development, show detailed error information for debugging
         if (process.env.NODE_ENV === 'development') {
-          return c.json({
-            success: false,
-            error: 'Login failed',
-            message: error.message,
-            details: error.stack,
-          }, 500);
+          return c.json(
+            {
+              success: false,
+              error: 'Login failed',
+              message: error.message,
+              details: error.stack,
+            },
+            500
+          );
         }
       }
 
-      return c.json({
-        success: false,
-        error: 'Login failed',
-        message: 'An error occurred during login',
-      }, 500);
+      return c.json(
+        {
+          success: false,
+          error: 'Login failed',
+          message: 'An error occurred during login',
+        },
+        500
+      );
     }
   }
 
@@ -155,31 +166,37 @@ export class AdminAuthController {
       // Get session ID from admin context (set by auth middleware)
       const admin = c.get('admin');
       if (!admin) {
-        return c.json({
-          success: false,
-          error: 'Unauthorized',
-        }, 401);
+        return c.json(
+          {
+            success: false,
+            error: 'Unauthorized',
+          },
+          401
+        );
       }
 
       // Extract session ID from JWT token
       const authHeader = c.req.header('Authorization');
       const token = authHeader?.split(' ')[1];
       if (!token) {
-        return c.json({
-          success: false,
-          error: 'No token provided',
-        }, 400);
+        return c.json(
+          {
+            success: false,
+            error: 'No token provided',
+          },
+          400
+        );
       }
 
       // Verify token to get session ID
-      const jwtManager = new (await import('../../infrastructure/auth/utils/admin-jwt')).AdminJWTManager();
+      const jwtManager = new (
+        await import('../../infrastructure/auth/utils/admin-jwt')
+      ).AdminJWTManager();
       const payload = await jwtManager.verifyAccessToken(token);
 
       // Get client info
-      const ipAddress = c.req.header('x-forwarded-for') || 
-                       c.req.header('x-real-ip') || 
-                       c.env?.ip || 
-                       'unknown';
+      const ipAddress =
+        c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || c.env?.ip || 'unknown';
       const userAgent = c.req.header('user-agent') || 'unknown';
 
       // Logout (invalidate session)
@@ -187,19 +204,24 @@ export class AdminAuthController {
 
       logger.info(`Admin logout successful: ${admin.username}`);
 
-      return c.json({
-        success: true,
-        message: 'Logout successful',
-      }, 200);
-
+      return c.json(
+        {
+          success: true,
+          message: 'Logout successful',
+        },
+        200
+      );
     } catch (error) {
       logger.error('Admin logout error:', error);
 
-      return c.json({
-        success: false,
-        error: 'Logout failed',
-        message: 'An error occurred during logout',
-      }, 500);
+      return c.json(
+        {
+          success: false,
+          error: 'Logout failed',
+          message: 'An error occurred during logout',
+        },
+        500
+      );
     }
   }
 
@@ -214,10 +236,8 @@ export class AdminAuthController {
       const { refreshToken } = refreshTokenRequestSchema.parse(body);
 
       // Get client info
-      const ipAddress = c.req.header('x-forwarded-for') || 
-                       c.req.header('x-real-ip') || 
-                       c.env?.ip || 
-                       'unknown';
+      const ipAddress =
+        c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || c.env?.ip || 'unknown';
       const userAgent = c.req.header('user-agent') || 'unknown';
 
       // Refresh tokens
@@ -225,48 +245,59 @@ export class AdminAuthController {
 
       logger.info(`Token refresh successful: ${result.admin.username}`);
 
-      return c.json({
-        success: true,
-        data: {
-          admin: {
-            id: result.admin.id,
-            username: result.admin.username,
-            email: result.admin.email,
-            role: result.admin.role,
-            permissions: result.admin.permissions,
-            isActive: result.admin.isActive,
-            isSuperAdmin: result.admin.isSuperAdmin,
-            lastLoginAt: result.admin.lastLoginAt,
+      return c.json(
+        {
+          success: true,
+          data: {
+            admin: {
+              id: result.admin.id,
+              username: result.admin.username,
+              email: result.admin.email,
+              role: result.admin.role,
+              permissions: result.admin.permissions,
+              isActive: result.admin.isActive,
+              isSuperAdmin: result.admin.isSuperAdmin,
+              lastLoginAt: result.admin.lastLoginAt,
+            },
+            tokens: result.tokens,
           },
-          tokens: result.tokens,
         },
-      }, 200);
-
+        200
+      );
     } catch (error) {
       logger.error('Token refresh error:', error);
 
       if (error instanceof z.ZodError) {
-        return c.json({
-          success: false,
-          error: 'Validation error',
-          details: error.errors,
-        }, 400);
+        return c.json(
+          {
+            success: false,
+            error: 'Validation error',
+            details: error.errors,
+          },
+          400
+        );
       }
 
       if (error instanceof Error) {
         if (error.message.includes('Invalid') || error.message.includes('expired')) {
-          return c.json({
-            success: false,
-            error: 'Invalid or expired refresh token',
-          }, 401);
+          return c.json(
+            {
+              success: false,
+              error: 'Invalid or expired refresh token',
+            },
+            401
+          );
         }
       }
 
-      return c.json({
-        success: false,
-        error: 'Token refresh failed',
-        message: 'An error occurred during token refresh',
-      }, 500);
+      return c.json(
+        {
+          success: false,
+          error: 'Token refresh failed',
+          message: 'An error occurred during token refresh',
+        },
+        500
+      );
     }
   }
 
@@ -279,35 +310,43 @@ export class AdminAuthController {
       // Get admin from context (set by auth middleware)
       const admin = c.get('admin');
       if (!admin) {
-        return c.json({
-          success: false,
-          error: 'Unauthorized',
-        }, 401);
+        return c.json(
+          {
+            success: false,
+            error: 'Unauthorized',
+          },
+          401
+        );
       }
 
-      return c.json({
-        success: true,
-        data: {
-          admin: {
-            id: admin.id,
-            username: admin.username,
-            email: admin.email,
-            role: admin.role,
-            permissions: admin.permissions,
-            isActive: admin.isActive,
-            isSuperAdmin: admin.isSuperAdmin,
-            lastLoginAt: admin.lastLoginAt,
+      return c.json(
+        {
+          success: true,
+          data: {
+            admin: {
+              id: admin.id,
+              username: admin.username,
+              email: admin.email,
+              role: admin.role,
+              permissions: admin.permissions,
+              isActive: admin.isActive,
+              isSuperAdmin: admin.isSuperAdmin,
+              lastLoginAt: admin.lastLoginAt,
+            },
           },
         },
-      }, 200);
-
+        200
+      );
     } catch (error) {
       logger.error('Get admin info error:', error);
 
-      return c.json({
-        success: false,
-        error: 'Failed to get admin information',
-      }, 500);
+      return c.json(
+        {
+          success: false,
+          error: 'Failed to get admin information',
+        },
+        500
+      );
     }
   }
 
@@ -319,39 +358,52 @@ export class AdminAuthController {
     try {
       const admin = c.get('admin');
       if (!admin) {
-        return c.json({
-          success: false,
-          error: 'Unauthorized',
-        }, 401);
+        return c.json(
+          {
+            success: false,
+            error: 'Unauthorized',
+          },
+          401
+        );
       }
 
       // Only admins and super admins can cleanup sessions
       if (!admin.isSuperAdmin && admin.role !== 'admin') {
-        return c.json({
-          success: false,
-          error: 'Insufficient privileges',
-        }, 403);
+        return c.json(
+          {
+            success: false,
+            error: 'Insufficient privileges',
+          },
+          403
+        );
       }
 
       const deletedCount = await this.authService.cleanupExpiredSessions();
 
-      logger.info(`Session cleanup performed by ${admin.username}: ${deletedCount} sessions deleted`);
+      logger.info(
+        `Session cleanup performed by ${admin.username}: ${deletedCount} sessions deleted`
+      );
 
-      return c.json({
-        success: true,
-        data: {
-          deletedSessions: deletedCount,
+      return c.json(
+        {
+          success: true,
+          data: {
+            deletedSessions: deletedCount,
+          },
+          message: `Cleaned up ${deletedCount} expired sessions`,
         },
-        message: `Cleaned up ${deletedCount} expired sessions`,
-      }, 200);
-
+        200
+      );
     } catch (error) {
       logger.error('Session cleanup error:', error);
 
-      return c.json({
-        success: false,
-        error: 'Session cleanup failed',
-      }, 500);
+      return c.json(
+        {
+          success: false,
+          error: 'Session cleanup failed',
+        },
+        500
+      );
     }
   }
 }

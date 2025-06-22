@@ -1,14 +1,14 @@
+import * as dotenv from 'dotenv';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { admins } from './db/schema/index.js';
-import * as dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
 
 async function testConnection() {
   console.log('🔍 Testing Railway connection...');
-  
+
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error('DATABASE_URL is required');
@@ -30,17 +30,16 @@ async function testConnection() {
         AND table_name = 'admins'
       );
     `;
-    
+
     if (tableCheck[0].exists) {
       console.log('✅ admins table exists');
-      
+
       // Count records
       const count = await db.select().from(admins);
       console.log('📊 admins table records:', count.length);
     } else {
       console.log('⚠️  admins table does not exist - run migration first');
     }
-
   } catch (error) {
     console.error('❌ Connection failed:', error);
     throw error;

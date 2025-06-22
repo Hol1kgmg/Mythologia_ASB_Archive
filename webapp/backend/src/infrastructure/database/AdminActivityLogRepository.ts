@@ -1,6 +1,10 @@
-import { eq, and, desc, asc, gte, lte, like, or, count } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, like, lte, or } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { adminActivityLogs, type AdminActivityLog, type NewAdminActivityLog } from '../../db/schema/index.js';
+import {
+  type AdminActivityLog,
+  adminActivityLogs,
+  type NewAdminActivityLog,
+} from '../../db/schema/index.js';
 
 export interface ActivityLogSearchParams {
   adminId?: string;
@@ -26,10 +30,7 @@ export class AdminActivityLogRepository {
    * 活動ログを作成
    */
   async create(logData: NewAdminActivityLog): Promise<AdminActivityLog> {
-    const [log] = await db
-      .insert(adminActivityLogs)
-      .values(logData)
-      .returning();
+    const [log] = await db.insert(adminActivityLogs).values(logData).returning();
     return log;
   }
 
@@ -42,7 +43,7 @@ export class AdminActivityLogRepository {
       .from(adminActivityLogs)
       .where(eq(adminActivityLogs.id, id))
       .limit(1);
-    
+
     return logs[0] || null;
   }
 
@@ -63,31 +64,31 @@ export class AdminActivityLogRepository {
    */
   async search(params: ActivityLogSearchParams): Promise<AdminActivityLog[]> {
     const conditions = [];
-    
+
     if (params.adminId) {
       conditions.push(eq(adminActivityLogs.adminId, params.adminId));
     }
-    
+
     if (params.action) {
       conditions.push(like(adminActivityLogs.action, `%${params.action}%`));
     }
-    
+
     if (params.targetType) {
       conditions.push(eq(adminActivityLogs.targetType, params.targetType));
     }
-    
+
     if (params.targetId) {
       conditions.push(eq(adminActivityLogs.targetId, params.targetId));
     }
-    
+
     if (params.startDate) {
       conditions.push(gte(adminActivityLogs.createdAt, params.startDate));
     }
-    
+
     if (params.endDate) {
       conditions.push(lte(adminActivityLogs.createdAt, params.endDate));
     }
-    
+
     if (params.ipAddress) {
       conditions.push(eq(adminActivityLogs.ipAddress, params.ipAddress));
     }
@@ -130,10 +131,7 @@ export class AdminActivityLogRepository {
           .orderBy(desc(adminActivityLogs.createdAt))
           .limit(params.limit);
       } else {
-        return await db
-          .select()
-          .from(adminActivityLogs)
-          .orderBy(desc(adminActivityLogs.createdAt));
+        return await db.select().from(adminActivityLogs).orderBy(desc(adminActivityLogs.createdAt));
       }
     }
   }
@@ -146,10 +144,7 @@ export class AdminActivityLogRepository {
       .select()
       .from(adminActivityLogs)
       .where(
-        and(
-          eq(adminActivityLogs.targetType, targetType),
-          eq(adminActivityLogs.targetId, targetId)
-        )
+        and(eq(adminActivityLogs.targetType, targetType), eq(adminActivityLogs.targetId, targetId))
       )
       .orderBy(desc(adminActivityLogs.createdAt));
   }
@@ -174,10 +169,7 @@ export class AdminActivityLogRepository {
       .select()
       .from(adminActivityLogs)
       .where(
-        and(
-          gte(adminActivityLogs.createdAt, startDate),
-          lte(adminActivityLogs.createdAt, endDate)
-        )
+        and(gte(adminActivityLogs.createdAt, startDate), lte(adminActivityLogs.createdAt, endDate))
       )
       .orderBy(desc(adminActivityLogs.createdAt));
   }
@@ -212,7 +204,7 @@ export class AdminActivityLogRepository {
     actionThreshold: number = 20
   ): Promise<AdminActivityLog[]> {
     const timeWindow = new Date(Date.now() - timeWindowMinutes * 60 * 1000);
-    
+
     return await db
       .select()
       .from(adminActivityLogs)
@@ -225,7 +217,7 @@ export class AdminActivityLogRepository {
    */
   async getStats(days: number = 30): Promise<ActivityLogStats> {
     const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    
+
     const logs = await db
       .select()
       .from(adminActivityLogs)
@@ -233,10 +225,10 @@ export class AdminActivityLogRepository {
       .orderBy(desc(adminActivityLogs.createdAt));
 
     const recentActivity = logs.slice(0, 10);
-    
+
     const actionCounts: Record<string, number> = {};
     const adminCounts: Record<string, number> = {};
-    
+
     logs.forEach((log: AdminActivityLog) => {
       actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
       adminCounts[log.adminId] = (adminCounts[log.adminId] || 0) + 1;
@@ -246,7 +238,7 @@ export class AdminActivityLogRepository {
       totalLogs: logs.length,
       actionCounts,
       adminCounts,
-      recentActivity
+      recentActivity,
     };
   }
 
@@ -255,21 +247,19 @@ export class AdminActivityLogRepository {
    */
   async deleteOldLogs(retentionDays: number = 90): Promise<number> {
     const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
-    
+
     // 削除前にカウントを取得
     const countResult = await db
       .select({ count: count() })
       .from(adminActivityLogs)
       .where(lte(adminActivityLogs.createdAt, cutoffDate));
-    
+
     const oldLogsCount = countResult[0]?.count || 0;
-    
+
     if (oldLogsCount > 0) {
-      await db
-        .delete(adminActivityLogs)
-        .where(lte(adminActivityLogs.createdAt, cutoffDate));
+      await db.delete(adminActivityLogs).where(lte(adminActivityLogs.createdAt, cutoffDate));
     }
-    
+
     return oldLogsCount;
   }
 
@@ -278,26 +268,24 @@ export class AdminActivityLogRepository {
    */
   async count(params?: ActivityLogSearchParams): Promise<number> {
     if (!params) {
-      const result = await db
-        .select({ count: count() })
-        .from(adminActivityLogs);
+      const result = await db.select({ count: count() }).from(adminActivityLogs);
       return result[0]?.count || 0;
     }
 
     const conditions = [];
-    
+
     if (params.adminId) {
       conditions.push(eq(adminActivityLogs.adminId, params.adminId));
     }
-    
+
     if (params.action) {
       conditions.push(like(adminActivityLogs.action, `%${params.action}%`));
     }
-    
+
     if (params.startDate) {
       conditions.push(gte(adminActivityLogs.createdAt, params.startDate));
     }
-    
+
     if (params.endDate) {
       conditions.push(lte(adminActivityLogs.createdAt, params.endDate));
     }
@@ -309,9 +297,7 @@ export class AdminActivityLogRepository {
         .where(and(...conditions));
       return result[0]?.count || 0;
     } else {
-      const result = await db
-        .select({ count: count() })
-        .from(adminActivityLogs);
+      const result = await db.select({ count: count() }).from(adminActivityLogs);
       return result[0]?.count || 0;
     }
   }
@@ -323,7 +309,7 @@ export class AdminActivityLogRepository {
     return await this.search({
       ...params,
       limit: undefined, // 全件取得
-      offset: undefined
+      offset: undefined,
     });
   }
 }

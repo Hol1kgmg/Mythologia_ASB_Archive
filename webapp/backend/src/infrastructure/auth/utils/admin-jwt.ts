@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { jwtVerify, SignJWT } from 'jose';
 import { z } from 'zod';
 import { authConfig } from '../../../config/auth.js';
 
@@ -8,7 +8,7 @@ export interface AdminJWTPayload {
   role: string; // Admin role
   permissions: string[]; // Admin permissions
   iss: string; // Issuer
-  aud: string; // Audience  
+  aud: string; // Audience
   exp: number; // Expiration time
   iat: number; // Issued at
   jti: string; // JWT ID (session token reference)
@@ -64,7 +64,7 @@ export class AdminJWTManager {
     };
 
     const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
-    
+
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
       .setIssuedAt(payload.iat)
@@ -81,7 +81,7 @@ export class AdminJWTManager {
    */
   async generateRefreshToken(sessionId: string): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
-    
+
     const payload = {
       jti: sessionId,
       iss: authConfig.jwtIssuer,
@@ -92,7 +92,7 @@ export class AdminJWTManager {
     };
 
     const secretKey = new TextEncoder().encode(authConfig.jwtSecret);
-    
+
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
       .setIssuedAt(payload.iat)
@@ -139,7 +139,7 @@ export class AdminJWTManager {
 
       // Validate payload structure
       const validatedPayload = adminJWTPayloadSchema.parse(payload);
-      
+
       return validatedPayload;
     } catch (error) {
       if (error instanceof z.ZodError) {

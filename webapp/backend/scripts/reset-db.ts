@@ -1,6 +1,6 @@
-import { db, closeDb } from '../src/db/client.js';
-import { sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
+import { sql } from 'drizzle-orm';
+import { closeDb, db } from '../src/db/client.js';
 
 // Load environment variables
 dotenv.config();
@@ -16,7 +16,7 @@ async function checkDatabaseConnection() {
 
 async function resetDatabase() {
   console.log('🗑️  Starting database reset...');
-  
+
   // Check DATABASE_URL
   if (!process.env.DATABASE_URL) {
     console.error('❌ DATABASE_URL environment variable is not set');
@@ -25,9 +25,11 @@ async function resetDatabase() {
   }
 
   // Check if DATABASE_URL looks like a sample
-  if (process.env.DATABASE_URL.includes('your_user') || 
-      process.env.DATABASE_URL.includes('your_password') ||
-      process.env.DATABASE_URL.includes('your_db')) {
+  if (
+    process.env.DATABASE_URL.includes('your_user') ||
+    process.env.DATABASE_URL.includes('your_password') ||
+    process.env.DATABASE_URL.includes('your_db')
+  ) {
     console.error('❌ DATABASE_URL appears to be using sample values');
     console.log('💡 Please update .env with your actual database credentials');
     process.exit(1);
@@ -40,7 +42,7 @@ async function resetDatabase() {
     console.log('💡 Please check your DATABASE_URL and database server');
     process.exit(1);
   }
-  
+
   try {
     // Drop all admin-related tables and types
     console.log('📋 Dropping admin tables...');
@@ -48,18 +50,17 @@ async function resetDatabase() {
     await db.execute(sql`DROP TABLE IF EXISTS admin_sessions CASCADE`);
     await db.execute(sql`DROP TABLE IF EXISTS admins CASCADE`);
     await db.execute(sql`DROP TYPE IF EXISTS admin_role CASCADE`);
-    
+
     // Drop Drizzle migration tracking table
     console.log('🔄 Dropping migration tracking...');
     await db.execute(sql`DROP TABLE IF EXISTS __drizzle_migrations CASCADE`);
-    
+
     console.log('✅ Database reset completed!');
     console.log('💡 Next steps:');
     console.log('   1. npm run db:generate (to recreate migration files)');
     console.log('   2. npm run db:migrate (to apply fresh schema)');
     console.log('   or');
     console.log('   npm run db:push (for development)');
-    
   } catch (error) {
     console.error('❌ Database reset failed:', error);
     console.log('💡 Common solutions:');
@@ -78,7 +79,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('⚠️  WARNING: This will delete ALL admin data!');
   console.log('🔍 Database:', process.env.DATABASE_URL?.split('@')[1] || 'Unknown');
   console.log('⏰ Starting reset in 3 seconds... (Ctrl+C to cancel)');
-  
+
   setTimeout(() => {
     resetDatabase();
   }, 3000);

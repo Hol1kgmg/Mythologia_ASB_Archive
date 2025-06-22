@@ -1,6 +1,6 @@
-import { eq, and, or, like, desc, ne, count } from 'drizzle-orm';
+import { and, count, desc, eq, like, ne, or } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { admins, type Admin, type NewAdmin } from '../../db/schema/index.js';
+import { type Admin, admins, type NewAdmin } from '../../db/schema/index.js';
 
 export interface AdminSearchParams {
   username?: string;
@@ -17,10 +17,7 @@ export class AdminRepository {
    * 管理者を作成
    */
   async create(adminData: NewAdmin): Promise<Admin> {
-    const [admin] = await db
-      .insert(admins)
-      .values(adminData)
-      .returning();
+    const [admin] = await db.insert(admins).values(adminData).returning();
     return admin;
   }
 
@@ -28,12 +25,8 @@ export class AdminRepository {
    * IDで管理者を取得
    */
   async findById(id: string): Promise<Admin | null> {
-    const adminList = await db
-      .select()
-      .from(admins)
-      .where(eq(admins.id, id))
-      .limit(1);
-    
+    const adminList = await db.select().from(admins).where(eq(admins.id, id)).limit(1);
+
     return adminList[0] || null;
   }
 
@@ -41,12 +34,8 @@ export class AdminRepository {
    * ユーザー名で管理者を取得
    */
   async findByUsername(username: string): Promise<Admin | null> {
-    const adminList = await db
-      .select()
-      .from(admins)
-      .where(eq(admins.username, username))
-      .limit(1);
-    
+    const adminList = await db.select().from(admins).where(eq(admins.username, username)).limit(1);
+
     return adminList[0] || null;
   }
 
@@ -54,12 +43,8 @@ export class AdminRepository {
    * メールアドレスで管理者を取得
    */
   async findByEmail(email: string): Promise<Admin | null> {
-    const adminList = await db
-      .select()
-      .from(admins)
-      .where(eq(admins.email, email))
-      .limit(1);
-    
+    const adminList = await db.select().from(admins).where(eq(admins.email, email)).limit(1);
+
     return adminList[0] || null;
   }
 
@@ -70,14 +55,9 @@ export class AdminRepository {
     const adminList = await db
       .select()
       .from(admins)
-      .where(
-        or(
-          eq(admins.username, usernameOrEmail),
-          eq(admins.email, usernameOrEmail)
-        )
-      )
+      .where(or(eq(admins.username, usernameOrEmail), eq(admins.email, usernameOrEmail)))
       .limit(1);
-    
+
     return adminList[0] || null;
   }
 
@@ -87,15 +67,11 @@ export class AdminRepository {
   async update(id: string, updateData: Partial<NewAdmin>): Promise<Admin | null> {
     const updatedData = {
       ...updateData,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
-    const [admin] = await db
-      .update(admins)
-      .set(updatedData)
-      .where(eq(admins.id, id))
-      .returning();
-    
+    const [admin] = await db.update(admins).set(updatedData).where(eq(admins.id, id)).returning();
+
     return admin || null;
   }
 
@@ -105,13 +81,13 @@ export class AdminRepository {
   async softDelete(id: string): Promise<Admin | null> {
     const [admin] = await db
       .update(admins)
-      .set({ 
+      .set({
         isActive: false,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(admins.id, id))
       .returning();
-    
+
     return admin || null;
   }
 
@@ -119,19 +95,14 @@ export class AdminRepository {
    * 管理者を完全削除
    */
   async delete(id: string): Promise<void> {
-    await db
-      .delete(admins)
-      .where(eq(admins.id, id));
+    await db.delete(admins).where(eq(admins.id, id));
   }
 
   /**
    * 全管理者を取得
    */
   async findAll(): Promise<Admin[]> {
-    return await db
-      .select()
-      .from(admins)
-      .orderBy(desc(admins.createdAt));
+    return await db.select().from(admins).orderBy(desc(admins.createdAt));
   }
 
   /**
@@ -152,12 +123,7 @@ export class AdminRepository {
     return await db
       .select()
       .from(admins)
-      .where(
-        and(
-          eq(admins.isSuperAdmin, true),
-          eq(admins.isActive, true)
-        )
-      )
+      .where(and(eq(admins.isSuperAdmin, true), eq(admins.isActive, true)))
       .orderBy(desc(admins.createdAt));
   }
 
@@ -166,23 +132,23 @@ export class AdminRepository {
    */
   async search(params: AdminSearchParams): Promise<Admin[]> {
     const conditions = [];
-    
+
     if (params.username) {
       conditions.push(like(admins.username, `%${params.username}%`));
     }
-    
+
     if (params.email) {
       conditions.push(like(admins.email, `%${params.email}%`));
     }
-    
+
     if (params.role) {
       conditions.push(eq(admins.role, params.role));
     }
-    
+
     if (params.isActive !== undefined) {
       conditions.push(eq(admins.isActive, params.isActive));
     }
-    
+
     if (params.isSuperAdmin !== undefined) {
       conditions.push(eq(admins.isSuperAdmin, params.isSuperAdmin));
     }
@@ -219,16 +185,9 @@ export class AdminRepository {
           .limit(params.limit)
           .offset(params.offset);
       } else if (params.limit) {
-        return await db
-          .select()
-          .from(admins)
-          .orderBy(desc(admins.createdAt))
-          .limit(params.limit);
+        return await db.select().from(admins).orderBy(desc(admins.createdAt)).limit(params.limit);
       } else {
-        return await db
-          .select()
-          .from(admins)
-          .orderBy(desc(admins.createdAt));
+        return await db.select().from(admins).orderBy(desc(admins.createdAt));
       }
     }
   }
@@ -238,30 +197,28 @@ export class AdminRepository {
    */
   async count(params?: AdminSearchParams): Promise<number> {
     if (!params) {
-      const result = await db
-        .select({ count: count() })
-        .from(admins);
+      const result = await db.select({ count: count() }).from(admins);
       return result[0]?.count || 0;
     }
 
     const conditions = [];
-    
+
     if (params.username) {
       conditions.push(like(admins.username, `%${params.username}%`));
     }
-    
+
     if (params.email) {
       conditions.push(like(admins.email, `%${params.email}%`));
     }
-    
+
     if (params.role) {
       conditions.push(eq(admins.role, params.role));
     }
-    
+
     if (params.isActive !== undefined) {
       conditions.push(eq(admins.isActive, params.isActive));
     }
-    
+
     if (params.isSuperAdmin !== undefined) {
       conditions.push(eq(admins.isSuperAdmin, params.isSuperAdmin));
     }
@@ -273,9 +230,7 @@ export class AdminRepository {
         .where(and(...conditions));
       return result[0]?.count || 0;
     } else {
-      const result = await db
-        .select({ count: count() })
-        .from(admins);
+      const result = await db.select({ count: count() }).from(admins);
       return result[0]?.count || 0;
     }
   }
@@ -286,13 +241,13 @@ export class AdminRepository {
   async updateLastLogin(id: string): Promise<Admin | null> {
     const [admin] = await db
       .update(admins)
-      .set({ 
+      .set({
         lastLoginAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(admins.id, id))
       .returning();
-    
+
     return admin || null;
   }
 
@@ -302,13 +257,13 @@ export class AdminRepository {
   async updatePassword(id: string, passwordHash: string): Promise<Admin | null> {
     const [admin] = await db
       .update(admins)
-      .set({ 
+      .set({
         passwordHash,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(admins.id, id))
       .returning();
-    
+
     return admin || null;
   }
 
@@ -318,13 +273,13 @@ export class AdminRepository {
   async updatePermissions(id: string, permissions: string[]): Promise<Admin | null> {
     const [admin] = await db
       .update(admins)
-      .set({ 
+      .set({
         permissions,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(admins.id, id))
       .returning();
-    
+
     return admin || null;
   }
 
@@ -334,13 +289,13 @@ export class AdminRepository {
   async updateRole(id: string, role: 'super_admin' | 'admin' | 'viewer'): Promise<Admin | null> {
     const [admin] = await db
       .update(admins)
-      .set({ 
+      .set({
         role,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(admins.id, id))
       .returning();
-    
+
     return admin || null;
   }
 

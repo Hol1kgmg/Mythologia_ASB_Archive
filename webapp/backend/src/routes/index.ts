@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { healthRoutes } from './health.js';
 import { adminAuthRoutes } from './admin-auth.js';
+import { healthRoutes } from './health.js';
 
 const apiRoutes = new Hono();
 
