@@ -26,7 +26,11 @@ const INVALID_ORIGIN = 'https://malicious-site.com';
 const ADMIN_HMAC_SECRET = process.env.ADMIN_HMAC_SECRET || 'test-admin-hmac-secret';
 const VERCEL_API_KEY = process.env.VERCEL_API_KEY || 'test-vercel-api-key';
 
-async function generateTestHMAC(method: string, path: string, body?: string): Promise<{signature: string, timestamp: string}> {
+async function generateTestHMAC(
+  method: string,
+  path: string,
+  body?: string
+): Promise<{ signature: string; timestamp: string }> {
   const timestamp = Date.now().toString();
   const signature = generateHMACSignature(method, path, timestamp, body, ADMIN_HMAC_SECRET);
   return { signature, timestamp };
@@ -42,9 +46,9 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': INVALID_ORIGIN,
+        Origin: INVALID_ORIGIN,
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404, // セキュリティ上の理由で404を返す
   },
@@ -58,9 +62,9 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404,
   },
@@ -74,10 +78,10 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
         'X-API-Key': VERCEL_API_KEY,
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404,
   },
@@ -91,10 +95,10 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
         // HMAC署名は実行時に生成される
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404,
   },
@@ -108,12 +112,12 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
         'X-API-Key': VERCEL_API_KEY,
         'X-HMAC-Signature': 'invalid-signature',
         'X-Timestamp': Date.now().toString(),
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404,
   },
@@ -127,12 +131,12 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
         'X-API-Key': VERCEL_API_KEY,
         'X-Timestamp': (Date.now() - 600000).toString(), // 10分前
         // HMAC署名は実行時に生成される
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 404,
   },
@@ -146,11 +150,11 @@ const testCases: TestCase[] = [
       path: '/api/admin/auth/login',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': VALID_ORIGIN,
+        Origin: VALID_ORIGIN,
         'X-API-Key': VERCEL_API_KEY,
         // HMAC署名とタイムスタンプは実行時に生成される
       },
-      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' })
+      body: JSON.stringify({ username: 'super_admin', password: 'Demo123Secure' }),
     },
     expectedStatus: 200, // ログイン成功を期待
   },
@@ -195,14 +199,15 @@ async function runTest(testCase: TestCase): Promise<boolean> {
     const statusIcon = success ? '✅' : '❌';
     const responseText = await response.text();
 
-    console.log(`   ${statusIcon} ステータス: ${response.status} (期待: ${testCase.expectedStatus})`);
-    
+    console.log(
+      `   ${statusIcon} ステータス: ${response.status} (期待: ${testCase.expectedStatus})`
+    );
+
     if (!success) {
       console.log(`   📄 レスポンス: ${responseText}`);
     }
 
     return success;
-
   } catch (error) {
     console.log(`   ❌ エラー: ${error}`);
     return false;
@@ -214,20 +219,20 @@ async function main() {
   console.log(`🌐 テスト対象: ${API_URL}`);
   console.log(`✅ 有効Origin: ${VALID_ORIGIN}`);
   console.log(`❌ 無効Origin: ${INVALID_ORIGIN}`);
-  
+
   let passed = 0;
-  let total = testCases.length;
+  const total = testCases.length;
 
   for (const testCase of testCases) {
     const success = await runTest(testCase);
     if (success) passed++;
-    
+
     // テスト間の間隔
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   console.log(`\n📊 テスト結果: ${passed}/${total} 成功`);
-  
+
   if (passed === total) {
     console.log('🎉 すべてのテストが成功しました！');
     process.exit(0);

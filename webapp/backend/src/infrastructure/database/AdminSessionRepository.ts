@@ -1,16 +1,13 @@
-import { eq, and, gt, lt, count } from 'drizzle-orm';
+import { and, count, eq, gt, lt } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { adminSessions, type AdminSession, type NewAdminSession } from '../../db/schema/index.js';
+import { type AdminSession, adminSessions, type NewAdminSession } from '../../db/schema/index.js';
 
 export class AdminSessionRepository {
   /**
    * セッションを作成
    */
   async create(sessionData: NewAdminSession): Promise<AdminSession> {
-    const [session] = await db
-      .insert(adminSessions)
-      .values(sessionData)
-      .returning();
+    const [session] = await db.insert(adminSessions).values(sessionData).returning();
     return session;
   }
 
@@ -23,7 +20,7 @@ export class AdminSessionRepository {
       .from(adminSessions)
       .where(eq(adminSessions.token, token))
       .limit(1);
-    
+
     return sessions[0] || null;
   }
 
@@ -34,14 +31,9 @@ export class AdminSessionRepository {
     const sessions = await db
       .select()
       .from(adminSessions)
-      .where(
-        and(
-          eq(adminSessions.token, token),
-          gt(adminSessions.expiresAt, new Date())
-        )
-      )
+      .where(and(eq(adminSessions.token, token), gt(adminSessions.expiresAt, new Date())))
       .limit(1);
-    
+
     return sessions[0] || null;
   }
 
@@ -63,12 +55,7 @@ export class AdminSessionRepository {
     return await db
       .select()
       .from(adminSessions)
-      .where(
-        and(
-          eq(adminSessions.adminId, adminId),
-          gt(adminSessions.expiresAt, new Date())
-        )
-      )
+      .where(and(eq(adminSessions.adminId, adminId), gt(adminSessions.expiresAt, new Date())))
       .orderBy(adminSessions.createdAt);
   }
 
@@ -76,27 +63,21 @@ export class AdminSessionRepository {
    * セッションを削除
    */
   async delete(sessionId: string): Promise<void> {
-    await db
-      .delete(adminSessions)
-      .where(eq(adminSessions.id, sessionId));
+    await db.delete(adminSessions).where(eq(adminSessions.id, sessionId));
   }
 
   /**
    * トークンでセッションを削除
    */
   async deleteByToken(token: string): Promise<void> {
-    await db
-      .delete(adminSessions)
-      .where(eq(adminSessions.token, token));
+    await db.delete(adminSessions).where(eq(adminSessions.token, token));
   }
 
   /**
    * 管理者の全セッションを削除
    */
   async deleteByAdminId(adminId: string): Promise<void> {
-    await db
-      .delete(adminSessions)
-      .where(eq(adminSessions.adminId, adminId));
+    await db.delete(adminSessions).where(eq(adminSessions.adminId, adminId));
   }
 
   /**
@@ -108,15 +89,13 @@ export class AdminSessionRepository {
       .select({ count: count() })
       .from(adminSessions)
       .where(lt(adminSessions.expiresAt, new Date()));
-    
+
     const expiredCount = countResult[0]?.count || 0;
-    
+
     if (expiredCount > 0) {
-      await db
-        .delete(adminSessions)
-        .where(lt(adminSessions.expiresAt, new Date()));
+      await db.delete(adminSessions).where(lt(adminSessions.expiresAt, new Date()));
     }
-    
+
     return expiredCount;
   }
 
@@ -124,10 +103,7 @@ export class AdminSessionRepository {
    * 全セッションを取得（管理用）
    */
   async findAll(): Promise<AdminSession[]> {
-    return await db
-      .select()
-      .from(adminSessions)
-      .orderBy(adminSessions.createdAt);
+    return await db.select().from(adminSessions).orderBy(adminSessions.createdAt);
   }
 
   /**
@@ -138,7 +114,7 @@ export class AdminSessionRepository {
       .select({ count: count() })
       .from(adminSessions)
       .where(gt(adminSessions.expiresAt, new Date()));
-    
+
     return result[0]?.count || 0;
   }
 
@@ -149,13 +125,8 @@ export class AdminSessionRepository {
     const result = await db
       .select({ count: count() })
       .from(adminSessions)
-      .where(
-        and(
-          eq(adminSessions.adminId, adminId),
-          gt(adminSessions.expiresAt, new Date())
-        )
-      );
-    
+      .where(and(eq(adminSessions.adminId, adminId), gt(adminSessions.expiresAt, new Date())));
+
     return result[0]?.count || 0;
   }
 }

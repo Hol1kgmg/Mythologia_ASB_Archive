@@ -1,7 +1,5 @@
 'use client';
 
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
@@ -9,6 +7,8 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { cva, type VariantProps } from 'class-variance-authority';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const toastVariants = cva(
   'relative flex items-start gap-3 p-4 rounded-lg shadow-lg border backdrop-blur-sm max-w-md',
@@ -46,18 +46,21 @@ export interface ToastProps
 }
 
 const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  ({ 
-    className, 
-    variant, 
-    title, 
-    closable = true, 
-    onClose, 
-    icon, 
-    children, 
-    duration = 5000,
-    visible = true,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      title,
+      closable = true,
+      onClose,
+      icon,
+      children,
+      duration = 5000,
+      visible = true,
+      ...props
+    },
+    ref
+  ) => {
     const [isVisible, setIsVisible] = useState(visible);
     const Icon = iconMap[variant || 'info'];
 
@@ -82,23 +85,15 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
     }
 
     return (
-      <div
-        ref={ref}
-        role="alert"
-        className={toastVariants({ variant, className })}
-        {...props}
-      >
-        <div className="flex-shrink-0">
-          {icon || <Icon className="h-5 w-5" />}
-        </div>
+      <div ref={ref} role="alert" className={toastVariants({ variant, className })} {...props}>
+        <div className="flex-shrink-0">{icon || <Icon className="h-5 w-5" />}</div>
         <div className="flex-1">
-          {title && (
-            <h3 className="font-medium mb-1">{title}</h3>
-          )}
+          {title && <h3 className="font-medium mb-1">{title}</h3>}
           <div className="text-sm opacity-90">{children}</div>
         </div>
         {closable && (
           <button
+            type="button"
             onClick={handleClose}
             className="flex-shrink-0 ml-2 p-1 rounded hover:bg-white/10 transition-colors"
             aria-label="Close toast"
@@ -145,26 +140,23 @@ export interface ToastProviderProps {
   maxToasts?: number;
 }
 
-export const ToastProvider: React.FC<ToastProviderProps> = ({ 
-  children, 
-  maxToasts = 5 
-}) => {
+export const ToastProvider: React.FC<ToastProviderProps> = ({ children, maxToasts = 5 }) => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const addToast = (toast: Omit<ToastItem, 'id'>) => {
     const id = `toast-${Date.now()}-${Math.random()}`;
     const newToast: ToastItem = { ...toast, id };
-    
-    setToasts(prev => {
+
+    setToasts((prev) => {
       const updated = [newToast, ...prev];
       return updated.slice(0, maxToasts);
     });
-    
+
     return id;
   };
 
   const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   };
 
   const clearToasts = () => {

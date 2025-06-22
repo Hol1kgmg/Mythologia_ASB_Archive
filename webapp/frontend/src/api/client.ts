@@ -17,12 +17,7 @@ export class ApiClient {
   }
 
   async request<T = unknown>(requestOptions: ApiRequestOptions): Promise<T> {
-    const {
-      method = 'GET',
-      path,
-      body,
-      headers = {}
-    } = requestOptions;
+    const { method = 'GET', path, body, headers = {} } = requestOptions;
 
     try {
       // Prepare request body
@@ -37,8 +32,8 @@ export class ApiClient {
         body: JSON.stringify({
           method,
           path,
-          body: requestBody
-        })
+          body: requestBody,
+        }),
       });
 
       if (!authResponse.ok) {
@@ -50,14 +45,14 @@ export class ApiClient {
       // Prepare final headers
       const requestHeaders: Record<string, string> = {
         ...authHeaders,
-        ...headers
+        ...headers,
       };
 
       // Make request to external API
       const response = await fetch(`${this.options.baseURL}${path}`, {
         method,
         headers: requestHeaders,
-        body: requestBody
+        body: requestBody,
       });
 
       // Handle response
@@ -75,7 +70,7 @@ export class ApiClient {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       throw new ApiError(
         `API request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         0,
@@ -89,11 +84,19 @@ export class ApiClient {
     return this.request<T>({ method: 'GET', path, headers });
   }
 
-  async post<T = unknown>(path: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
+  async post<T = unknown>(
+    path: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<T> {
     return this.request<T>({ method: 'POST', path, body, headers });
   }
 
-  async put<T = unknown>(path: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
+  async put<T = unknown>(
+    path: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<T> {
     return this.request<T>({ method: 'PUT', path, body, headers });
   }
 
@@ -123,6 +126,6 @@ export function createApiClient(): ApiClient {
   }
 
   return new ApiClient({
-    baseURL
+    baseURL,
   });
 }

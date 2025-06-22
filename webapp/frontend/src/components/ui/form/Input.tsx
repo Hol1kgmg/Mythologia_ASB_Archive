@@ -1,5 +1,6 @@
-import React, { forwardRef, useId } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { forwardRef, useId } from 'react';
 import { Box } from '../layout/Box';
 
 const inputVariants = cva(
@@ -41,10 +42,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <Box className="w-full">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="mb-1 block text-sm font-medium text-zinc-200"
-          >
+          <label htmlFor={inputId} className="mb-1 block text-sm font-medium text-zinc-200">
             {label}
           </label>
         )}
@@ -53,7 +51,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           className={inputVariants({ variant: errorVariant, size, className })}
           aria-invalid={!!error}
-          aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
+          aria-describedby={
+            error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined
+          }
           {...props}
         />
         {error && (

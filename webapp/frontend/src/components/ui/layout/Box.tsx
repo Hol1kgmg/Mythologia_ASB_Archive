@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { forwardRef } from 'react';
 
 const boxVariants = cva('', {
   variants: {
@@ -75,7 +76,21 @@ export interface BoxProps
 }
 
 const Box = forwardRef<HTMLDivElement, BoxProps>(
-  ({ className, padding, margin, background, border, rounded, shadow, display, as: Component = 'div', ...props }, ref) => {
+  (
+    {
+      className,
+      padding,
+      margin,
+      background,
+      border,
+      rounded,
+      shadow,
+      display,
+      as: Component = 'div',
+      ...props
+    },
+    ref
+  ) => {
     return (
       <Component
         ref={ref}

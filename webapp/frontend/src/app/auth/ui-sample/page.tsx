@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import NotFoundPage from '../../../components/page/NotFoundPage';
-import { Box, BackgroundPattern, Alert } from '../../../components/ui';
+import { Alert, BackgroundPattern, Box } from '../../../components/ui';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
@@ -71,14 +71,10 @@ export default function UISampleIndexPage() {
             Headless UIを使用した共通コンポーネントライブラリ
           </p>
 
-          <Alert
-            variant="warning"
-            title="開発者向け機能"
-            className="w-full max-w-3xl mx-auto my-8"
-          >
+          <Alert variant="warning" title="開発者向け機能" className="w-full max-w-3xl mx-auto my-8">
             共通UIコンポーネントのサンプルページです
           </Alert>
-          
+
           <Box className="space-y-6">
             {samplePages.map((page) => (
               <Link key={page.href} href={page.href} className="block mb-6">
@@ -93,12 +89,8 @@ export default function UISampleIndexPage() {
                 >
                   <Box display="flex" className="items-center justify-between">
                     <Box>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-1">
-                        {page.title}
-                      </h3>
-                      <p className="text-sm text-gray-400">
-                        {page.description}
-                      </p>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-1">{page.title}</h3>
+                      <p className="text-sm text-gray-400">{page.description}</p>
                     </Box>
                     <Box className="text-gray-400">
                       {page.status === 'completed' ? (
@@ -114,8 +106,8 @@ export default function UISampleIndexPage() {
           </Box>
 
           <Box className="text-center mt-12">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-block px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-300"
             >
               ← ホームに戻る

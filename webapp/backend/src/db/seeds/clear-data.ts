@@ -1,13 +1,13 @@
 /**
  * データベース全データ削除スクリプト
- * 
+ *
  * 開発環境での完全なデータリセット用
  * ⚠️ 注意: このスクリプトは全データを削除します
  */
 
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { admins, adminSessions, adminActivityLogs } from '../schema/admin.js';
 import { logger } from '../../utils/logger.js';
+import { adminActivityLogs, adminSessions, admins } from '../schema/admin.js';
 
 interface ClearOptions {
   // 確認スキップ（自動化用）
@@ -82,9 +82,8 @@ export async function clearAllData(
         // データ削除実行
         await db.delete(table);
         totalDeleted += recordCount;
-        
-        logger.info(`${name}: ${recordCount}件削除`);
 
+        logger.info(`${name}: ${recordCount}件削除`);
       } catch (error) {
         logger.error(`${name} の削除に失敗:`, error);
         throw error;
@@ -95,11 +94,10 @@ export async function clearAllData(
     await resetSequences(db, tablesToClear);
 
     logger.info(`✅ データ削除完了: 合計 ${totalDeleted}件削除`);
-    
+
     if (createBackup) {
       logger.info('📁 バックアップが作成されました');
     }
-
   } catch (error) {
     logger.error('❌ データ削除に失敗:', error);
     throw error;
@@ -116,7 +114,7 @@ export async function clearTable(
 ): Promise<void> {
   // 本番・ステージング環境での実行制限
   checkEnvironmentRestrictions();
-  
+
   logger.info(`🗑️  ${tableName} テーブルをクリアします...`);
 
   if (!force) {
@@ -150,10 +148,7 @@ export async function clearTable(
 /**
  * シーケンスのリセット（ID自動採番のリセット）
  */
-async function resetSequences(
-  db: PostgresJsDatabase<any>,
-  tables: string[]
-): Promise<void> {
+async function resetSequences(db: PostgresJsDatabase<any>, tables: string[]): Promise<void> {
   logger.info('🔄 ID採番シーケンスをリセット中...');
 
   // PostgreSQLのシーケンスリセットクエリ
@@ -200,11 +195,11 @@ async function createDataBackup(db: PostgresJsDatabase<any>): Promise<void> {
 
     // バックアップファイルのパス
     const backupPath = `./backups/backup_${timestamp}.json`;
-    
+
     // バックアップディレクトリ作成
-    const fs = await import('fs');
-    const path = await import('path');
-    
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+
     const backupDir = path.dirname(backupPath);
     if (!fs.existsSync(backupDir)) {
       fs.mkdirSync(backupDir, { recursive: true });
@@ -212,10 +207,9 @@ async function createDataBackup(db: PostgresJsDatabase<any>): Promise<void> {
 
     // ファイル書き込み
     fs.writeFileSync(backupPath, JSON.stringify(backupData, null, 2));
-    
+
     logger.info(`✅ バックアップ作成完了: ${backupPath}`);
     logger.info(`📊 バックアップレコード数: ${backupData.totalRecords}件`);
-
   } catch (error) {
     logger.error('❌ バックアップ作成に失敗:', error);
     throw error;
@@ -227,14 +221,14 @@ const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 if (isMainModule) {
   const { db } = await import('../client');
   const args = process.argv.slice(2);
-  
+
   const options: ClearOptions = {
     force: args.includes('--force'),
     createBackup: args.includes('--backup'),
   };
 
   // 特定テーブル指定
-  const tableArg = args.find(arg => arg.startsWith('--table='));
+  const tableArg = args.find((arg) => arg.startsWith('--table='));
   if (tableArg) {
     const tableName = tableArg.split('=')[1];
     await clearTable(db, tableName, options.force);
@@ -251,14 +245,16 @@ if (isMainModule) {
  */
 function checkEnvironmentRestrictions(): void {
   const nodeEnv = process.env.NODE_ENV;
-  
+
   if (nodeEnv === 'production' || nodeEnv === 'staging') {
     logger.error(`❌ ${nodeEnv}環境でのデータクリア実行は禁止されています`);
     logger.error('💡 データクリア機能はローカル開発環境専用です');
     logger.error('🔒 本番環境でのデータ削除は管理者が手動で行ってください');
     logger.error('🏠 ローカル環境でのみ実行してください:');
     logger.error('   npm run db:clear:docker -- --force');
-    
-    throw new Error(`CLEAR_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのデータクリア実行は禁止されています`);
+
+    throw new Error(
+      `CLEAR_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのデータクリア実行は禁止されています`
+    );
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, Input, Select } from '../../../../components/ui';
 
 export default function Phase1BasicSampleContainer() {
@@ -32,11 +32,11 @@ export default function Phase1BasicSampleContainer() {
       className="w-full max-w-4xl mx-auto my-8 overflow-visible"
     >
       <h2 className="text-2xl font-bold text-gray-300 mb-6">Phase 1: 基本コンポーネント</h2>
-      
+
       {/* Button Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Buttons</h3>
-        
+
         <Box className="space-y-4">
           {/* Variants */}
           <Box display="flex" className="flex-wrap gap-2">
@@ -46,7 +46,7 @@ export default function Phase1BasicSampleContainer() {
             <Button variant="danger">Danger</Button>
             <Button variant="success">Success</Button>
           </Box>
-          
+
           {/* Sizes */}
           <Box display="flex" className="flex-wrap items-center gap-2">
             <Button size="xs">XS</Button>
@@ -55,14 +55,16 @@ export default function Phase1BasicSampleContainer() {
             <Button size="lg">Large</Button>
             <Button size="xl">XL</Button>
           </Box>
-          
+
           {/* With Icons */}
           <Box display="flex" className="flex-wrap gap-2">
             <Button leftIcon="🔍">検索</Button>
             <Button rightIcon="→">次へ</Button>
-            <Button leftIcon="⚙️" rightIcon="▼">設定</Button>
+            <Button leftIcon="⚙️" rightIcon="▼">
+              設定
+            </Button>
           </Box>
-          
+
           {/* States */}
           <Box display="flex" className="flex-wrap gap-2">
             <Button disabled>Disabled</Button>
@@ -74,7 +76,7 @@ export default function Phase1BasicSampleContainer() {
       {/* Input Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Input</h3>
-        
+
         <Box className="space-y-4">
           <Input
             label="通常の入力"
@@ -83,7 +85,7 @@ export default function Phase1BasicSampleContainer() {
             onChange={(e) => setInputValue(e.target.value)}
             helperText="これはヘルパーテキストです"
           />
-          
+
           <Input
             label="エラー状態"
             placeholder="エラーの例"
@@ -91,26 +93,27 @@ export default function Phase1BasicSampleContainer() {
             error="入力内容に誤りがあります"
             readOnly
           />
-          
+
           <Box display="flex" className="gap-2">
             <Input size="sm" placeholder="Small" />
             <Input size="md" placeholder="Medium" />
             <Input size="lg" placeholder="Large" />
           </Box>
-          
-          <Input
-            label="無効化された入力"
-            defaultValue="編集できません"
-            disabled
-            readOnly
-          />
+
+          <Input label="無効化された入力" defaultValue="編集できません" disabled readOnly />
         </Box>
       </Box>
 
       {/* Select Components */}
-      <Box margin="none" padding="md" background="default" rounded="md" className="mb-6 overflow-visible">
+      <Box
+        margin="none"
+        padding="md"
+        background="default"
+        rounded="md"
+        className="mb-6 overflow-visible"
+      >
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Select</h3>
-        
+
         <Box className="space-y-4">
           <Select
             label="リーダー選択"
@@ -120,7 +123,7 @@ export default function Phase1BasicSampleContainer() {
             placeholder="リーダーを選択してください"
             helperText="ゲームのリーダーを選択します"
           />
-          
+
           <Select
             label="エラー状態のセレクト"
             value=""
@@ -128,7 +131,7 @@ export default function Phase1BasicSampleContainer() {
             options={selectOptions}
             error="選択は必須です"
           />
-          
+
           <Select
             label="無効化されたセレクト"
             value="dragon"
@@ -142,7 +145,7 @@ export default function Phase1BasicSampleContainer() {
       {/* Box Layout Examples */}
       <Box margin="none" padding="md" background="default" rounded="md">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Box Layout</h3>
-        
+
         <Box className="space-y-4">
           <Box
             padding="md"
@@ -154,14 +157,8 @@ export default function Phase1BasicSampleContainer() {
           >
             <p>グラデーション背景のBox</p>
           </Box>
-          
-          <Box
-            display="flex"
-            padding="sm"
-            background="lighter"
-            rounded="md"
-            className="gap-2"
-          >
+
+          <Box display="flex" padding="sm" background="lighter" rounded="md" className="gap-2">
             <Box padding="sm" background="darker" rounded="sm" className="flex-1">
               Flex Item 1
             </Box>

@@ -1,5 +1,6 @@
-import React, { forwardRef, useId } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { forwardRef, useId } from 'react';
 import { Box } from '../layout/Box';
 
 const textareaVariants = cva(
@@ -48,10 +49,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <Box className="w-full">
         {label && (
-          <label
-            htmlFor={textareaId}
-            className="mb-1 block text-sm font-medium text-zinc-200"
-          >
+          <label htmlFor={textareaId} className="mb-1 block text-sm font-medium text-zinc-200">
             {label}
           </label>
         )}
@@ -60,7 +58,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={textareaId}
           className={textareaVariants({ variant: errorVariant, size, resize, className })}
           aria-invalid={!!error}
-          aria-describedby={error ? `${textareaId}-error` : helperText ? `${textareaId}-helper` : undefined}
+          aria-describedby={
+            error ? `${textareaId}-error` : helperText ? `${textareaId}-helper` : undefined
+          }
           {...props}
         />
         {error && (

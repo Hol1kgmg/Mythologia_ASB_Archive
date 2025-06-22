@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
 const skeletonVariants = cva(
   'animate-pulse bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%] rounded',
@@ -39,18 +39,21 @@ export interface SkeletonProps
 }
 
 const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
-  ({ 
-    className, 
-    variant, 
-    animation, 
-    width, 
-    height, 
-    circle = false,
-    count = 1,
-    spacing = '0.5rem',
-    style,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      animation,
+      width,
+      height,
+      circle = false,
+      count = 1,
+      spacing = '0.5rem',
+      style,
+      ...props
+    },
+    ref
+  ) => {
     const skeletonStyle: React.CSSProperties = {
       width,
       height,
@@ -99,10 +102,10 @@ export interface SkeletonTextProps {
   className?: string;
 }
 
-export const SkeletonText: React.FC<SkeletonTextProps> = ({ 
-  lines = 3, 
+export const SkeletonText: React.FC<SkeletonTextProps> = ({
+  lines = 3,
   spacing = '0.5rem',
-  className 
+  className,
 }) => {
   return (
     <div className={`space-y-2 ${className || ''}`}>
@@ -144,14 +147,10 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
           </div>
         </div>
       )}
-      
-      {showTitle && (
-        <Skeleton variant="title" width="80%" />
-      )}
-      
-      {showText && (
-        <SkeletonText lines={textLines} />
-      )}
+
+      {showTitle && <Skeleton variant="title" width="80%" />}
+
+      {showText && <SkeletonText lines={textLines} />}
     </div>
   );
 };
@@ -171,9 +170,7 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
     <div className={`space-y-3 ${className || ''}`}>
       {Array.from({ length: items }).map((_, index) => (
         <div key={index} className="flex items-center space-x-3">
-          {showAvatar && (
-            <Skeleton circle width={32} height={32} />
-          )}
+          {showAvatar && <Skeleton circle width={32} height={32} />}
           <div className="space-y-2 flex-1">
             <Skeleton variant="text" width="70%" />
             <Skeleton variant="text" width="40%" />

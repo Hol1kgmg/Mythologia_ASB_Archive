@@ -1,12 +1,12 @@
 import { Hono } from 'hono';
 import { AdminAuthController } from '../auth/controllers/AdminAuthController.js';
-import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/admin-auth.js';
-import { 
-  adminLoginRateLimit, 
-  adminRefreshRateLimit, 
-  adminGeneralRateLimit 
-} from '../infrastructure/auth/middleware/admin-rate-limit.js';
 import { adminAPISecurity } from '../infrastructure/auth/middleware/admin-api-security.js';
+import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/admin-auth.js';
+import {
+  adminGeneralRateLimit,
+  adminLoginRateLimit,
+  adminRefreshRateLimit,
+} from '../infrastructure/auth/middleware/admin-rate-limit.js';
 
 const adminAuthRoutes = new Hono();
 const adminAuthController = new AdminAuthController();
@@ -31,7 +31,13 @@ adminAuthRoutes.use('/me', adminAPISecurity(), adminGeneralRateLimit(), adminAut
 adminAuthRoutes.get('/me', (c) => adminAuthController.me(c));
 
 // Admin only routes
-adminAuthRoutes.use('/cleanup-sessions', adminAPISecurity(), adminGeneralRateLimit(), adminAuth(), requireAdminRole(['admin', 'super_admin']));
+adminAuthRoutes.use(
+  '/cleanup-sessions',
+  adminAPISecurity(),
+  adminGeneralRateLimit(),
+  adminAuth(),
+  requireAdminRole(['admin', 'super_admin'])
+);
 adminAuthRoutes.post('/cleanup-sessions', (c) => adminAuthController.cleanupSessions(c));
 
 export { adminAuthRoutes };

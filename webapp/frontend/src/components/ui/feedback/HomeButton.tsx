@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+import type React from 'react';
 import { Button } from '..';
 
 interface HomeButtonProps {
@@ -9,19 +9,15 @@ interface HomeButtonProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export default function HomeButton({ 
-  className = '', 
+export default function HomeButton({
+  className = '',
   children = '← ホームに戻る',
   variant = 'primary',
-  size = 'md'
+  size = 'md',
 }: HomeButtonProps) {
   return (
     <Link href="/" aria-label="ホームページに戻る">
-      <Button 
-        variant={variant}
-        size={size}
-        className={className}
-      >
+      <Button variant={variant} size={size} className={className}>
         {children}
       </Button>
     </Link>

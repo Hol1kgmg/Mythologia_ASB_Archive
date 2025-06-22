@@ -1,48 +1,42 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
-const progressVariants = cva(
-  'relative w-full bg-gray-800 rounded-full overflow-hidden',
-  {
-    variants: {
-      size: {
-        xs: 'h-1',
-        sm: 'h-2',
-        md: 'h-3',
-        lg: 'h-4',
-        xl: 'h-6',
-      },
+const progressVariants = cva('relative w-full bg-gray-800 rounded-full overflow-hidden', {
+  variants: {
+    size: {
+      xs: 'h-1',
+      sm: 'h-2',
+      md: 'h-3',
+      lg: 'h-4',
+      xl: 'h-6',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
-const progressBarVariants = cva(
-  'h-full rounded-full transition-all duration-300 ease-out',
-  {
-    variants: {
-      variant: {
-        default: 'bg-blue-500',
-        success: 'bg-green-500',
-        warning: 'bg-yellow-500',
-        error: 'bg-red-500',
-        gradient: 'bg-gradient-to-r from-blue-500 to-purple-500',
-      },
-      animated: {
-        true: 'animate-pulse',
-        false: '',
-      },
+const progressBarVariants = cva('h-full rounded-full transition-all duration-300 ease-out', {
+  variants: {
+    variant: {
+      default: 'bg-blue-500',
+      success: 'bg-green-500',
+      warning: 'bg-yellow-500',
+      error: 'bg-red-500',
+      gradient: 'bg-gradient-to-r from-blue-500 to-purple-500',
     },
-    defaultVariants: {
-      variant: 'default',
-      animated: false,
+    animated: {
+      true: 'animate-pulse',
+      false: '',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    animated: false,
+  },
+});
 
 export interface ProgressProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -57,18 +51,21 @@ export interface ProgressProps
 }
 
 const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
-  ({ 
-    className, 
-    size, 
-    value = 0, 
-    max = 100, 
-    variant = 'default', 
-    animated = false,
-    showLabel = false,
-    label,
-    striped = false,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      size,
+      value = 0,
+      max = 100,
+      variant = 'default',
+      animated = false,
+      showLabel = false,
+      label,
+      striped = false,
+      ...props
+    },
+    ref
+  ) => {
     const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
     const displayLabel = label || `${Math.round(percentage)}%`;
 

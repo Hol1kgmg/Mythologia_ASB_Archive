@@ -1,5 +1,5 @@
-import Phase7CommonSampleContainer from '../../../../feature/authOther/UISample/components/Phase7CommonSampleContainer';
 import NotFoundPage from '../../../../components/page/NotFoundPage';
+import Phase7CommonSampleContainer from '../../../../feature/authOther/UISample/components/Phase7CommonSampleContainer';
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';

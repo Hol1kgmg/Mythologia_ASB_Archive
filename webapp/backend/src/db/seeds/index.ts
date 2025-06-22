@@ -1,13 +1,13 @@
 /**
  * メインシードスクリプト
- * 
+ *
  * このスクリプトは、開発環境でのダミーデータ生成を管理します。
  * 各テーブル用のシード関数を呼び出し、順序を制御します。
  */
 
+import { logger } from '../../utils/logger.js';
 import { db } from '../client.js';
 import { seedAdmins } from './admin-seeds.js';
-import { logger } from '../../utils/logger.js';
 
 // シード実行のオプション
 export interface SeedOptions {
@@ -76,7 +76,6 @@ export async function runAllSeeds(options: SeedOptions = {}) {
 
     const duration = Date.now() - startTime;
     logger.info(`✅ Seed completed successfully in ${duration}ms`);
-    
   } catch (error) {
     logger.error('❌ Seed failed:', error);
     throw error;
@@ -88,15 +87,17 @@ export async function runAllSeeds(options: SeedOptions = {}) {
  */
 async function checkEnvironmentRestrictions(): Promise<void> {
   const nodeEnv = process.env.NODE_ENV;
-  
+
   if (nodeEnv === 'production' || nodeEnv === 'staging') {
     logger.error(`❌ ${nodeEnv}環境でのシード実行は禁止されています`);
     logger.error('💡 シードデータはローカル開発環境専用です');
     logger.error('🏠 ローカル環境でのみ実行してください:');
     logger.error('   npm run db:seed:docker -- --admins-only');
     logger.error('   npm run db:seed:local -- --admins-only');
-    
-    throw new Error(`SEED_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのシード実行は禁止されています`);
+
+    throw new Error(
+      `SEED_BLOCKED_IN_${nodeEnv.toUpperCase()}: ${nodeEnv}環境でのシード実行は禁止されています`
+    );
   }
 }
 
@@ -105,7 +106,7 @@ async function checkEnvironmentRestrictions(): Promise<void> {
  */
 export async function clearTable(tableName: string) {
   logger.info(`Clearing table: ${tableName}`);
-  
+
   switch (tableName) {
     case 'admins':
       // 管理者テーブルのクリアは慎重に行う必要がある
@@ -127,13 +128,13 @@ if (isMainModule) {
   if (args.includes('--clear')) {
     options.clearExisting = true;
   }
-  
+
   if (args.includes('--admins-only')) {
     options.tables = ['admins'];
   }
 
   // カウントの指定例: --count-admins=10
-  args.forEach(arg => {
+  args.forEach((arg) => {
     const match = arg.match(/--count-(\w+)=(\d+)/);
     if (match) {
       if (!options.counts) options.counts = {};

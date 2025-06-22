@@ -1,39 +1,36 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
-const captionVariants = cva(
-  'text-xs transition-colors',
-  {
-    variants: {
-      variant: {
-        default: 'text-gray-500',
-        primary: 'text-gray-400',
-        secondary: 'text-gray-600',
-        muted: 'text-gray-600',
-        accent: 'text-blue-400/80',
-        success: 'text-green-400/80',
-        warning: 'text-yellow-400/80',
-        error: 'text-red-400/80',
-      },
-      align: {
-        left: 'text-left',
-        center: 'text-center',
-        right: 'text-right',
-      },
-      italic: {
-        true: 'italic',
-        false: 'not-italic',
-      },
+const captionVariants = cva('text-xs transition-colors', {
+  variants: {
+    variant: {
+      default: 'text-gray-500',
+      primary: 'text-gray-400',
+      secondary: 'text-gray-600',
+      muted: 'text-gray-600',
+      accent: 'text-blue-400/80',
+      success: 'text-green-400/80',
+      warning: 'text-yellow-400/80',
+      error: 'text-red-400/80',
     },
-    defaultVariants: {
-      variant: 'default',
-      align: 'left',
-      italic: false,
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
     },
-  }
-);
+    italic: {
+      true: 'italic',
+      false: 'not-italic',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    align: 'left',
+    italic: false,
+  },
+});
 
 export interface CaptionProps
   extends React.HTMLAttributes<HTMLElement>,
@@ -43,29 +40,17 @@ export interface CaptionProps
 }
 
 const Caption = React.forwardRef<HTMLElement, CaptionProps>(
-  ({ 
-    className, 
-    variant, 
-    align,
-    italic,
-    as = 'figcaption',
-    children, 
-    ...props 
-  }, ref) => {
-    const classes = captionVariants({ 
-      variant, 
+  ({ className, variant, align, italic, as = 'figcaption', children, ...props }, ref) => {
+    const classes = captionVariants({
+      variant,
       align,
       italic,
-      className 
+      className,
     });
 
     if (as === 'figcaption') {
       return (
-        <figcaption
-          ref={ref as React.ForwardedRef<HTMLElement>}
-          className={classes}
-          {...props}
-        >
+        <figcaption ref={ref as React.ForwardedRef<HTMLElement>} className={classes} {...props}>
           {children}
         </figcaption>
       );
@@ -85,11 +70,7 @@ const Caption = React.forwardRef<HTMLElement, CaptionProps>(
 
     if (as === 'span') {
       return (
-        <span
-          ref={ref as React.ForwardedRef<HTMLSpanElement>}
-          className={classes}
-          {...props}
-        >
+        <span ref={ref as React.ForwardedRef<HTMLSpanElement>} className={classes} {...props}>
           {children}
         </span>
       );
@@ -97,11 +78,7 @@ const Caption = React.forwardRef<HTMLElement, CaptionProps>(
 
     // Default fallback
     return (
-      <figcaption
-        ref={ref as React.ForwardedRef<HTMLElement>}
-        className={classes}
-        {...props}
-      >
+      <figcaption ref={ref as React.ForwardedRef<HTMLElement>} className={classes} {...props}>
         {children}
       </figcaption>
     );
@@ -127,11 +104,7 @@ export const FigureWithCaption: React.FC<FigureWithCaptionProps> = ({
   return (
     <figure className={`space-y-2 ${className || ''}`}>
       {children}
-      {caption && (
-        <Caption {...captionProps}>
-          {caption}
-        </Caption>
-      )}
+      {caption && <Caption {...captionProps}>{caption}</Caption>}
     </figure>
   );
 };
@@ -150,17 +123,9 @@ export interface ImageCaptionProps extends CaptionProps {
 export const ImageCaption = React.forwardRef<HTMLElement, ImageCaptionProps>(
   ({ credit, children, className, ...props }, ref) => {
     return (
-      <Caption
-        ref={ref}
-        className={`space-y-1 ${className || ''}`}
-        {...props}
-      >
+      <Caption ref={ref} className={`space-y-1 ${className || ''}`} {...props}>
         {children}
-        {credit && (
-          <span className="text-[10px] opacity-60 block">
-            Credit: {credit}
-          </span>
-        )}
+        {credit && <span className="text-[10px] opacity-60 block">Credit: {credit}</span>}
       </Caption>
     );
   }

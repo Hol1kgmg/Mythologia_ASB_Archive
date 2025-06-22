@@ -9,6 +9,14 @@
     "start": "node dist/index.js",
     "railway:build": "npm run build",
     "railway:start": "npm run start",
+    "lint": "biome lint src/ scripts/",
+    "lint:fix": "biome lint --write src/ scripts/",
+    "format": "biome format src/ scripts/",
+    "format:write": "biome format --write src/ scripts/",
+    "check": "biome check src/ scripts/",
+    "check:fix": "biome check --write src/ scripts/",
+    "check:ci": "biome check --max-diagnostics 0 src/ scripts/",
+    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- tsx src/migrate.ts",
     "db:migrate:local": "dotenv -e .env.local -- tsx src/migrate.ts",
@@ -40,6 +48,7 @@
     "zod": "^3.25.64"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.0.4",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.19.0",
     "@types/pg": "^8.15.4",

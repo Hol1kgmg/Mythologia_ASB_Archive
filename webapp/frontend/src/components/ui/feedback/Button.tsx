@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { forwardRef } from 'react';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
@@ -7,7 +8,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'bg-zinc-600 text-white hover:bg-zinc-500',
-        secondary: 'bg-zinc-700 text-zinc-300 border border-zinc-500 hover:bg-zinc-600 hover:border-zinc-400',
+        secondary:
+          'bg-zinc-700 text-zinc-300 border border-zinc-500 hover:bg-zinc-600 hover:border-zinc-400',
         ghost: 'text-zinc-300 hover:bg-zinc-700 hover:text-white',
         danger: 'bg-red-900 text-red-100 hover:bg-red-800',
         success: 'bg-green-900 text-green-100 hover:bg-green-800',
@@ -73,9 +75,13 @@ export interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, fullWidth, focusRing, leftIcon, rightIcon, children, ...props }, ref) => {
+  (
+    { className, variant, size, fullWidth, focusRing, leftIcon, rightIcon, children, ...props },
+    ref
+  ) => {
     return (
       <button
+        type="button"
         ref={ref}
         className={buttonVariants({ variant, size, fullWidth, focusRing, className })}
         {...props}

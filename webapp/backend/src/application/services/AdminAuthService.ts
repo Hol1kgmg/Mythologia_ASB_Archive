@@ -1,7 +1,7 @@
-import { eq, and, gt, lt } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
+import { and, eq, gt, lt } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { admins, adminSessions, adminActivityLogs } from '../../db/schema/admin.js';
+import { adminActivityLogs, adminSessions, admins } from '../../db/schema/admin.js';
 import { AdminJWTManager, type AdminTokenPair } from '../../infrastructure/auth/utils/admin-jwt.js';
 import { logger } from '../../utils/logger.js';
 
@@ -37,9 +37,7 @@ export interface RefreshResult {
 export class AdminAuthService {
   private jwtManager: AdminJWTManager;
 
-  constructor(
-    private readonly db: PostgresJsDatabase<any>
-  ) {
+  constructor(private readonly db: PostgresJsDatabase<any>) {
     this.jwtManager = new AdminJWTManager();
   }
 
@@ -58,10 +56,18 @@ export class AdminAuthService {
         .limit(1);
 
       if (adminResult.length === 0) {
-        await this.logActivity(null, 'login_failed', 'authentication', undefined, {
-          reason: 'user_not_found',
-          username,
-        }, ipAddress, userAgent);
+        await this.logActivity(
+          null,
+          'login_failed',
+          'authentication',
+          undefined,
+          {
+            reason: 'user_not_found',
+            username,
+          },
+          ipAddress,
+          userAgent
+        );
         throw new Error('Invalid credentials');
       }
 
@@ -69,28 +75,46 @@ export class AdminAuthService {
 
       // Check if admin is active
       if (!admin.isActive) {
-        await this.logActivity(admin.id, 'login_failed', 'authentication', undefined, {
-          reason: 'account_inactive',
-        }, ipAddress, userAgent);
+        await this.logActivity(
+          admin.id,
+          'login_failed',
+          'authentication',
+          undefined,
+          {
+            reason: 'account_inactive',
+          },
+          ipAddress,
+          userAgent
+        );
         throw new Error('Account is inactive');
       }
 
       // Verify password
       const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
-      
+
       if (!isPasswordValid) {
-        await this.logActivity(admin.id, 'login_failed', 'authentication', undefined, {
-          reason: 'invalid_password',
-        }, ipAddress, userAgent);
+        await this.logActivity(
+          admin.id,
+          'login_failed',
+          'authentication',
+          undefined,
+          {
+            reason: 'invalid_password',
+          },
+          ipAddress,
+          userAgent
+        );
         throw new Error('Invalid credentials');
       }
 
       // Create session
-      const sessionExpiresAt = new Date(Date.now() + AdminJWTManager.getRefreshTokenExpiresIn() * 1000);
-      
+      const sessionExpiresAt = new Date(
+        Date.now() + AdminJWTManager.getRefreshTokenExpiresIn() * 1000
+      );
+
       // Generate temporary unique token to avoid UNIQUE constraint violation
       const tempToken = `temp_${Date.now()}_${Math.random().toString(36).substring(2)}`;
-      
+
       const sessionResult = await this.db
         .insert(adminSessions)
         .values({
@@ -123,15 +147,20 @@ export class AdminAuthService {
         .where(eq(adminSessions.id, session.id));
 
       // Update last login time
-      await this.db
-        .update(admins)
-        .set({ lastLoginAt: new Date() })
-        .where(eq(admins.id, admin.id));
+      await this.db.update(admins).set({ lastLoginAt: new Date() }).where(eq(admins.id, admin.id));
 
       // Log successful login
-      await this.logActivity(admin.id, 'login_success', 'authentication', session.id, {
-        sessionId: session.id,
-      }, ipAddress, userAgent);
+      await this.logActivity(
+        admin.id,
+        'login_success',
+        'authentication',
+        session.id,
+        {
+          sessionId: session.id,
+        },
+        ipAddress,
+        userAgent
+      );
 
       const authenticatedAdmin: AuthenticatedAdmin = {
         id: admin.id,
@@ -151,7 +180,6 @@ export class AdminAuthService {
         tokens,
         sessionId: session.id,
       };
-
     } catch (error) {
       logger.error('Admin login failed:', error);
       throw error;
@@ -177,17 +205,22 @@ export class AdminAuthService {
       const session = sessionResult[0];
 
       // Delete session
-      await this.db
-        .delete(adminSessions)
-        .where(eq(adminSessions.id, sessionId));
+      await this.db.delete(adminSessions).where(eq(adminSessions.id, sessionId));
 
       // Log logout
-      await this.logActivity(session.adminId, 'logout', 'authentication', sessionId, {
+      await this.logActivity(
+        session.adminId,
+        'logout',
+        'authentication',
         sessionId,
-      }, ipAddress, userAgent);
+        {
+          sessionId,
+        },
+        ipAddress,
+        userAgent
+      );
 
       logger.info(`Admin logout: session ${sessionId}`);
-
     } catch (error) {
       logger.error('Admin logout failed:', error);
       throw error;
@@ -197,7 +230,11 @@ export class AdminAuthService {
   /**
    * Refresh access token using refresh token
    */
-  async refreshToken(refreshToken: string, ipAddress?: string, userAgent?: string): Promise<RefreshResult> {
+  async refreshToken(
+    refreshToken: string,
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<RefreshResult> {
     try {
       // Verify refresh token
       const { sessionId } = await this.jwtManager.verifyRefreshToken(refreshToken);
@@ -230,9 +267,7 @@ export class AdminAuthService {
 
       if (adminResult.length === 0 || !adminResult[0].isActive) {
         // Delete invalid session
-        await this.db
-          .delete(adminSessions)
-          .where(eq(adminSessions.id, sessionId));
+        await this.db.delete(adminSessions).where(eq(adminSessions.id, sessionId));
         throw new Error('Admin not found or inactive');
       }
 
@@ -250,7 +285,7 @@ export class AdminAuthService {
       // Update session with new refresh token
       await this.db
         .update(adminSessions)
-        .set({ 
+        .set({
           token: tokens.refreshToken,
           ipAddress: ipAddress || session.ipAddress || null,
           userAgent: userAgent || session.userAgent || null,
@@ -258,9 +293,17 @@ export class AdminAuthService {
         .where(eq(adminSessions.id, sessionId));
 
       // Log token refresh
-      await this.logActivity(admin.id, 'token_refresh', 'authentication', sessionId, {
+      await this.logActivity(
+        admin.id,
+        'token_refresh',
+        'authentication',
         sessionId,
-      }, ipAddress, userAgent);
+        {
+          sessionId,
+        },
+        ipAddress,
+        userAgent
+      );
 
       const authenticatedAdmin: AuthenticatedAdmin = {
         id: admin.id,
@@ -279,7 +322,6 @@ export class AdminAuthService {
         tokens,
         admin: authenticatedAdmin,
       };
-
     } catch (error) {
       logger.error('Token refresh failed:', error);
       throw error;
@@ -313,7 +355,6 @@ export class AdminAuthService {
         isSuperAdmin: admin.isSuperAdmin,
         lastLoginAt: admin.lastLoginAt,
       };
-
     } catch (error) {
       logger.error('Get admin info failed:', error);
       throw error;
@@ -326,17 +367,12 @@ export class AdminAuthService {
   async verifyAccessToken(accessToken: string): Promise<AuthenticatedAdmin> {
     try {
       const payload = await this.jwtManager.verifyAccessToken(accessToken);
-      
+
       // Verify session still exists and is valid
       const sessionResult = await this.db
         .select()
         .from(adminSessions)
-        .where(
-          and(
-            eq(adminSessions.id, payload.jti),
-            gt(adminSessions.expiresAt, new Date())
-          )
-        )
+        .where(and(eq(adminSessions.id, payload.jti), gt(adminSessions.expiresAt, new Date())))
         .limit(1);
 
       if (sessionResult.length === 0) {
@@ -345,7 +381,6 @@ export class AdminAuthService {
 
       // Get latest admin info
       return await this.getAdminInfo(payload.sub);
-
     } catch (error) {
       logger.error('Access token verification failed:', error);
       throw error;
@@ -366,13 +401,12 @@ export class AdminAuthService {
       if (typeof result === 'object' && result !== null && 'rowCount' in result) {
         deletedCount = (result as any).rowCount || 0;
       }
-      
+
       if (deletedCount > 0) {
         logger.info(`Cleaned up ${deletedCount} expired admin sessions`);
       }
 
       return deletedCount;
-
     } catch (error) {
       logger.error('Session cleanup failed:', error);
       throw error;
@@ -397,18 +431,15 @@ export class AdminAuthService {
         return;
       }
 
-      await this.db
-        .insert(adminActivityLogs)
-        .values({
-          adminId,
-          action,
-          targetType: targetType || null,
-          targetId: targetId || null,
-          details: details || null,
-          ipAddress: ipAddress || null,
-          userAgent: userAgent || null,
-        });
-
+      await this.db.insert(adminActivityLogs).values({
+        adminId,
+        action,
+        targetType: targetType || null,
+        targetId: targetId || null,
+        details: details || null,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+      });
     } catch (error) {
       logger.warn('Failed to log admin activity:', error);
       // Don't throw error for logging failures

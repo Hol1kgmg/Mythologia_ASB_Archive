@@ -1,84 +1,78 @@
 'use client';
 
-import React from 'react';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 import { Box } from '..';
 
-const accordionVariants = cva(
-  'w-full',
-  {
-    variants: {
-      variant: {
-        default: 'divide-y divide-gray-600',
-        bordered: 'space-y-2',
-        flush: 'divide-y divide-gray-600',
-        borderless: 'space-y-1',
-      },
-      size: {
-        sm: 'text-sm',
-        md: 'text-base',
-        lg: 'text-lg',
-      },
-      showBorder: {
-        true: '',
-        false: '',
-      },
+const accordionVariants = cva('w-full', {
+  variants: {
+    variant: {
+      default: 'divide-y divide-gray-600',
+      bordered: 'space-y-2',
+      flush: 'divide-y divide-gray-600',
+      borderless: 'space-y-1',
     },
-    compoundVariants: [
-      {
-        variant: 'default',
-        showBorder: false,
-        className: 'divide-y-0',
-      },
-      {
-        variant: 'flush',
-        showBorder: false,
-        className: 'divide-y-0',
-      },
-      {
-        variant: 'bordered',
-        showBorder: false,
-        className: 'space-y-1',
-      },
-    ],
-    defaultVariants: {
+    size: {
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-lg',
+    },
+    showBorder: {
+      true: '',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    {
       variant: 'default',
-      size: 'md',
-      showBorder: true,
+      showBorder: false,
+      className: 'divide-y-0',
     },
-  }
-);
+    {
+      variant: 'flush',
+      showBorder: false,
+      className: 'divide-y-0',
+    },
+    {
+      variant: 'bordered',
+      showBorder: false,
+      className: 'space-y-1',
+    },
+  ],
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+    showBorder: true,
+  },
+});
 
-const accordionItemVariants = cva(
-  'w-full',
-  {
-    variants: {
-      variant: {
-        default: '',
-        bordered: 'border border-gray-600 rounded-lg overflow-hidden',
-        flush: '',
-        borderless: '',
-      },
-      showBorder: {
-        true: '',
-        false: '',
-      },
+const accordionItemVariants = cva('w-full', {
+  variants: {
+    variant: {
+      default: '',
+      bordered: 'border border-gray-600 rounded-lg overflow-hidden',
+      flush: '',
+      borderless: '',
     },
-    compoundVariants: [
-      {
-        variant: 'bordered',
-        showBorder: false,
-        className: 'border-0 rounded-none overflow-visible',
-      },
-    ],
-    defaultVariants: {
-      variant: 'default',
-      showBorder: true,
+    showBorder: {
+      true: '',
+      false: '',
     },
-  }
-);
+  },
+  compoundVariants: [
+    {
+      variant: 'bordered',
+      showBorder: false,
+      className: 'border-0 rounded-none overflow-visible',
+    },
+  ],
+  defaultVariants: {
+    variant: 'default',
+    showBorder: true,
+  },
+});
 
 const accordionButtonVariants = cva(
   'flex w-full items-center justify-between text-left transition-all duration-200 focus:outline-none',
@@ -103,28 +97,25 @@ const accordionButtonVariants = cva(
   }
 );
 
-const accordionContentVariants = cva(
-  'overflow-hidden text-gray-200',
-  {
-    variants: {
-      variant: {
-        default: 'pb-3 pl-2 pr-2',
-        bordered: 'px-4 pb-3',
-        flush: 'pb-3 pl-2 pr-2',
-        borderless: 'pb-3 pl-2 pr-2',
-      },
-      size: {
-        sm: 'text-sm',
-        md: 'text-sm',
-        lg: 'text-base',
-      },
+const accordionContentVariants = cva('overflow-hidden text-gray-200', {
+  variants: {
+    variant: {
+      default: 'pb-3 pl-2 pr-2',
+      bordered: 'px-4 pb-3',
+      flush: 'pb-3 pl-2 pr-2',
+      borderless: 'pb-3 pl-2 pr-2',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
+    size: {
+      sm: 'text-sm',
+      md: 'text-sm',
+      lg: 'text-base',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+});
 
 export interface AccordionItem {
   id: string;
@@ -153,11 +144,11 @@ export function Accordion({
   showBorder = true,
 }: AccordionProps) {
   const [openItems, setOpenItems] = React.useState<Set<string>>(
-    new Set(items.filter(item => item.defaultOpen).map(item => item.id))
+    new Set(items.filter((item) => item.defaultOpen).map((item) => item.id))
   );
 
   const toggleItem = (itemId: string) => {
-    setOpenItems(prev => {
+    setOpenItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(itemId)) {
         newSet.delete(itemId);
@@ -176,7 +167,10 @@ export function Accordion({
     return (
       <Box className={accordionVariants({ variant, size, showBorder, className })}>
         {items.map((item) => (
-          <Box key={item.id} className={accordionItemVariants({ variant, showBorder, className: itemClassName })}>
+          <Box
+            key={item.id}
+            className={accordionItemVariants({ variant, showBorder, className: itemClassName })}
+          >
             <Disclosure defaultOpen={item.defaultOpen}>
               {({ open }) => (
                 <div>
@@ -185,10 +179,10 @@ export function Accordion({
                     className={accordionButtonVariants({ variant, size })}
                   >
                     <Box className="flex items-center gap-3">
-                      {item.icon && (
-                        <span className="flex-shrink-0">{item.icon}</span>
-                      )}
-                      <span className={`font-medium text-gray-200 ${item.disabled ? 'opacity-50' : ''}`}>
+                      {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+                      <span
+                        className={`font-medium text-gray-200 ${item.disabled ? 'opacity-50' : ''}`}
+                      >
                         {item.title}
                       </span>
                     </Box>
@@ -225,16 +219,18 @@ export function Accordion({
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
-          <Box key={item.id} className={accordionItemVariants({ variant, showBorder, className: itemClassName })}>
+          <Box
+            key={item.id}
+            className={accordionItemVariants({ variant, showBorder, className: itemClassName })}
+          >
             <button
+              type="button"
               onClick={() => !item.disabled && toggleItem(item.id)}
               disabled={item.disabled}
               className={accordionButtonVariants({ variant, size })}
             >
               <Box className="flex items-center gap-3">
-                {item.icon && (
-                  <span className="flex-shrink-0">{item.icon}</span>
-                )}
+                {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
                 <span className={`font-medium text-gray-200 ${item.disabled ? 'opacity-50' : ''}`}>
                   {item.title}
                 </span>
@@ -254,9 +250,7 @@ export function Accordion({
               leaveFrom="transform scale-100 opacity-100"
               leaveTo="transform scale-95 opacity-0"
             >
-              <Box className={accordionContentVariants({ variant, size })}>
-                {item.content}
-              </Box>
+              <Box className={accordionContentVariants({ variant, size })}>{item.content}</Box>
             </Transition>
           </Box>
         );
@@ -291,14 +285,9 @@ export function AccordionItem({
       <Disclosure defaultOpen={defaultOpen}>
         {({ open }) => (
           <div>
-            <Disclosure.Button
-              disabled={disabled}
-              className={accordionButtonVariants({ variant })}
-            >
+            <Disclosure.Button disabled={disabled} className={accordionButtonVariants({ variant })}>
               <Box className="flex items-center gap-3">
-                {icon && (
-                  <span className="flex-shrink-0">{icon}</span>
-                )}
+                {icon && <span className="flex-shrink-0">{icon}</span>}
                 <span className={`font-medium text-gray-200 ${disabled ? 'opacity-50' : ''}`}>
                   {title}
                 </span>
@@ -350,42 +339,39 @@ export interface HorizontalAccordionProps {
   showBorder?: boolean;
 }
 
-const horizontalAccordionItemVariants = cva(
-  'flex',
-  {
-    variants: {
-      direction: {
-        left: 'border-r border-gray-500 last:border-r-0',
-        right: 'border-l border-gray-500 first:border-l-0 flex-row-reverse',
-      },
-      isOpen: {
-        true: '',
-        false: '',
-      },
-      showBorder: {
-        true: '',
-        false: '',
-      },
+const horizontalAccordionItemVariants = cva('flex', {
+  variants: {
+    direction: {
+      left: 'border-r border-gray-500 last:border-r-0',
+      right: 'border-l border-gray-500 first:border-l-0 flex-row-reverse',
     },
-    compoundVariants: [
-      {
-        direction: 'left',
-        showBorder: false,
-        className: 'border-r-0 last:border-r-0',
-      },
-      {
-        direction: 'right',
-        showBorder: false,
-        className: 'border-l-0 first:border-l-0',
-      },
-    ],
-    defaultVariants: {
+    isOpen: {
+      true: '',
+      false: '',
+    },
+    showBorder: {
+      true: '',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    {
+      direction: 'left',
+      showBorder: false,
+      className: 'border-r-0 last:border-r-0',
+    },
+    {
       direction: 'right',
-      isOpen: false,
-      showBorder: true,
+      showBorder: false,
+      className: 'border-l-0 first:border-l-0',
     },
-  }
-);
+  ],
+  defaultVariants: {
+    direction: 'right',
+    isOpen: false,
+    showBorder: true,
+  },
+});
 
 const horizontalAccordionButtonVariants = cva(
   'flex flex-col items-center justify-center text-center transition-all duration-200 focus:outline-none bg-transparent hover:bg-gray-500/20',
@@ -402,43 +388,40 @@ const horizontalAccordionButtonVariants = cva(
   }
 );
 
-const horizontalAccordionContentVariants = cva(
-  'overflow-hidden bg-transparent',
-  {
-    variants: {
-      direction: {
-        left: 'border-l border-gray-500',
-        right: 'border-r border-gray-500',
-      },
-      variant: {
-        default: 'p-4',
-        compact: 'p-3',
-        spacious: 'p-6',
-      },
-      showBorder: {
-        true: '',
-        false: '',
-      },
+const horizontalAccordionContentVariants = cva('overflow-hidden bg-transparent', {
+  variants: {
+    direction: {
+      left: 'border-l border-gray-500',
+      right: 'border-r border-gray-500',
     },
-    compoundVariants: [
-      {
-        direction: 'left',
-        showBorder: false,
-        className: 'border-l-0',
-      },
-      {
-        direction: 'right',
-        showBorder: false,
-        className: 'border-r-0',
-      },
-    ],
-    defaultVariants: {
+    variant: {
+      default: 'p-4',
+      compact: 'p-3',
+      spacious: 'p-6',
+    },
+    showBorder: {
+      true: '',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    {
+      direction: 'left',
+      showBorder: false,
+      className: 'border-l-0',
+    },
+    {
       direction: 'right',
-      variant: 'default',
-      showBorder: true,
+      showBorder: false,
+      className: 'border-r-0',
     },
-  }
-);
+  ],
+  defaultVariants: {
+    direction: 'right',
+    variant: 'default',
+    showBorder: true,
+  },
+});
 
 export function HorizontalAccordion({
   items,
@@ -451,11 +434,11 @@ export function HorizontalAccordion({
   showBorder = true,
 }: HorizontalAccordionProps) {
   const [openItems, setOpenItems] = React.useState<Set<string>>(
-    new Set(items.filter(item => item.defaultOpen).map(item => item.id))
+    new Set(items.filter((item) => item.defaultOpen).map((item) => item.id))
   );
 
   const toggleItem = (itemId: string) => {
-    setOpenItems(prev => {
+    setOpenItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(itemId)) {
         newSet.delete(itemId);
@@ -472,9 +455,18 @@ export function HorizontalAccordion({
   if (allowMultiple) {
     // Multiple items can be open - use individual Disclosure components
     return (
-      <Box className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+      <Box
+        className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}
+      >
         {items.map((item) => (
-          <Box key={item.id} className={horizontalAccordionItemVariants({ direction, showBorder, className: itemClassName })}>
+          <Box
+            key={item.id}
+            className={horizontalAccordionItemVariants({
+              direction,
+              showBorder,
+              className: itemClassName,
+            })}
+          >
             <Disclosure defaultOpen={item.defaultOpen}>
               {({ open }) => (
                 <div className={`flex h-full ${direction === 'right' ? '' : 'flex-row-reverse'}`}>
@@ -500,10 +492,10 @@ export function HorizontalAccordion({
                     leaveFrom={`${item.width || contentWidth} opacity-100`}
                     leaveTo="w-0 opacity-0"
                   >
-                    <Disclosure.Panel className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                      <div className="text-gray-100 h-full overflow-y-auto">
-                        {item.content}
-                      </div>
+                    <Disclosure.Panel
+                      className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}
+                    >
+                      <div className="text-gray-100 h-full overflow-y-auto">{item.content}</div>
                     </Disclosure.Panel>
                   </Transition>
                 </div>
@@ -517,13 +509,24 @@ export function HorizontalAccordion({
 
   // Single item open at a time - use controlled state
   return (
-    <Box className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}>
+    <Box
+      className={`flex h-96 ${showBorder ? 'border border-gray-500 rounded-lg' : ''} overflow-hidden ${direction === 'left' ? 'flex-row-reverse' : ''} ${className || ''}`}
+    >
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
-          <Box key={item.id} className={horizontalAccordionItemVariants({ direction, showBorder, isOpen, className: itemClassName })}>
+          <Box
+            key={item.id}
+            className={horizontalAccordionItemVariants({
+              direction,
+              showBorder,
+              isOpen,
+              className: itemClassName,
+            })}
+          >
             <div className={`flex h-full ${direction === 'right' ? '' : 'flex-row-reverse'}`}>
               <button
+                type="button"
                 onClick={() => !item.disabled && toggleItem(item.id)}
                 disabled={item.disabled}
                 className={`${horizontalAccordionButtonVariants({ isOpen })} ${buttonWidth} ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -547,10 +550,10 @@ export function HorizontalAccordion({
                 leaveFrom={`${item.width || contentWidth} opacity-100`}
                 leaveTo="w-0 opacity-0"
               >
-                <Box className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}>
-                  <div className="text-gray-100 h-full overflow-y-auto">
-                    {item.content}
-                  </div>
+                <Box
+                  className={`${horizontalAccordionContentVariants({ direction, showBorder })} ${item.width || contentWidth}`}
+                >
+                  <div className="text-gray-100 h-full overflow-y-auto">{item.content}</div>
                 </Box>
               </Transition>
             </div>
