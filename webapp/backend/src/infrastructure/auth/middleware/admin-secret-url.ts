@@ -1,0 +1,221 @@
+import type { MiddlewareHandler } from 'hono';
+import { logger } from '../../../utils/logger.js';
+
+interface AdminSecretURLOptions {
+  secretPath?: string;
+  enableAccessLogging?: boolean;
+  suspiciousAccessThreshold?: number;
+  alertEmail?: string;
+}
+
+interface AccessAttempt {
+  ip: string;
+  userAgent: string;
+  timestamp: number;
+  path: string;
+  isValid: boolean;
+}
+
+// In-memory store for access attempts (in production, use Redis)
+const accessAttempts: AccessAttempt[] = [];
+const suspiciousIPs = new Set<string>();
+
+/**
+ * 管理者用秘匿URL検証ミドルウェア
+ * 正しい秘匿URLでない場合は404を返して管理画面の存在を隠蔽
+ */
+export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareHandler {
+  return async (c, next) => {
+    const {
+      secretPath = process.env.ADMIN_SECRET_PATH,
+      enableAccessLogging = process.env.NODE_ENV === 'production',
+      suspiciousAccessThreshold = 5,
+      alertEmail = process.env.ADMIN_SECURITY_EMAIL,
+    } = options;
+
+    // 開発環境では秘匿URL機能を無効化（オプション）
+    if (process.env.NODE_ENV === 'development' && process.env.DISABLE_SECRET_URL === 'true') {
+      logger.info('Admin secret URL check bypassed for development');
+      await next();
+      return;
+    }
+
+    const requestPath = c.req.path;
+    const clientIP = getClientIP(c);
+    const userAgent = c.req.header('User-Agent') || 'Unknown';
+
+    // 秘匿URLの検証
+    const isValidSecretURL = validateSecretURL(requestPath, secretPath);
+
+    // アクセス試行をログに記録
+    if (enableAccessLogging) {
+      logAccessAttempt({
+        ip: clientIP,
+        userAgent,
+        timestamp: Date.now(),
+        path: requestPath,
+        isValid: isValidSecretURL,
+      });
+    }
+
+    // 不正なアクセスの場合
+    if (!isValidSecretURL) {
+      // 疑わしいアクセスパターンの検知
+      const recentAttempts = getRecentAttempts(clientIP, 300000); // 5分以内
+      const invalidAttempts = recentAttempts.filter((attempt) => !attempt.isValid);
+
+      if (invalidAttempts.length >= suspiciousAccessThreshold) {
+        if (!suspiciousIPs.has(clientIP)) {
+          suspiciousIPs.add(clientIP);
+          logger.warn('Suspicious admin access pattern detected', {
+            ip: clientIP,
+            userAgent,
+            invalidAttempts: invalidAttempts.length,
+            recentPaths: invalidAttempts.map((a) => a.path).slice(-3),
+          });
+
+          // 異常検知通知（実装予定）
+          if (alertEmail) {
+            // TODO: 実際の通知実装
+            logger.info('Alert would be sent to:', alertEmail);
+          }
+        }
+      }
+
+      // Bot/自動化ツール検知
+      if (isSuspiciousUserAgent(userAgent)) {
+        logger.warn('Bot/automated tool detected attempting admin access', {
+          ip: clientIP,
+          userAgent,
+          path: requestPath,
+        });
+      }
+
+      // 404偽装レスポンス（管理画面の存在を隠蔽）
+      logger.info('Admin access denied - invalid secret URL', {
+        ip: clientIP,
+        attemptedPath: requestPath,
+        userAgent: userAgent.substring(0, 100), // ログサイズ制限
+      });
+
+      return c.json(
+        {
+          error: 'Not Found',
+          message: 'The requested resource could not be found.',
+        },
+        404
+      );
+    }
+
+    // 正常なアクセスの場合
+    logger.info('Admin secret URL validated successfully', {
+      ip: clientIP,
+      path: requestPath,
+    });
+
+    await next();
+  };
+}
+
+/**
+ * 秘匿URLの検証
+ */
+function validateSecretURL(requestPath: string, secretPath?: string): boolean {
+  if (!secretPath) {
+    logger.warn('ADMIN_SECRET_PATH not configured - allowing access for development');
+    return true; // 設定なしの場合は開発環境として扱う
+  }
+
+  // 現在の秘匿パスまたは次期パス（移行期間対応）
+  const currentPath = secretPath;
+  const nextPath = process.env.ADMIN_SECRET_PATH_NEXT;
+
+  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+\//;
+  const isAdminPath = adminPathPattern.test(requestPath);
+
+  if (!isAdminPath) {
+    return true; // 管理パス以外はスルー
+  }
+
+  // 正しい秘匿URLかチェック
+  const expectedPaths: string[] = [
+    `/admin-${currentPath}/`,
+    ...(nextPath ? [`/admin-${nextPath}/`] : []),
+  ];
+
+  return expectedPaths.some((path) => requestPath.startsWith(path));
+}
+
+/**
+ * クライアントIPの取得
+ */
+function getClientIP(c: any): string {
+  return (
+    c.req.header('CF-Connecting-IP') ||
+    c.req.header('X-Forwarded-For')?.split(',')[0]?.trim() ||
+    c.req.header('X-Real-IP') ||
+    c.req.header('Remote-Addr') ||
+    'unknown'
+  );
+}
+
+/**
+ * アクセス試行のログ記録
+ */
+function logAccessAttempt(attempt: AccessAttempt): void {
+  accessAttempts.push(attempt);
+
+  // メモリ使用量制限（最新1000件のみ保持）
+  if (accessAttempts.length > 1000) {
+    accessAttempts.splice(0, accessAttempts.length - 1000);
+  }
+}
+
+/**
+ * 特定IPの最近のアクセス試行を取得
+ */
+function getRecentAttempts(ip: string, timeWindow: number): AccessAttempt[] {
+  const now = Date.now();
+  return accessAttempts.filter(
+    (attempt) => attempt.ip === ip && now - attempt.timestamp <= timeWindow
+  );
+}
+
+/**
+ * 疑わしいUser-Agentの検知
+ */
+function isSuspiciousUserAgent(userAgent: string): boolean {
+  const suspiciousPatterns = [
+    /bot/i,
+    /crawler/i,
+    /spider/i,
+    /scraper/i,
+    /curl/i,
+    /wget/i,
+    /python/i,
+    /scanner/i,
+    /automated/i,
+    /test/i,
+  ];
+
+  return suspiciousPatterns.some((pattern) => pattern.test(userAgent));
+}
+
+/**
+ * アクセス統計の取得（デバッグ・監視用）
+ */
+export function getAdminAccessStats() {
+  const now = Date.now();
+  const last24h = accessAttempts.filter((a) => now - a.timestamp <= 86400000);
+
+  return {
+    total24h: last24h.length,
+    valid24h: last24h.filter((a) => a.isValid).length,
+    invalid24h: last24h.filter((a) => !a.isValid).length,
+    suspiciousIPs: Array.from(suspiciousIPs),
+    recentInvalidPaths: last24h
+      .filter((a) => !a.isValid)
+      .map((a) => a.path)
+      .slice(-10),
+  };
+}

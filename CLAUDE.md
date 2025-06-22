@@ -470,3 +470,7 @@ curl -H "X-HMAC-Signature: valid" -H "X-API-Key: valid" [admin login] → 200 �
 1. このプロジェクトは設計段階が完了し、実装段階への移行準備が整っています
 2. 新しいセッション開始時は、必ずこのCLAUDE.mdと関連ドキュメントを確認してから作業を開始してください
 3. **非公式プロジェクト**であることを常に意識し、公式と誤解される表現は避けてください
+
+## claude codeの許可された動作
+[settings.local.json](.claude/settings.local.json)
+こちらのjsonファイルに記載されているので、参照すること
