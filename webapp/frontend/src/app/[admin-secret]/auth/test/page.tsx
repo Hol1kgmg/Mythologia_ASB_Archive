@@ -1,5 +1,5 @@
-import NotFoundPage from '../../../components/page/NotFoundPage';
-import ApplicationLevelTestPage from '../../../feature/authOther/applicationLevelTest/components/ApplicationLevelTestPage';
+import NotFoundPage from "@/components/page/NotFoundPage";
+import ApplicationLevelTestPage from "@/feature/authOther/applicationLevelTest/components/ApplicationLevelTestPage";
 
 // ステージング環境（開発・ステージング両方）でのみ認証テストページを有効化
 const isAuthTestEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';

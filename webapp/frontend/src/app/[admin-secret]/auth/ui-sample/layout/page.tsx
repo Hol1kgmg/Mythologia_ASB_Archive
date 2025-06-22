@@ -1,6 +1,6 @@
-import NotFoundPage from '../../../../components/page/NotFoundPage';
-import { Alert, BackgroundPattern, Box } from '../../../../components/ui';
-import Phase3LayoutSampleContainer from '../../../../feature/authOther/UISample/components/Phase3LayoutSampleContainer';
+import NotFoundPage from "@/components/page/NotFoundPage";
+import { Alert, BackgroundPattern, Box } from "@/components/ui";
+import Phase3LayoutSampleContainer from "@/feature/authOther/UISample/components/Phase3LayoutSampleContainer";
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';

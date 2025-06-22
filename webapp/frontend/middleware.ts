@@ -16,8 +16,8 @@ interface AdminPathInfo {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 管理パスのパターンマッチング
-  const adminPathPattern = /^\/admin-[a-zA-Z0-9]+/;
+  // 管理パスのパターンマッチング（動的ルート対応）
+  const adminPathPattern = /^\/[a-zA-Z0-9]+\/auth/;
   const isAdminPath = adminPathPattern.test(pathname);
 
   if (isAdminPath) {
@@ -32,7 +32,11 @@ export function middleware(request: NextRequest) {
  * 管理パスのアクセス制御
  */
 function handleAdminPath(request: NextRequest, pathname: string): NextResponse {
+  console.log('Middleware handleAdminPath called:', { pathname });
+  
   const adminPathInfo = getAdminPathInfo();
+  
+  console.log('Admin path info:', adminPathInfo);
   
   // 正しい秘匿URLかチェック
   const isValidSecretURL = validateAdminSecretURL(pathname, adminPathInfo);
@@ -78,17 +82,28 @@ function getAdminPathInfo(): AdminPathInfo {
 function validateAdminSecretURL(pathname: string, adminPathInfo: AdminPathInfo): boolean {
   const { secretPath, nextSecretPath } = adminPathInfo;
 
+  console.log('Middleware validateAdminSecretURL:', {
+    pathname,
+    secretPath,
+    nextSecretPath,
+  });
+
   // 秘匿パスが設定されていない場合は開発環境として扱う
   if (!secretPath) {
     console.warn('NEXT_PUBLIC_ADMIN_SECRET_PATH not configured - allowing access for development');
     return true;
   }
 
-  // 正しい秘匿URLパターンかチェック
+  // 正しい秘匿URLパターンかチェック（admin-プレフィックスなし）
   const validPaths = [
-    `/admin-${secretPath}`,
-    ...(nextSecretPath ? [`/admin-${nextSecretPath}`] : []),
+    `/${secretPath}`,
+    ...(nextSecretPath ? [`/${nextSecretPath}`] : []),
   ];
+
+  console.log('Valid paths check:', {
+    validPaths,
+    result: validPaths.some(validPath => pathname.startsWith(validPath)),
+  });
 
   return validPaths.some(validPath => pathname.startsWith(validPath));
 }
