@@ -5,7 +5,6 @@ interface AdminSecretURLOptions {
   secretPath?: string;
   enableAccessLogging?: boolean;
   suspiciousAccessThreshold?: number;
-  alertEmail?: string;
 }
 
 interface AccessAttempt {
@@ -30,15 +29,7 @@ export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareH
       secretPath = process.env.ADMIN_SECRET_PATH,
       enableAccessLogging = process.env.NODE_ENV === 'production',
       suspiciousAccessThreshold = 5,
-      alertEmail = process.env.ADMIN_SECURITY_EMAIL,
     } = options;
-
-    // 開発環境では秘匿URL機能を無効化（オプション）
-    if (process.env.NODE_ENV === 'development' && process.env.DISABLE_SECRET_URL === 'true') {
-      logger.info('Admin secret URL check bypassed for development');
-      await next();
-      return;
-    }
 
     const requestPath = c.req.path;
     const clientIP = getClientIP(c);
@@ -74,11 +65,16 @@ export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareH
             recentPaths: invalidAttempts.map((a) => a.path).slice(-3),
           });
 
-          // 異常検知通知（実装予定）
-          if (alertEmail) {
-            // TODO: 実際の通知実装
-            logger.info('Alert would be sent to:', alertEmail);
-          }
+          // 異常検知アラート（ログ監視システムで対応）
+          logger.warn('SECURITY_ALERT: Suspicious admin access pattern detected', {
+            alertType: 'suspicious_access_pattern',
+            ip: clientIP,
+            userAgent,
+            invalidAttempts: invalidAttempts.length,
+            recentPaths: invalidAttempts.map((a) => a.path).slice(-3),
+            threshold: suspiciousAccessThreshold,
+            timestamp: new Date().toISOString(),
+          });
         }
       }
 
@@ -88,6 +84,15 @@ export function adminSecretURL(options: AdminSecretURLOptions = {}): MiddlewareH
           ip: clientIP,
           userAgent,
           path: requestPath,
+        });
+
+        // Bot検知アラート（ログ監視システムで対応）
+        logger.warn('SECURITY_ALERT: Bot/automated tool detected', {
+          alertType: 'bot_detected',
+          ip: clientIP,
+          userAgent,
+          path: requestPath,
+          timestamp: new Date().toISOString(),
         });
       }
 

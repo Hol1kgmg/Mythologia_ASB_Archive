@@ -34,12 +34,6 @@ export function middleware(request: NextRequest) {
 function handleAdminPath(request: NextRequest, pathname: string): NextResponse {
   const adminPathInfo = getAdminPathInfo();
   
-  // 開発環境で秘匿URL機能が無効化されている場合
-  if (!adminPathInfo.isSecretURLEnabled) {
-    console.log('Admin secret URL protection disabled for development');
-    return NextResponse.next();
-  }
-
   // 正しい秘匿URLかチェック
   const isValidSecretURL = validateAdminSecretURL(pathname, adminPathInfo);
 
@@ -74,7 +68,7 @@ function getAdminPathInfo(): AdminPathInfo {
   return {
     secretPath: process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH || null,
     nextSecretPath: process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH_NEXT || null,
-    isSecretURLEnabled: process.env.NEXT_PUBLIC_DISABLE_SECRET_URL !== 'true',
+    isSecretURLEnabled: true, // 常に有効、secretPathがなければ開発環境として扱う
   };
 }
 
