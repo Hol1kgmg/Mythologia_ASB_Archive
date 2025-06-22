@@ -1,25 +1,21 @@
 'use client';
 
+import { BeakerIcon, ChartBarIcon, CubeIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { 
-  Box, 
-  Card, 
-  Button, 
-  VStack,
-  HStack,
+import {
   BackgroundPattern,
+  Box,
+  Button,
+  Card,
   Container,
+  FeatureSection,
   FluidContainer,
+  HeroSection,
+  HStack,
   PageContainer,
   Section,
-  HeroSection,
-  FeatureSection
+  VStack,
 } from '../../../../components/ui';
-import { 
-  CubeIcon,
-  BeakerIcon,
-  ChartBarIcon
-} from '@heroicons/react/24/outline';
 
 export default function Phase7CommonSampleContainer() {
   return (
@@ -30,37 +26,42 @@ export default function Phase7CommonSampleContainer() {
       border="default"
       className="w-full max-w-4xl mx-auto my-8"
     >
-
       <h2 className="text-2xl font-bold text-zinc-200 mb-6">Phase 7: 共通・背景コンポーネント</h2>
-      
+
       {/* Container Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Container</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">標準Container (max-width制限あり)</p>
             <Container>
               <Card padding="sm" variant="outlined">
-                <p className="text-zinc-300">標準Containerの内容です。レスポンシブなmax-width制限があります。</p>
+                <p className="text-zinc-300">
+                  標準Containerの内容です。レスポンシブなmax-width制限があります。
+                </p>
               </Card>
             </Container>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">FluidContainer (幅100%)</p>
             <FluidContainer>
               <Card padding="sm" variant="outlined">
-                <p className="text-zinc-300">FluidContainerの内容です。画面幅いっぱいに広がります。</p>
+                <p className="text-zinc-300">
+                  FluidContainerの内容です。画面幅いっぱいに広がります。
+                </p>
               </Card>
             </FluidContainer>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">PageContainer (ページ全体用)</p>
             <PageContainer className="border border-zinc-600 rounded">
               <Card padding="sm" variant="outlined">
-                <p className="text-zinc-300">PageContainerの内容です。ページレイアウト全体に使用します。</p>
+                <p className="text-zinc-300">
+                  PageContainerの内容です。ページレイアウト全体に使用します。
+                </p>
               </Card>
             </PageContainer>
           </Box>
@@ -70,15 +71,17 @@ export default function Phase7CommonSampleContainer() {
       {/* Section Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Section</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">基本的なSection</p>
             <Section spacing="md" background="default">
-              <p className="text-zinc-300">基本的なセクションです。適切なスペーシングとボーダーがあります。</p>
+              <p className="text-zinc-300">
+                基本的なセクションです。適切なスペーシングとボーダーがあります。
+              </p>
             </Section>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">HeroSection</p>
             <HeroSection
@@ -97,7 +100,7 @@ export default function Phase7CommonSampleContainer() {
               }
             />
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">FeatureSection</p>
             <FeatureSection
@@ -129,7 +132,7 @@ export default function Phase7CommonSampleContainer() {
       {/* Layout Stack Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Stack Layout</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">VStack (縦方向レイアウト)</p>
@@ -145,7 +148,7 @@ export default function Phase7CommonSampleContainer() {
               </Card>
             </VStack>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">HStack (横方向レイアウト)</p>
             <HStack spacing="sm" className="border border-zinc-600 rounded p-3">
@@ -160,7 +163,7 @@ export default function Phase7CommonSampleContainer() {
               </Card>
             </HStack>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">スペーシングバリエーション</p>
             <VStack spacing="xs" className="border border-zinc-600 rounded p-3">
@@ -181,7 +184,7 @@ export default function Phase7CommonSampleContainer() {
       {/* Background Pattern */}
       <Box margin="none" padding="md" background="default" rounded="md">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Background Pattern</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">背景パターンコンポーネント</p>
@@ -194,9 +197,12 @@ export default function Phase7CommonSampleContainer() {
               </Box>
             </Box>
           </Box>
-          
+
           <Box className="text-xs text-zinc-400 p-3 bg-zinc-800 rounded">
-            <p><strong>使用方法:</strong> BackgroundPatternコンポーネントは、ページ全体の背景として使用されます。</p>
+            <p>
+              <strong>使用方法:</strong>{' '}
+              BackgroundPatternコンポーネントは、ページ全体の背景として使用されます。
+            </p>
             <p>相対位置の親要素内に配置し、コンテンツには z-10 以上を設定してください。</p>
           </Box>
         </Box>

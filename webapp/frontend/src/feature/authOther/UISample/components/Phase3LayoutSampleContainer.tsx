@@ -1,17 +1,51 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Card, Grid, GridItem, HStack, VStack, Spacer, Button } from '../../../../components/ui';
+import {
+  Box,
+  Button,
+  Card,
+  Grid,
+  GridItem,
+  HStack,
+  Spacer,
+  VStack,
+} from '../../../../components/ui';
 
 export default function Phase3LayoutSampleContainer() {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
 
   const cardItems = [
-    { id: '1', title: 'カード1', content: 'これは基本的なカードです。', variant: 'default' as const },
-    { id: '2', title: 'カード2', content: 'これは影付きカードです。', variant: 'elevated' as const },
-    { id: '3', title: 'カード3', content: 'これはアウトラインカードです。', variant: 'outlined' as const },
-    { id: '4', title: 'カード4', content: 'これは塗りつぶしカードです。', variant: 'filled' as const },
-    { id: '5', title: 'カード5', content: 'これはグラデーションカードです。', variant: 'gradient' as const },
+    {
+      id: '1',
+      title: 'カード1',
+      content: 'これは基本的なカードです。',
+      variant: 'default' as const,
+    },
+    {
+      id: '2',
+      title: 'カード2',
+      content: 'これは影付きカードです。',
+      variant: 'elevated' as const,
+    },
+    {
+      id: '3',
+      title: 'カード3',
+      content: 'これはアウトラインカードです。',
+      variant: 'outlined' as const,
+    },
+    {
+      id: '4',
+      title: 'カード4',
+      content: 'これは塗りつぶしカードです。',
+      variant: 'filled' as const,
+    },
+    {
+      id: '5',
+      title: 'カード5',
+      content: 'これはグラデーションカードです。',
+      variant: 'gradient' as const,
+    },
   ];
 
   const gridItems = Array.from({ length: 12 }, (_, i) => ({
@@ -27,20 +61,22 @@ export default function Phase3LayoutSampleContainer() {
       border="default"
       className="w-full max-w-6xl mx-auto my-8"
     >
-      <h2 className="text-2xl font-bold text-gray-300 mb-6">Phase 3: レイアウト系コンポーネントデモ</h2>
-      
+      <h2 className="text-2xl font-bold text-gray-300 mb-6">
+        Phase 3: レイアウト系コンポーネントデモ
+      </h2>
+
       {/* Card Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-8">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Card</h3>
-        
+
         <VStack spacing="lg">
           {/* Basic Cards */}
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">基本的なカード</h4>
             <Grid cols={3} gap="md">
               {cardItems.slice(0, 3).map((item) => (
-                <Card 
-                  key={item.id} 
+                <Card
+                  key={item.id}
                   variant={item.variant}
                   header={item.title}
                   hover="lift"
@@ -58,15 +94,19 @@ export default function Phase3LayoutSampleContainer() {
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">インタラクティブカード</h4>
             <Grid cols={2} gap="md">
-              <Card 
+              <Card
                 variant="filled"
                 hover="glow"
                 clickable
                 header="ホバーエフェクト付き"
                 footer={
                   <HStack justify="end">
-                    <Button size="sm" variant="secondary">キャンセル</Button>
-                    <Button size="sm" variant="primary">確認</Button>
+                    <Button size="sm" variant="secondary">
+                      キャンセル
+                    </Button>
+                    <Button size="sm" variant="primary">
+                      確認
+                    </Button>
                   </HStack>
                 }
               >
@@ -74,16 +114,13 @@ export default function Phase3LayoutSampleContainer() {
                 <p className="text-xs text-gray-400">フッターにはアクションボタンがあります。</p>
               </Card>
 
-              <Card 
-                variant="gradient"
-                hover="scale"
-                clickable
-                padding="lg"
-              >
+              <Card variant="gradient" hover="scale" clickable padding="lg">
                 <VStack spacing="sm" align="center">
                   <h4 className="text-lg font-semibold">スケールエフェクト</h4>
                   <p className="text-sm text-center">ホバー時に少し拡大します</p>
-                  <Button variant="primary" size="sm">アクション</Button>
+                  <Button variant="primary" size="sm">
+                    アクション
+                  </Button>
                 </VStack>
               </Card>
             </Grid>
@@ -92,13 +129,15 @@ export default function Phase3LayoutSampleContainer() {
           {/* Complex Card Layout */}
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">複雑なレイアウト</h4>
-            <Card 
+            <Card
               variant="elevated"
               padding="lg"
               header={
                 <HStack justify="between" align="center">
                   <h4 className="text-lg font-semibold">ダッシュボード</h4>
-                  <Button size="sm" variant="ghost">設定</Button>
+                  <Button size="sm" variant="ghost">
+                    設定
+                  </Button>
                 </HStack>
               }
             >
@@ -136,13 +175,19 @@ export default function Phase3LayoutSampleContainer() {
       {/* Grid Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-8">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Grid</h3>
-        
+
         <VStack spacing="lg">
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">基本的なグリッド</h4>
             <Grid cols={4} gap="sm">
               {gridItems.slice(0, 8).map((item) => (
-                <Box key={item.id} padding="sm" background="lighter" rounded="md" className="text-center text-sm">
+                <Box
+                  key={item.id}
+                  padding="sm"
+                  background="lighter"
+                  rounded="md"
+                  className="text-center text-sm"
+                >
                   {item.content}
                 </Box>
               ))}
@@ -200,15 +245,21 @@ export default function Phase3LayoutSampleContainer() {
       {/* Stack Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Stack</h3>
-        
+
         <VStack spacing="lg">
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">垂直スタック (VStack)</h4>
             <Card variant="outlined" padding="md">
               <VStack spacing="sm">
-                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">アイテム 1</Box>
-                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">アイテム 2</Box>
-                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">アイテム 3</Box>
+                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">
+                  アイテム 1
+                </Box>
+                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">
+                  アイテム 2
+                </Box>
+                <Box padding="sm" background="lighter" rounded="md" className="w-full text-center">
+                  アイテム 3
+                </Box>
               </VStack>
             </Card>
           </Box>
@@ -217,9 +268,15 @@ export default function Phase3LayoutSampleContainer() {
             <h4 className="text-md font-medium text-gray-300 mb-3">水平スタック (HStack)</h4>
             <Card variant="outlined" padding="md">
               <HStack spacing="sm">
-                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">アイテム 1</Box>
-                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">アイテム 2</Box>
-                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">アイテム 3</Box>
+                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">
+                  アイテム 1
+                </Box>
+                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">
+                  アイテム 2
+                </Box>
+                <Box padding="sm" background="lighter" rounded="md" className="flex-1 text-center">
+                  アイテム 3
+                </Box>
               </HStack>
             </Card>
           </Box>
@@ -228,11 +285,15 @@ export default function Phase3LayoutSampleContainer() {
             <h4 className="text-md font-medium text-gray-300 mb-3">スペーサー付きレイアウト</h4>
             <Card variant="outlined" padding="md">
               <HStack align="center">
-                <Button variant="secondary" size="sm">左ボタン</Button>
+                <Button variant="secondary" size="sm">
+                  左ボタン
+                </Button>
                 <Spacer />
                 <Box className="text-sm text-gray-400">中央テキスト</Box>
                 <Spacer />
-                <Button variant="primary" size="sm">右ボタン</Button>
+                <Button variant="primary" size="sm">
+                  右ボタン
+                </Button>
               </HStack>
             </Card>
           </Box>
@@ -263,9 +324,11 @@ export default function Phase3LayoutSampleContainer() {
               <VStack spacing="md">
                 <HStack justify="between" align="center">
                   <h4 className="text-lg font-semibold">プロファイル</h4>
-                  <Button variant="ghost" size="sm">編集</Button>
+                  <Button variant="ghost" size="sm">
+                    編集
+                  </Button>
                 </HStack>
-                
+
                 <HStack spacing="md" align="start">
                   <Box className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex-shrink-0"></Box>
                   <VStack spacing="xs" align="start" className="flex-1">
@@ -278,7 +341,7 @@ export default function Phase3LayoutSampleContainer() {
                     </HStack>
                   </VStack>
                 </HStack>
-                
+
                 <HStack justify="between" className="pt-4 border-t border-gray-700">
                   <VStack spacing="xs" align="center">
                     <span className="text-lg font-bold">1.2k</span>

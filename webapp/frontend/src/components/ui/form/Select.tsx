@@ -1,8 +1,8 @@
 'use client';
 
-import React, { Fragment, useId } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import { ChevronUpDownIcon, CheckIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import React, { Fragment, useId } from 'react';
 import { Box } from '../layout/Box';
 
 export interface SelectOption {
@@ -34,7 +34,7 @@ export function Select({
   disabled = false,
   className = '',
 }: SelectProps) {
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
   const generatedId = useId();
   const selectId = `select-${generatedId}`;
 
@@ -57,9 +57,13 @@ export function Select({
               ${disabled ? 'cursor-not-allowed opacity-50' : ''}
             `}
             aria-invalid={!!error}
-            aria-describedby={error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined}
+            aria-describedby={
+              error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined
+            }
           >
-            <span className={`block truncate ${selectedOption ? 'text-zinc-200' : 'text-zinc-400'}`}>
+            <span
+              className={`block truncate ${selectedOption ? 'text-zinc-200' : 'text-zinc-400'}`}
+            >
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -72,7 +76,7 @@ export function Select({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options 
+            <Listbox.Options
               className="absolute z-[100] mt-1 max-h-60 w-full overflow-y-auto rounded-lg bg-zinc-700 py-1 text-sm shadow-lg ring-1 ring-zinc-600 focus:outline-none scrollbar-thin scrollbar-track-zinc-700 scrollbar-thumb-zinc-500"
               static
               modal={false}
@@ -90,7 +94,9 @@ export function Select({
                 >
                   {({ selected, active }) => (
                     <>
-                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
                         {option.label}
                       </span>
                       {selected ? (

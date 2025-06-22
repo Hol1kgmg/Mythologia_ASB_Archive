@@ -1,49 +1,46 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
-const sectionVariants = cva(
-  'relative',
-  {
-    variants: {
-      spacing: {
-        none: '',
-        xs: 'py-4 sm:py-6',
-        sm: 'py-6 sm:py-8',
-        md: 'py-8 sm:py-12',
-        lg: 'py-12 sm:py-16',
-        xl: 'py-16 sm:py-24',
-        '2xl': 'py-24 sm:py-32',
-      },
-      background: {
-        none: '',
-        default: 'bg-gray-900',
-        darker: 'bg-black',
-        lighter: 'bg-gray-800',
-        gradient: 'bg-gradient-to-b from-gray-900 to-black',
-        gradientReverse: 'bg-gradient-to-b from-black to-gray-900',
-      },
-      border: {
-        none: '',
-        top: 'border-t border-gray-800',
-        bottom: 'border-b border-gray-800',
-        both: 'border-y border-gray-800',
-      },
-      overflow: {
-        visible: 'overflow-visible',
-        hidden: 'overflow-hidden',
-        clip: 'overflow-clip',
-      },
+const sectionVariants = cva('relative', {
+  variants: {
+    spacing: {
+      none: '',
+      xs: 'py-4 sm:py-6',
+      sm: 'py-6 sm:py-8',
+      md: 'py-8 sm:py-12',
+      lg: 'py-12 sm:py-16',
+      xl: 'py-16 sm:py-24',
+      '2xl': 'py-24 sm:py-32',
     },
-    defaultVariants: {
-      spacing: 'md',
-      background: 'none',
-      border: 'none',
-      overflow: 'visible',
+    background: {
+      none: '',
+      default: 'bg-gray-900',
+      darker: 'bg-black',
+      lighter: 'bg-gray-800',
+      gradient: 'bg-gradient-to-b from-gray-900 to-black',
+      gradientReverse: 'bg-gradient-to-b from-black to-gray-900',
     },
-  }
-);
+    border: {
+      none: '',
+      top: 'border-t border-gray-800',
+      bottom: 'border-b border-gray-800',
+      both: 'border-y border-gray-800',
+    },
+    overflow: {
+      visible: 'overflow-visible',
+      hidden: 'overflow-hidden',
+      clip: 'overflow-clip',
+    },
+  },
+  defaultVariants: {
+    spacing: 'md',
+    background: 'none',
+    border: 'none',
+    overflow: 'visible',
+  },
+});
 
 export interface SectionProps
   extends React.HTMLAttributes<HTMLElement>,
@@ -55,18 +52,21 @@ export interface SectionProps
 }
 
 const Section = React.forwardRef<HTMLElement, SectionProps>(
-  ({ 
-    className, 
-    spacing, 
-    background, 
-    border, 
-    overflow,
-    as: Component = 'section', 
-    children,
-    containerSize = 'xl',
-    withContainer = true,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      spacing,
+      background,
+      border,
+      overflow,
+      as: Component = 'section',
+      children,
+      containerSize = 'xl',
+      withContainer = true,
+      ...props
+    },
+    ref
+  ) => {
     const containerClasses = {
       sm: 'max-w-screen-sm mx-auto px-4',
       md: 'max-w-screen-md mx-auto px-4',
@@ -84,9 +84,7 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(
         {...props}
       >
         {withContainer ? (
-          <div className={containerClasses[containerSize]}>
-            {children}
-          </div>
+          <div className={containerClasses[containerSize]}>{children}</div>
         ) : (
           children
         )}
@@ -109,61 +107,46 @@ export interface HeroSectionProps extends Omit<SectionProps, 'title'> {
 }
 
 export const HeroSection = React.forwardRef<HTMLElement, HeroSectionProps>(
-  ({ 
-    className,
-    title,
-    subtitle,
-    description,
-    actions,
-    backgroundImage,
-    overlay = true,
-    overlayOpacity = 0.6,
-    children,
-    spacing = 'xl',
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      title,
+      subtitle,
+      description,
+      actions,
+      backgroundImage,
+      overlay = true,
+      overlayOpacity = 0.6,
+      children,
+      spacing = 'xl',
+      ...props
+    },
+    ref
+  ) => {
     return (
-      <Section
-        ref={ref}
-        className={`relative ${className || ''}`}
-        spacing={spacing}
-        {...props}
-      >
+      <Section ref={ref} className={`relative ${className || ''}`} spacing={spacing} {...props}>
         {backgroundImage && (
           <>
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${backgroundImage})` }}
             />
             {overlay && (
-              <div 
-                className="absolute inset-0 bg-black"
-                style={{ opacity: overlayOpacity }}
-              />
+              <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity }} />
             )}
           </>
         )}
         <div className="relative z-10 text-center">
           {title && (
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4">
-              {title}
-            </h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4">{title}</h1>
           )}
           {subtitle && (
-            <p className="text-lg sm:text-xl text-gray-300 mb-4 max-w-2xl mx-auto">
-              {subtitle}
-            </p>
+            <p className="text-lg sm:text-xl text-gray-300 mb-4 max-w-2xl mx-auto">{subtitle}</p>
           )}
           {description && (
-            <p className="text-sm text-gray-400 mb-8 max-w-2xl mx-auto">
-              {description}
-            </p>
+            <p className="text-sm text-gray-400 mb-8 max-w-2xl mx-auto">{description}</p>
           )}
-          {actions && (
-            <div className="flex flex-wrap gap-4 justify-center mb-8">
-              {actions}
-            </div>
-          )}
+          {actions && <div className="flex flex-wrap gap-4 justify-center mb-8">{actions}</div>}
           {children}
         </div>
       </Section>
@@ -181,14 +164,7 @@ export interface FeatureSectionProps extends Omit<SectionProps, 'title'> {
 }
 
 export const FeatureSection = React.forwardRef<HTMLElement, FeatureSectionProps>(
-  ({ 
-    className,
-    title,
-    description,
-    align = 'center',
-    children,
-    ...props 
-  }, ref) => {
+  ({ className, title, description, align = 'center', children, ...props }, ref) => {
     const alignClasses = {
       left: 'text-left',
       center: 'text-center',
@@ -196,20 +172,16 @@ export const FeatureSection = React.forwardRef<HTMLElement, FeatureSectionProps>
     };
 
     return (
-      <Section
-        ref={ref}
-        className={`${alignClasses[align]} ${className || ''}`}
-        {...props}
-      >
+      <Section ref={ref} className={`${alignClasses[align]} ${className || ''}`} {...props}>
         {title && (
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-            {title}
-          </h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">{title}</h2>
         )}
         {description && (
-          <p className={`text-lg text-gray-300 mb-8 ${
-            align === 'center' ? 'max-w-2xl mx-auto' : ''
-          }`}>
+          <p
+            className={`text-lg text-gray-300 mb-8 ${
+              align === 'center' ? 'max-w-2xl mx-auto' : ''
+            }`}
+          >
             {description}
           </p>
         )}

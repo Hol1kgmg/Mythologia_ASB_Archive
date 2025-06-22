@@ -1,35 +1,35 @@
 'use client';
 
-import React, { useState } from 'react';
-import { 
-  Box, 
-  Card, 
-  Button, 
-  Modal, 
-  ConfirmModal,
-  Tabs,
-  VerticalTabs,
-  Popover,
-  Tooltip,
-  DropdownMenu,
-  Accordion,
-  AccordionItem,
-  HorizontalAccordion,
-  VStack,
-  HStack
-} from '../../../../components/ui';
-import { 
-  CogIcon, 
-  UserIcon, 
-  BellIcon, 
-  TrashIcon,
-  PlusIcon,
+import {
+  BellIcon,
+  ChartBarIcon,
+  CogIcon,
+  CubeIcon,
+  DocumentTextIcon,
   EllipsisVerticalIcon,
   InformationCircleIcon,
-  ChartBarIcon,
-  DocumentTextIcon,
-  CubeIcon
+  PlusIcon,
+  TrashIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
+import {
+  Accordion,
+  AccordionItem,
+  Box,
+  Button,
+  Card,
+  ConfirmModal,
+  DropdownMenu,
+  HorizontalAccordion,
+  HStack,
+  Modal,
+  Popover,
+  Tabs,
+  Tooltip,
+  VerticalTabs,
+  VStack,
+} from '../../../../components/ui';
 
 export default function Phase4InteractionSampleContainer() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -95,7 +95,11 @@ export default function Phase4InteractionSampleContainer() {
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>自動保存</span>
-                <Button variant="primary" size="xs" onClick={() => console.log('自動保存設定を変更')}>
+                <Button
+                  variant="primary"
+                  size="xs"
+                  onClick={() => console.log('自動保存設定を変更')}
+                >
                   オン
                 </Button>
               </HStack>
@@ -120,7 +124,12 @@ export default function Phase4InteractionSampleContainer() {
               <VStack spacing="sm" align="center">
                 <h4 className="font-semibold">ユーザー名</h4>
                 <p className="text-sm text-gray-400">user@example.com</p>
-                <Button variant="ghost" size="xs" focusRing={false} onClick={() => console.log('プロフィール編集を開始')}>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  focusRing={false}
+                  onClick={() => console.log('プロフィール編集を開始')}
+                >
                   クリックして編集
                 </Button>
               </VStack>
@@ -141,7 +150,11 @@ export default function Phase4InteractionSampleContainer() {
               <Card variant="outlined" padding="sm">
                 <HStack justify="between" align="center">
                   <span>メール通知</span>
-                  <Button variant="success" size="xs" onClick={() => console.log('メール通知を無効にする')}>
+                  <Button
+                    variant="success"
+                    size="xs"
+                    onClick={() => console.log('メール通知を無効にする')}
+                  >
                     有効
                   </Button>
                 </HStack>
@@ -149,7 +162,11 @@ export default function Phase4InteractionSampleContainer() {
               <Card variant="outlined" padding="sm">
                 <HStack justify="between" align="center">
                   <span>プッシュ通知</span>
-                  <Button variant="secondary" size="xs" onClick={() => console.log('プッシュ通知を有効にする')}>
+                  <Button
+                    variant="secondary"
+                    size="xs"
+                    onClick={() => console.log('プッシュ通知を有効にする')}
+                  >
                     無効
                   </Button>
                 </HStack>
@@ -309,19 +326,25 @@ export default function Phase4InteractionSampleContainer() {
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>API仕様書.pdf</span>
-                <Button variant="primary" size="xs">開く</Button>
+                <Button variant="primary" size="xs">
+                  開く
+                </Button>
               </HStack>
             </Card>
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>ユーザーガイド.md</span>
-                <Button variant="secondary" size="xs">編集</Button>
+                <Button variant="secondary" size="xs">
+                  編集
+                </Button>
               </HStack>
             </Card>
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>設計書.docx</span>
-                <Button variant="ghost" size="xs">表示</Button>
+                <Button variant="ghost" size="xs">
+                  表示
+                </Button>
               </HStack>
             </Card>
           </VStack>
@@ -340,19 +363,25 @@ export default function Phase4InteractionSampleContainer() {
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>テーマ</span>
-                <Button variant="secondary" size="xs">ダークモード</Button>
+                <Button variant="secondary" size="xs">
+                  ダークモード
+                </Button>
               </HStack>
             </Card>
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>言語</span>
-                <Button variant="secondary" size="xs">日本語</Button>
+                <Button variant="secondary" size="xs">
+                  日本語
+                </Button>
               </HStack>
             </Card>
             <Card variant="outlined" padding="sm">
               <HStack justify="between" align="center">
                 <span>通知</span>
-                <Button variant="success" size="xs">有効</Button>
+                <Button variant="success" size="xs">
+                  有効
+                </Button>
               </HStack>
             </Card>
           </VStack>
@@ -367,11 +396,19 @@ export default function Phase4InteractionSampleContainer() {
         <VStack spacing="md">
           <h4 className="text-lg font-semibold">ヘルプ & サポート</h4>
           <VStack spacing="sm">
-            <p className="text-sm text-gray-400">よくある質問やサポート情報をここで確認できます。</p>
+            <p className="text-sm text-gray-400">
+              よくある質問やサポート情報をここで確認できます。
+            </p>
             <VStack spacing="xs">
-              <Button variant="primary" size="sm" fullWidth>FAQ を見る</Button>
-              <Button variant="secondary" size="sm" fullWidth>サポートに連絡</Button>
-              <Button variant="ghost" size="sm" fullWidth>チュートリアル</Button>
+              <Button variant="primary" size="sm" fullWidth>
+                FAQ を見る
+              </Button>
+              <Button variant="secondary" size="sm" fullWidth>
+                サポートに連絡
+              </Button>
+              <Button variant="ghost" size="sm" fullWidth>
+                チュートリアル
+              </Button>
             </VStack>
           </VStack>
         </VStack>
@@ -387,12 +424,14 @@ export default function Phase4InteractionSampleContainer() {
       border="default"
       className="w-full max-w-6xl mx-auto my-8"
     >
-      <h2 className="text-2xl font-bold text-gray-300 mb-6">Phase 4: インタラクション系コンポーネントデモ</h2>
-      
+      <h2 className="text-2xl font-bold text-gray-300 mb-6">
+        Phase 4: インタラクション系コンポーネントデモ
+      </h2>
+
       {/* Modal Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-8">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Modal</h3>
-        
+
         <HStack spacing="md" wrap>
           <Button variant="primary" onClick={() => setModalOpen(true)}>
             基本モーダル
@@ -409,7 +448,7 @@ export default function Phase4InteractionSampleContainer() {
       {/* Tabs Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-8">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Tabs</h3>
-        
+
         <VStack spacing="lg">
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">基本的なタブ</h4>
@@ -431,10 +470,12 @@ export default function Phase4InteractionSampleContainer() {
       {/* Popover Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-8">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Popover</h3>
-        
+
         <VStack spacing="lg">
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">基本的なポップオーバー（サイズ指定可能）</h4>
+            <h4 className="text-md font-medium text-gray-300 mb-3">
+              基本的なポップオーバー（サイズ指定可能）
+            </h4>
             <HStack spacing="md" wrap>
               <Popover
                 trigger={
@@ -447,7 +488,9 @@ export default function Phase4InteractionSampleContainer() {
               >
                 <VStack spacing="sm">
                   <h4 className="font-semibold">詳細情報</h4>
-                  <p className="text-sm">ここに詳細な説明が表示されます。ポップオーバーは軽量な情報表示に適しています。</p>
+                  <p className="text-sm">
+                    ここに詳細な説明が表示されます。ポップオーバーは軽量な情報表示に適しています。
+                  </p>
                   <p className="text-xs text-blue-400 mt-2">→ 詳細ページへ移動</p>
                 </VStack>
               </Popover>
@@ -498,7 +541,7 @@ export default function Phase4InteractionSampleContainer() {
                   ホバーしてください
                 </span>
               </Tooltip>
-              
+
               <Tooltip content="削除すると元に戻せません" placement="top-center">
                 <span className="inline-block px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors duration-200 cursor-pointer">
                   <TrashIcon className="h-4 w-4" />
@@ -518,7 +561,7 @@ export default function Phase4InteractionSampleContainer() {
       {/* Accordion Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-gray-300 mb-4">Accordion</h3>
-        
+
         <VStack spacing="lg">
           <Box>
             <h4 className="text-md font-medium text-gray-300 mb-3">基本的なアコーディオン</h4>
@@ -545,9 +588,11 @@ export default function Phase4InteractionSampleContainer() {
                 defaultOpen
               >
                 <p>これは個別に管理されるアコーディオンアイテムです。</p>
-                <p className="text-xs text-blue-400 mt-2">→ アクションは右クリックメニューから実行</p>
+                <p className="text-xs text-blue-400 mt-2">
+                  → アクションは右クリックメニューから実行
+                </p>
               </AccordionItem>
-              
+
               <AccordionItem
                 title="カスタムアイテム 2"
                 icon={<CogIcon className="h-5 w-5" />}
@@ -569,9 +614,11 @@ export default function Phase4InteractionSampleContainer() {
           </Box>
 
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（右向き）</h4>
-            <HorizontalAccordion 
-              items={horizontalAccordionItems} 
+            <h4 className="text-md font-medium text-gray-300 mb-3">
+              横向きアコーディオン（右向き）
+            </h4>
+            <HorizontalAccordion
+              items={horizontalAccordionItems}
               direction="right"
               buttonWidth="w-16"
               contentWidth="w-96"
@@ -579,9 +626,11 @@ export default function Phase4InteractionSampleContainer() {
           </Box>
 
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（左向き）</h4>
-            <HorizontalAccordion 
-              items={horizontalAccordionItems.slice(0, 3)} 
+            <h4 className="text-md font-medium text-gray-300 mb-3">
+              横向きアコーディオン（左向き）
+            </h4>
+            <HorizontalAccordion
+              items={horizontalAccordionItems.slice(0, 3)}
               direction="left"
               buttonWidth="w-16"
               contentWidth="w-80"
@@ -589,9 +638,11 @@ export default function Phase4InteractionSampleContainer() {
           </Box>
 
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（複数選択可能・右向き）</h4>
-            <HorizontalAccordion 
-              items={horizontalAccordionItems.slice(0, 3)} 
+            <h4 className="text-md font-medium text-gray-300 mb-3">
+              横向きアコーディオン（複数選択可能・右向き）
+            </h4>
+            <HorizontalAccordion
+              items={horizontalAccordionItems.slice(0, 3)}
               direction="right"
               allowMultiple
               buttonWidth="w-16"
@@ -600,9 +651,11 @@ export default function Phase4InteractionSampleContainer() {
           </Box>
 
           <Box>
-            <h4 className="text-md font-medium text-gray-300 mb-3">横向きアコーディオン（ボーダーなし・左向き）</h4>
-            <HorizontalAccordion 
-              items={horizontalAccordionItems.slice(0, 3)} 
+            <h4 className="text-md font-medium text-gray-300 mb-3">
+              横向きアコーディオン（ボーダーなし・左向き）
+            </h4>
+            <HorizontalAccordion
+              items={horizontalAccordionItems.slice(0, 3)}
               direction="left"
               showBorder={false}
               buttonWidth="w-16"

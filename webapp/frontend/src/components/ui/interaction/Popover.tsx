@@ -1,45 +1,42 @@
 'use client';
 
-import React, { Fragment } from 'react';
 import { Popover as HeadlessPopover, Transition } from '@headlessui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React, { Fragment } from 'react';
 import { Box } from '..';
 
-const popoverVariants = cva(
-  'absolute z-10 mt-3 transform px-4 sm:px-0',
-  {
-    variants: {
-      placement: {
-        'bottom-start': 'left-0',
-        'bottom-center': 'left-1/2 -translate-x-1/2',
-        'bottom-end': 'right-0',
-        'top-start': 'left-0 bottom-full mb-3 mt-0',
-        'top-center': 'left-1/2 -translate-x-1/2 bottom-full mb-3 mt-0',
-        'top-end': 'right-0 bottom-full mb-3 mt-0',
-        'left-start': 'right-full mr-3 mt-0 top-0',
-        'left-center': 'right-full mr-3 mt-0 top-1/2 -translate-y-1/2',
-        'left-end': 'right-full mr-3 mt-0 bottom-0',
-        'right-start': 'left-full ml-3 mt-0 top-0',
-        'right-center': 'left-full ml-3 mt-0 top-1/2 -translate-y-1/2',
-        'right-end': 'left-full ml-3 mt-0 bottom-0',
-      },
-      size: {
-        xs: 'w-48 max-w-xs',
-        sm: 'w-64 max-w-sm',
-        md: 'w-80 max-w-md',
-        lg: 'w-96 max-w-lg',
-        xl: 'w-[28rem] max-w-xl',
-        '2xl': 'w-[32rem] max-w-2xl',
-        auto: 'w-auto',
-        full: 'w-full max-w-full',
-      },
+const popoverVariants = cva('absolute z-10 mt-3 transform px-4 sm:px-0', {
+  variants: {
+    placement: {
+      'bottom-start': 'left-0',
+      'bottom-center': 'left-1/2 -translate-x-1/2',
+      'bottom-end': 'right-0',
+      'top-start': 'left-0 bottom-full mb-3 mt-0',
+      'top-center': 'left-1/2 -translate-x-1/2 bottom-full mb-3 mt-0',
+      'top-end': 'right-0 bottom-full mb-3 mt-0',
+      'left-start': 'right-full mr-3 mt-0 top-0',
+      'left-center': 'right-full mr-3 mt-0 top-1/2 -translate-y-1/2',
+      'left-end': 'right-full mr-3 mt-0 bottom-0',
+      'right-start': 'left-full ml-3 mt-0 top-0',
+      'right-center': 'left-full ml-3 mt-0 top-1/2 -translate-y-1/2',
+      'right-end': 'left-full ml-3 mt-0 bottom-0',
     },
-    defaultVariants: {
-      placement: 'bottom-start',
-      size: 'md',
+    size: {
+      xs: 'w-48 max-w-xs',
+      sm: 'w-64 max-w-sm',
+      md: 'w-80 max-w-md',
+      lg: 'w-96 max-w-lg',
+      xl: 'w-[28rem] max-w-xl',
+      '2xl': 'w-[32rem] max-w-2xl',
+      auto: 'w-auto',
+      full: 'w-full max-w-full',
     },
-  }
-);
+  },
+  defaultVariants: {
+    placement: 'bottom-start',
+    size: 'md',
+  },
+});
 
 const popoverPanelVariants = cva(
   'rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden',
@@ -92,7 +89,7 @@ export function Popover({
     <HeadlessPopover className="relative">
       {({ close }) => (
         <>
-          <HeadlessPopover.Button 
+          <HeadlessPopover.Button
             disabled={disabled}
             className="focus:outline-none"
             onClick={(e) => {
@@ -112,11 +109,13 @@ export function Popover({
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <HeadlessPopover.Panel 
+            <HeadlessPopover.Panel
               className={popoverVariants({ placement, size, className })}
               static={!closeOnClickOutside}
             >
-              <Box className={popoverPanelVariants({ variant, padding, className: panelClassName })}>
+              <Box
+                className={popoverPanelVariants({ variant, padding, className: panelClassName })}
+              >
                 <div className="text-gray-200">
                   {typeof children === 'function' ? children({ close }) : children}
                 </div>
@@ -171,11 +170,7 @@ export function Tooltip({
   }, []);
 
   return (
-    <div 
-      className="relative inline-block"
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-    >
+    <div className="relative inline-block" onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
       {children}
       <Transition
         show={isVisible}
@@ -189,9 +184,7 @@ export function Tooltip({
       >
         <div className={popoverVariants({ placement, size: 'sm' })}>
           <Box className={popoverPanelVariants({ variant: 'tooltip', padding: 'sm' })}>
-            <div className="text-gray-200 text-xs whitespace-nowrap">
-              {content}
-            </div>
+            <div className="text-gray-200 text-xs whitespace-nowrap">{content}</div>
           </Box>
         </div>
       </Transition>
@@ -245,16 +238,15 @@ export function DropdownMenu({
                 disabled={item.disabled}
                 className={`
                   w-full text-left px-4 py-2 text-sm transition-colors duration-200
-                  ${item.disabled 
-                    ? 'text-gray-400 cursor-not-allowed' 
-                    : 'text-gray-200 hover:bg-gray-600 hover:text-white'
+                  ${
+                    item.disabled
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-gray-200 hover:bg-gray-600 hover:text-white'
                   }
                 `}
               >
                 <Box className="flex items-center gap-3">
-                  {item.icon && (
-                    <span className="flex-shrink-0">{item.icon}</span>
-                  )}
+                  {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
                   <span>{item.label}</span>
                 </Box>
               </button>

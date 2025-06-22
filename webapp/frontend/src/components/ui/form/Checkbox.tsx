@@ -1,7 +1,8 @@
 'use client';
 
-import React, { forwardRef, useId } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { forwardRef, useId } from 'react';
 import { Box } from '../layout/Box';
 
 const checkboxVariants = cva(
@@ -11,7 +12,8 @@ const checkboxVariants = cva(
       variant: {
         default: 'border-zinc-500 focus:ring-zinc-400 checked:bg-zinc-500 checked:border-zinc-400',
         primary: 'border-blue-600 focus:ring-blue-500 checked:bg-blue-600 checked:border-blue-500',
-        success: 'border-green-600 focus:ring-green-500 checked:bg-green-600 checked:border-green-500',
+        success:
+          'border-green-600 focus:ring-green-500 checked:bg-green-600 checked:border-green-500',
         error: 'border-red-600 focus:ring-red-500 checked:bg-red-600 checked:border-red-500',
       },
       size: {
@@ -52,11 +54,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             className={checkboxVariants({ variant: errorVariant, size, className })}
             aria-invalid={!!error}
             aria-describedby={
-              error 
-                ? `${checkboxId}-error` 
-                : description || helperText 
-                ? `${checkboxId}-description` 
-                : undefined
+              error
+                ? `${checkboxId}-error`
+                : description || helperText
+                  ? `${checkboxId}-description`
+                  : undefined
             }
             {...props}
           />
@@ -71,10 +73,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 </label>
               )}
               {description && (
-                <p
-                  id={`${checkboxId}-description`}
-                  className="mt-1 text-xs text-zinc-300"
-                >
+                <p id={`${checkboxId}-description`} className="mt-1 text-xs text-zinc-300">
                   {description}
                 </p>
               )}

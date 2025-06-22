@@ -9,7 +9,7 @@ export interface AdminAPIRequestOptions {
 
 export interface AdminAPIHeaders {
   'Content-Type': string;
-  'Authorization'?: string;
+  Authorization?: string;
   'X-HMAC-Signature': string;
   'X-Timestamp': string;
   'X-API-Key': string;
@@ -18,28 +18,25 @@ export interface AdminAPIHeaders {
 /**
  * 管理者API用の認証ヘッダーを生成
  */
-export async function generateAdminAPIHeaders(options: AdminAPIRequestOptions): Promise<AdminAPIHeaders> {
+export async function generateAdminAPIHeaders(
+  options: AdminAPIRequestOptions
+): Promise<AdminAPIHeaders> {
   const { method, path, body, token } = options;
-  
+
   // 環境変数から秘密鍵とAPIキーを取得
   const hmacSecret = process.env.NEXT_PUBLIC_ADMIN_HMAC_SECRET;
   const apiKey = process.env.NEXT_PUBLIC_VERCEL_API_KEY;
-  
+
   if (!hmacSecret) {
     throw new Error('ADMIN_HMAC_SECRET is not configured');
   }
-  
+
   if (!apiKey) {
     throw new Error('VERCEL_API_KEY is not configured');
   }
 
   // HMAC署名を生成
-  const { signature, timestamp } = await generateHMACSignature(
-    method,
-    path,
-    body,
-    hmacSecret
-  );
+  const { signature, timestamp } = await generateHMACSignature(method, path, body, hmacSecret);
 
   const headers: AdminAPIHeaders = {
     'Content-Type': 'application/json',
@@ -59,15 +56,18 @@ export async function generateAdminAPIHeaders(options: AdminAPIRequestOptions): 
 /**
  * 管理者API用の安全なfetch関数
  */
-export async function adminAPIFetch(url: string, options: RequestInit & AdminAPIRequestOptions): Promise<Response> {
+export async function adminAPIFetch(
+  url: string,
+  options: RequestInit & AdminAPIRequestOptions
+): Promise<Response> {
   const { method = 'GET', path, body: requestBody, token, ...fetchOptions } = options;
-  
+
   try {
     const headers = await generateAdminAPIHeaders({
       method,
       path,
       body: requestBody,
-      token
+      token,
     });
 
     const response = await fetch(url, {

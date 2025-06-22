@@ -1,66 +1,63 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
-const headingVariants = cva(
-  'font-bold',
-  {
-    variants: {
-      level: {
-        h1: 'text-4xl sm:text-5xl lg:text-6xl',
-        h2: 'text-3xl sm:text-4xl lg:text-5xl',
-        h3: 'text-2xl sm:text-3xl lg:text-4xl',
-        h4: 'text-xl sm:text-2xl lg:text-3xl',
-        h5: 'text-lg sm:text-xl lg:text-2xl',
-        h6: 'text-base sm:text-lg lg:text-xl',
-      },
-      variant: {
-        default: 'text-white',
-        gradient: 'bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent',
-        primary: 'text-blue-400',
-        secondary: 'text-gray-300',
-        muted: 'text-gray-500',
-      },
-      align: {
-        left: 'text-left',
-        center: 'text-center',
-        right: 'text-right',
-      },
-      weight: {
-        normal: 'font-normal',
-        medium: 'font-medium',
-        semibold: 'font-semibold',
-        bold: 'font-bold',
-        extrabold: 'font-extrabold',
-      },
-      tracking: {
-        tighter: 'tracking-tighter',
-        tight: 'tracking-tight',
-        normal: 'tracking-normal',
-        wide: 'tracking-wide',
-        wider: 'tracking-wider',
-        widest: 'tracking-widest',
-      },
-      leading: {
-        none: 'leading-none',
-        tight: 'leading-tight',
-        snug: 'leading-snug',
-        normal: 'leading-normal',
-        relaxed: 'leading-relaxed',
-        loose: 'leading-loose',
-      },
+const headingVariants = cva('font-bold', {
+  variants: {
+    level: {
+      h1: 'text-4xl sm:text-5xl lg:text-6xl',
+      h2: 'text-3xl sm:text-4xl lg:text-5xl',
+      h3: 'text-2xl sm:text-3xl lg:text-4xl',
+      h4: 'text-xl sm:text-2xl lg:text-3xl',
+      h5: 'text-lg sm:text-xl lg:text-2xl',
+      h6: 'text-base sm:text-lg lg:text-xl',
     },
-    defaultVariants: {
-      level: 'h1',
-      variant: 'default',
-      align: 'left',
-      weight: 'bold',
-      tracking: 'normal',
-      leading: 'normal',
+    variant: {
+      default: 'text-white',
+      gradient: 'bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent',
+      primary: 'text-blue-400',
+      secondary: 'text-gray-300',
+      muted: 'text-gray-500',
     },
-  }
-);
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    },
+    weight: {
+      normal: 'font-normal',
+      medium: 'font-medium',
+      semibold: 'font-semibold',
+      bold: 'font-bold',
+      extrabold: 'font-extrabold',
+    },
+    tracking: {
+      tighter: 'tracking-tighter',
+      tight: 'tracking-tight',
+      normal: 'tracking-normal',
+      wide: 'tracking-wide',
+      wider: 'tracking-wider',
+      widest: 'tracking-widest',
+    },
+    leading: {
+      none: 'leading-none',
+      tight: 'leading-tight',
+      snug: 'leading-snug',
+      normal: 'leading-normal',
+      relaxed: 'leading-relaxed',
+      loose: 'leading-loose',
+    },
+  },
+  defaultVariants: {
+    level: 'h1',
+    variant: 'default',
+    align: 'left',
+    weight: 'bold',
+    tracking: 'normal',
+    leading: 'normal',
+  },
+});
 
 export interface HeadingProps
   extends React.HTMLAttributes<HTMLHeadingElement>,
@@ -70,31 +67,23 @@ export interface HeadingProps
 }
 
 const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ 
-    className, 
-    level = 'h1', 
-    variant, 
-    align, 
-    weight,
-    tracking,
-    leading,
-    as,
-    children, 
-    ...props 
-  }, ref) => {
+  (
+    { className, level = 'h1', variant, align, weight, tracking, leading, as, children, ...props },
+    ref
+  ) => {
     const Component = as || level || 'h1';
 
     return (
       <Component
         ref={ref}
-        className={headingVariants({ 
-          level, 
-          variant, 
-          align, 
+        className={headingVariants({
+          level,
+          variant,
+          align,
           weight,
           tracking,
           leading,
-          className 
+          className,
         })}
         {...props}
       >

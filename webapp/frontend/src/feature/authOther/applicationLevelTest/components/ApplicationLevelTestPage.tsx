@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
+import HomeButton from '../../../../components/ui/feedback/HomeButton';
 import AuthTestButton from './AuthTestButton';
 import WarningCard from './WarningCard';
-import HomeButton from '../../../../components/ui/feedback/HomeButton';
 
 export default function ApplicationLevelTestPage() {
   return (
@@ -12,9 +12,7 @@ export default function ApplicationLevelTestPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4">
-              🔐 Application Level認証テスト
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">🔐 Application Level認証テスト</h1>
             <p className="text-gray-300 text-lg mb-2">
               Vercel ↔ Railway間のJWT + HMAC二重認証の動作確認
             </p>
@@ -41,7 +39,7 @@ export default function ApplicationLevelTestPage() {
             {/* Information */}
             <div className="bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-600">
               <h2 className="text-xl font-semibold mb-4">認証システム情報</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <h3 className="font-medium text-blue-400 mb-2">🛡️ セキュリティレイヤー</h3>
@@ -77,7 +75,7 @@ export default function ApplicationLevelTestPage() {
           {/* Technical Details */}
           <div className="mt-8 bg-gray-800 bg-opacity-40 rounded-xl p-6 border border-gray-700">
             <h2 className="text-xl font-semibold mb-4">🔧 技術仕様</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="font-medium text-cyan-400 mb-3">JWT設定</h3>

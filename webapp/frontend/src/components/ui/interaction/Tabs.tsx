@@ -1,32 +1,29 @@
 'use client';
 
-import React from 'react';
 import { Tab } from '@headlessui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
 import { Box } from '..';
 
-const tabListVariants = cva(
-  'flex space-x-1 rounded-lg p-1',
-  {
-    variants: {
-      variant: {
-        default: 'bg-zinc-700 border border-zinc-600',
-        underline: 'bg-transparent border-b border-zinc-600',
-        pills: 'bg-zinc-700/50 backdrop-blur-sm',
-        minimal: 'bg-transparent',
-      },
-      size: {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base',
-      },
+const tabListVariants = cva('flex space-x-1 rounded-lg p-1', {
+  variants: {
+    variant: {
+      default: 'bg-zinc-700 border border-zinc-600',
+      underline: 'bg-transparent border-b border-zinc-600',
+      pills: 'bg-zinc-700/50 backdrop-blur-sm',
+      minimal: 'bg-transparent',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
+    size: {
+      sm: 'text-xs',
+      md: 'text-sm',
+      lg: 'text-base',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+});
 
 const tabVariants = cva(
   'w-full rounded-lg py-2.5 font-medium leading-5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800',
@@ -102,28 +99,25 @@ const tabVariants = cva(
   }
 );
 
-const tabPanelVariants = cva(
-  'rounded-lg bg-zinc-700 p-3 focus:outline-none',
-  {
-    variants: {
-      variant: {
-        default: 'bg-zinc-700 border border-zinc-600',
-        glass: 'bg-zinc-700/50 backdrop-blur-sm border border-zinc-600/50',
-        minimal: 'bg-transparent border-none p-0',
-      },
-      spacing: {
-        none: 'p-0',
-        sm: 'p-3',
-        md: 'p-4',
-        lg: 'p-6',
-      },
+const tabPanelVariants = cva('rounded-lg bg-zinc-700 p-3 focus:outline-none', {
+  variants: {
+    variant: {
+      default: 'bg-zinc-700 border border-zinc-600',
+      glass: 'bg-zinc-700/50 backdrop-blur-sm border border-zinc-600/50',
+      minimal: 'bg-transparent border-none p-0',
     },
-    defaultVariants: {
-      variant: 'default',
-      spacing: 'md',
+    spacing: {
+      none: 'p-0',
+      sm: 'p-3',
+      md: 'p-4',
+      lg: 'p-6',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    spacing: 'md',
+  },
+});
 
 export interface TabItem {
   id: string;
@@ -169,9 +163,7 @@ export function Tabs({
               {({ selected }) => (
                 <Box className="flex items-center justify-center gap-2">
                   {tab.icon && (
-                    <span className={`${selected ? '' : 'opacity-70'}`}>
-                      {tab.icon}
-                    </span>
+                    <span className={`${selected ? '' : 'opacity-70'}`}>{tab.icon}</span>
                   )}
                   <span>{tab.label}</span>
                 </Box>
@@ -184,10 +176,10 @@ export function Tabs({
             <Tab.Panel
               key={tab.id}
               tabIndex={-1}
-              className={tabPanelVariants({ 
-                variant: panelVariant, 
-                spacing: panelSpacing, 
-                className: tabPanelClassName 
+              className={tabPanelVariants({
+                variant: panelVariant,
+                spacing: panelSpacing,
+                className: tabPanelClassName,
               })}
             >
               {tab.content}
@@ -219,7 +211,9 @@ export function VerticalTabs({
   return (
     <Box className={`flex gap-4 ${className || ''}`}>
       <Tab.Group defaultIndex={defaultIndex} onChange={onChange}>
-        <Tab.List className={`${tabWidth} flex flex-col space-y-1 rounded-lg bg-zinc-700 border border-zinc-600 p-1 ${tabListClassName || ''}`}>
+        <Tab.List
+          className={`${tabWidth} flex flex-col space-y-1 rounded-lg bg-zinc-700 border border-zinc-600 p-1 ${tabListClassName || ''}`}
+        >
           {tabs.map((tab) => (
             <Tab
               key={tab.id}
@@ -244,10 +238,10 @@ export function VerticalTabs({
             <Tab.Panel
               key={tab.id}
               tabIndex={-1}
-              className={tabPanelVariants({ 
-                variant: panelVariant, 
-                spacing: panelSpacing, 
-                className: tabPanelClassName 
+              className={tabPanelVariants({
+                variant: panelVariant,
+                spacing: panelSpacing,
+                className: tabPanelClassName,
               })}
             >
               {tab.content}

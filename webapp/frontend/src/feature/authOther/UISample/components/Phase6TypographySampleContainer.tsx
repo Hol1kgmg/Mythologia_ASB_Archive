@@ -1,17 +1,9 @@
 'use client';
 
 import React from 'react';
-import { 
-  Box, 
-  Heading,
-  Text,
-  Label,
-  Caption,
-  Code
-} from '../../../../components/ui';
+import { Box, Caption, Code, Heading, Label, Text } from '../../../../components/ui';
 
 export default function Phase6TypographySampleContainer() {
-
   return (
     <Box
       background="darker"
@@ -20,13 +12,14 @@ export default function Phase6TypographySampleContainer() {
       border="default"
       className="w-full max-w-4xl mx-auto my-8"
     >
+      <h2 className="text-2xl font-bold text-zinc-200 mb-6">
+        Phase 6: タイポグラフィ系コンポーネント
+      </h2>
 
-      <h2 className="text-2xl font-bold text-zinc-200 mb-6">Phase 6: タイポグラフィ系コンポーネント</h2>
-      
       {/* Heading Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Headings</h3>
-        
+
         <Box className="space-y-4">
           <Box className="space-y-3">
             <Heading level="h1">見出し レベル 1 (H1)</Heading>
@@ -36,25 +29,43 @@ export default function Phase6TypographySampleContainer() {
             <Heading level="h5">見出し レベル 5 (H5)</Heading>
             <Heading level="h6">見出し レベル 6 (H6)</Heading>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">サイズバリエーション</p>
             <Box className="space-y-2">
-              <Heading level="h2" className="text-xs">XS サイズの見出し</Heading>
-              <Heading level="h2" className="text-sm">Small サイズの見出し</Heading>
-              <Heading level="h2" className="text-base">Medium サイズの見出し</Heading>
-              <Heading level="h2" className="text-lg">Large サイズの見出し</Heading>
-              <Heading level="h2" className="text-xl">XL サイズの見出し</Heading>
+              <Heading level="h2" className="text-xs">
+                XS サイズの見出し
+              </Heading>
+              <Heading level="h2" className="text-sm">
+                Small サイズの見出し
+              </Heading>
+              <Heading level="h2" className="text-base">
+                Medium サイズの見出し
+              </Heading>
+              <Heading level="h2" className="text-lg">
+                Large サイズの見出し
+              </Heading>
+              <Heading level="h2" className="text-xl">
+                XL サイズの見出し
+              </Heading>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">ウェイトバリエーション</p>
             <Box className="space-y-2">
-              <Heading level="h3" weight="normal">Normal ウェイトの見出し</Heading>
-              <Heading level="h3" weight="medium">Medium ウェイトの見出し</Heading>
-              <Heading level="h3" weight="semibold">Semibold ウェイトの見出し</Heading>
-              <Heading level="h3" weight="bold">Bold ウェイトの見出し</Heading>
+              <Heading level="h3" weight="normal">
+                Normal ウェイトの見出し
+              </Heading>
+              <Heading level="h3" weight="medium">
+                Medium ウェイトの見出し
+              </Heading>
+              <Heading level="h3" weight="semibold">
+                Semibold ウェイトの見出し
+              </Heading>
+              <Heading level="h3" weight="bold">
+                Bold ウェイトの見出し
+              </Heading>
             </Box>
           </Box>
         </Box>
@@ -63,7 +74,7 @@ export default function Phase6TypographySampleContainer() {
       {/* Text Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Text</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">サイズバリエーション</p>
@@ -75,7 +86,7 @@ export default function Phase6TypographySampleContainer() {
               <Text size="xl">XL サイズのテキスト - ヒーローセクションやメインメッセージ</Text>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">ウェイトバリエーション</p>
             <Box className="space-y-2">
@@ -85,7 +96,7 @@ export default function Phase6TypographySampleContainer() {
               <Text weight="bold">Bold ウェイトのテキスト</Text>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">カラーバリエーション</p>
             <Box className="space-y-2">
@@ -97,7 +108,7 @@ export default function Phase6TypographySampleContainer() {
               <Text color="error">Error カラーのテキスト</Text>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">組み合わせ例</p>
             <Box className="space-y-2">
@@ -115,7 +126,7 @@ export default function Phase6TypographySampleContainer() {
       {/* Label & Caption Components */}
       <Box margin="none" padding="md" background="default" rounded="md" className="mb-6">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Labels & Captions</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">Label コンポーネント</p>
@@ -127,7 +138,7 @@ export default function Phase6TypographySampleContainer() {
               <Label disabled>無効化されたラベル</Label>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">Caption コンポーネント</p>
             <Box className="space-y-2">
@@ -137,7 +148,7 @@ export default function Phase6TypographySampleContainer() {
               <Caption color="error">エラー用のキャプション</Caption>
             </Box>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">フォーム例</p>
             <Box className="space-y-3">
@@ -148,7 +159,7 @@ export default function Phase6TypographySampleContainer() {
                 </Box>
                 <Caption>アカウント作成時に設定されたユーザー名です</Caption>
               </Box>
-              
+
               <Box>
                 <Label>パスワード</Label>
                 <Box className="mt-1 p-2 border border-red-500 rounded bg-zinc-700 text-zinc-200">
@@ -164,7 +175,7 @@ export default function Phase6TypographySampleContainer() {
       {/* Code Component */}
       <Box margin="none" padding="md" background="default" rounded="md">
         <h3 className="text-lg font-semibold text-zinc-200 mb-4">Code</h3>
-        
+
         <Box className="space-y-4">
           <Box>
             <p className="text-sm text-zinc-300 mb-2">インラインコード</p>
@@ -173,11 +184,11 @@ export default function Phase6TypographySampleContainer() {
               変数名やメソッド名を表示する際に使用します。
             </Text>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">ブロックコード</p>
             <Code variant="block" language="typescript">
-{`function greetUser(name: string): string {
+              {`function greetUser(name: string): string {
   return \`Hello, \${name}! Welcome to Mythologia.\`;
 }
 
@@ -185,18 +196,24 @@ const message = greetUser("Admiral");
 console.log(message);`}
             </Code>
           </Box>
-          
+
           <Box>
             <p className="text-sm text-zinc-300 mb-2">サイズバリエーション</p>
             <Box className="space-y-2">
               <div>
-                <Text size="sm">Small: <Code className="text-xs">npm install</Code></Text>
+                <Text size="sm">
+                  Small: <Code className="text-xs">npm install</Code>
+                </Text>
               </div>
               <div>
-                <Text size="base">Medium: <Code className="text-sm">{`git commit -m "update"`}</Code></Text>
+                <Text size="base">
+                  Medium: <Code className="text-sm">{`git commit -m "update"`}</Code>
+                </Text>
               </div>
               <div>
-                <Text size="lg">Large: <Code className="text-base">{`docker run -p 3000:3000`}</Code></Text>
+                <Text size="lg">
+                  Large: <Code className="text-base">{`docker run -p 3000:3000`}</Code>
+                </Text>
               </div>
             </Box>
           </Box>

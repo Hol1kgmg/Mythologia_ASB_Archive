@@ -15,7 +15,7 @@ export default function ErrorTestPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-6">🧪 エラーページテスト</h1>
-          
+
           <div className="bg-gray-800 bg-opacity-60 rounded-xl p-6 border border-gray-600 mb-6">
             <p className="text-gray-300 mb-2">
               以下のボタンをクリックすると、意図的にエラーを発生させてエラーページを表示できます。
@@ -23,7 +23,7 @@ export default function ErrorTestPage() {
             <p className="text-gray-400 text-sm mb-4">
               このページは開発者専用です。本番環境では無効化されます。
             </p>
-            
+
             <button
               onClick={() => setShouldThrow(true)}
               className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-300 font-semibold"

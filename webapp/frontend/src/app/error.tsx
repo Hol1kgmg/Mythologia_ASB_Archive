@@ -11,7 +11,7 @@ interface AppErrorProps {
 export default function Error({ error, reset }: AppErrorProps) {
   return (
     <>
-      <ErrorPage 
+      <ErrorPage
         title="ERROR"
         message="予期しないエラーが発生しました"
         subMessage="申し訳ございませんが、一時的な問題が発生している可能性があります。"

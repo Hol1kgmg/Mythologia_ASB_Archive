@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
 
 const spinnerVariants = cva(
   'inline-block animate-spin rounded-full border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]',
@@ -137,14 +137,16 @@ export const PulseSpinner: React.FC<PulseSpinnerProps> = ({
   };
 
   return (
-    <div
-      className={`inline-flex ${className || ''}`}
-      role="status"
-      aria-label={label || 'Loading'}
-    >
-      <div className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-opacity-20 relative`}>
-        <div className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-t-transparent animate-spin absolute inset-0`} />
-        <div className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-opacity-40 border-b-transparent animate-pulse absolute inset-0`} />
+    <div className={`inline-flex ${className || ''}`} role="status" aria-label={label || 'Loading'}>
+      <div
+        className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-opacity-20 relative`}
+      >
+        <div
+          className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-t-transparent animate-spin absolute inset-0`}
+        />
+        <div
+          className={`${sizeMap[size]} rounded-full border-4 ${colorMap[variant]} border-opacity-40 border-b-transparent animate-pulse absolute inset-0`}
+        />
       </div>
       <span className="sr-only">{label || 'Loading...'}</span>
     </div>
@@ -192,9 +194,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="flex flex-col items-center space-y-3">
           {renderSpinner()}
-          {message && (
-            <p className="text-white text-sm font-medium">{message}</p>
-          )}
+          {message && <p className="text-white text-sm font-medium">{message}</p>}
         </div>
       </div>
     </div>

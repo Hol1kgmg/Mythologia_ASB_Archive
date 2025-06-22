@@ -1,9 +1,10 @@
 'use client';
 
-import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { cva, type VariantProps } from 'class-variance-authority';
+import type React from 'react';
+import { Fragment } from 'react';
 import { Box, Button } from '..';
 
 const modalVariants = cva(
@@ -81,7 +82,10 @@ export function Modal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={handleOverlayClick} />
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={handleOverlayClick}
+          />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -127,19 +131,15 @@ export function Modal({
 
                 {/* Content */}
                 {children && (
-                  <Box className={`px-6 ${title || closeButton ? '' : 'pt-6'} ${footer ? 'pb-4' : 'pb-6'}`}>
-                    <div className="text-zinc-200">
-                      {children}
-                    </div>
+                  <Box
+                    className={`px-6 ${title || closeButton ? '' : 'pt-6'} ${footer ? 'pb-4' : 'pb-6'}`}
+                  >
+                    <div className="text-zinc-200">{children}</div>
                   </Box>
                 )}
 
                 {/* Footer */}
-                {footer && (
-                  <Box className="px-6 pb-6 pt-4 border-t border-zinc-600">
-                    {footer}
-                  </Box>
-                )}
+                {footer && <Box className="px-6 pb-6 pt-4 border-t border-zinc-600">{footer}</Box>}
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -187,10 +187,7 @@ export function ConfirmModal({
           <Button variant="secondary" onClick={onClose}>
             {cancelText}
           </Button>
-          <Button 
-            variant={variant === 'danger' ? 'danger' : 'primary'} 
-            onClick={handleConfirm}
-          >
+          <Button variant={variant === 'danger' ? 'danger' : 'primary'} onClick={handleConfirm}>
             {confirmText}
           </Button>
         </Box>
