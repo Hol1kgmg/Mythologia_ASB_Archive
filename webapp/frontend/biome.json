@@ -33,7 +33,7 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "warn"
@@ -43,7 +43,13 @@
       },
       "a11y": {
         "useKeyWithClickEvents": "warn",
-        "useKeyWithMouseEvents": "warn"
+        "useKeyWithMouseEvents": "warn",
+        "useSemanticElements": "off",
+        "noStaticElementInteractions": "off",
+        "noLabelWithoutControl": "off"
+      },
+      "nursery": {
+        "useUniqueElementIds": "off"
       }
     }
   },

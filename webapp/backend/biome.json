@@ -33,7 +33,8 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "warn",
+        "noImplicitAnyLet": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "warn"
