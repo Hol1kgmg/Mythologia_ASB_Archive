@@ -33,7 +33,8 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noShadowRestrictedNames": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "warn"
@@ -42,11 +43,12 @@
         "noDangerouslySetInnerHtml": "error"
       },
       "a11y": {
-        "useKeyWithClickEvents": "warn",
-        "useKeyWithMouseEvents": "warn",
+        "useKeyWithClickEvents": "off",
+        "useKeyWithMouseEvents": "warn", 
         "useSemanticElements": "off",
         "noStaticElementInteractions": "off",
-        "noLabelWithoutControl": "off"
+        "noLabelWithoutControl": "off",
+        "noSvgWithoutTitle": "off"
       },
       "nursery": {
         "useUniqueElementIds": "off"

@@ -15,6 +15,7 @@
     "format:write": "biome format --write src/ scripts/",
     "check": "biome check src/ scripts/",
     "check:fix": "biome check --write src/ scripts/",
+    "check:ci": "biome check --max-diagnostics 0 src/ scripts/",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- tsx src/migrate.ts",
