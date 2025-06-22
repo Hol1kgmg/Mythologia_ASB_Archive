@@ -11,7 +11,9 @@
 ### 現在の開発状況
 - **設計段階**: 完了 ✅
 - **実装段階**: 進行中 🚧
-- **最新更新**: 管理者シードデータ生成システム実装完了（issue#44）、認証システム実装、フロントエンド基盤構築済み
+- **次回対応予定**: Biomeによるコード品質管理環境構築（issue#48）
+- **最新完了**: 管理者APIセキュリティ強化（issue#50、PR#51完了）、フロントエンドAPI構造整理
+- **過去実装**: 管理者シードデータ生成システム（issue#44）、認証システム実装、フロントエンド基盤構築
 
 ## 技術スタック
 
@@ -328,7 +330,9 @@ npm run typecheck
 - [x] 認証システム実装（issue#46）
 - [x] 管理者シードデータ生成システム（issue#44）
 - [x] 管理者認証API実装完了（PR#49マージ済み）
-- [ ] 管理者認証セキュリティ強化（issue#50進行中）
+- [x] 管理者認証セキュリティ強化（issue#50、PR#51完了）
+- [x] フロントエンドAPI構造整理（src/apiディレクトリ統合）
+- [ ] Biomeによるコード品質管理環境構築（issue#48、次回対応予定）
 - [ ] データベースアダプター実装
 - [ ] 基本的なCRUD API
 
@@ -345,25 +349,43 @@ npm run typecheck
 
 ## 現在の開発状況
 
-### 🚨 緊急対応中: セキュリティ強化（Issue #50）
-**作業ブランチ**: `feature/#050_admin-api-security-enhancement`
+### ✅ 完了: セキュリティ強化（Issue #50）
+**完了ブランチ**: `feature/#050_admin-api-security-enhancement` → **PR #51 作成済み**
 
-**問題**: 管理者認証API（`/api/admin/auth/*`）がCORS設定のみでアクセス制御を行っており、Originヘッダー偽装により容易に回避可能
+**実装完了内容**:
+- ✅ HMAC-SHA256署名認証システム
+- ✅ Vercel APIキー認証
+- ✅ 時刻ベース認証（リプレイ攻撃対策、5分有効期限）
+- ✅ 多層防御システム（HMAC + APIKey + Origin検証）
+- ✅ セキュリティテストスクリプト
+- ✅ フロントエンド認証ヘルパー関数
+- ✅ 環境変数設定（ADMIN_HMAC_SECRET, VERCEL_API_KEY）
 
-**対策内容**:
-- HMAC署名認証の実装
-- API Key認証システムの追加  
-- 時刻ベース認証（リプレイ攻撃対策）
-- セキュリティヘッダーの強化
-
-**動作確認**:
+**セキュリティ向上結果**:
 ```bash
-# 現在（問題）: 偽装Originでアクセス可能
-curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 200 OK
+# 修正前（脆弱性）: 偽装Originでアクセス可能
+curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 200 OK ❌
 
-# 対策後（理想）: 適切な認証なしで拒否
-curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 404/401
+# 修正後（セキュア）: 適切な認証なしで拒否
+curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 404 ✅
+curl -H "X-HMAC-Signature: valid" -H "X-API-Key: valid" [admin login] → 200 ✅
 ```
+
+### 🔄 次回対応予定: コード品質管理環境構築（Issue #48）
+**予定ブランチ**: `feature/#048_biome-code-quality`
+
+**実装予定内容**:
+- Biomeインストール・設定（ESLint + Prettier統合代替）
+- 統一コードフォーマッティング（バックエンド・フロントエンド）
+- CI/CD品質チェック統合
+- VSCode開発環境設定
+- pre-commit hooks設定
+
+**期待される効果**:
+- コード品質の統一（チーム全体）
+- 開発効率向上（10-100倍高速なリント・フォーマット）
+- 自動コード修正・import整理
+- ビルド時間短縮
 
 ## Claude Codeへの指示
 
@@ -378,6 +400,8 @@ curl -H "Origin: https://stage-mythologia-asb.vercel.app" [admin login] → 404/
 7. **型安全性**を最優先にしたコード記述（TypeScript + Drizzle）
 8. **動的データ管理**の原則に従う（リーダー・種族・カテゴリの静的enumは使用禁止）
 9. **セキュリティ優先**：認証・認可機能は必ず多層防御を実装
+10. **API構造統一**：フロントエンドAPIファイルは`src/api`ディレクトリに配置
+11. **次回はBiome導入**：コード品質管理の統一化（issue#48）
 
 ### データベース操作の重要な注意事項
 

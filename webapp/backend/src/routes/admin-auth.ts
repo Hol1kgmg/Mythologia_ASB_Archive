@@ -6,6 +6,7 @@ import {
   adminRefreshRateLimit, 
   adminGeneralRateLimit 
 } from '../infrastructure/auth/middleware/admin-rate-limit.js';
+import { adminAPISecurity } from '../infrastructure/auth/middleware/admin-api-security.js';
 
 const adminAuthRoutes = new Hono();
 const adminAuthController = new AdminAuthController();
@@ -15,22 +16,22 @@ const adminAuthController = new AdminAuthController();
  * Base path: /api/admin/auth
  */
 
-// Public routes (no authentication required)
-adminAuthRoutes.use('/login', adminLoginRateLimit());
+// Public routes (no authentication required, but security-protected)
+adminAuthRoutes.use('/login', adminAPISecurity(), adminLoginRateLimit());
 adminAuthRoutes.post('/login', (c) => adminAuthController.login(c));
 
-adminAuthRoutes.use('/refresh', adminRefreshRateLimit());
+adminAuthRoutes.use('/refresh', adminAPISecurity(), adminRefreshRateLimit());
 adminAuthRoutes.post('/refresh', (c) => adminAuthController.refresh(c));
 
-// Protected routes (authentication required)
-adminAuthRoutes.use('/logout', adminGeneralRateLimit(), adminAuth());
+// Protected routes (authentication required + security-protected)
+adminAuthRoutes.use('/logout', adminAPISecurity(), adminGeneralRateLimit(), adminAuth());
 adminAuthRoutes.post('/logout', (c) => adminAuthController.logout(c));
 
-adminAuthRoutes.use('/me', adminGeneralRateLimit(), adminAuth());
+adminAuthRoutes.use('/me', adminAPISecurity(), adminGeneralRateLimit(), adminAuth());
 adminAuthRoutes.get('/me', (c) => adminAuthController.me(c));
 
 // Admin only routes
-adminAuthRoutes.use('/cleanup-sessions', adminGeneralRateLimit(), adminAuth(), requireAdminRole(['admin', 'super_admin']));
+adminAuthRoutes.use('/cleanup-sessions', adminAPISecurity(), adminGeneralRateLimit(), adminAuth(), requireAdminRole(['admin', 'super_admin']));
 adminAuthRoutes.post('/cleanup-sessions', (c) => adminAuthController.cleanupSessions(c));
 
 export { adminAuthRoutes };

@@ -24,7 +24,9 @@
     "db:seed:docker": "./scripts/seed-docker.sh",
     "db:clear": "dotenv -e .env.local -- tsx src/db/seeds/clear-data.ts",
     "db:clear:local": "dotenv -e .env.local -- tsx src/db/seeds/clear-data.ts",
-    "db:clear:docker": "./scripts/clear-docker.sh"
+    "db:clear:docker": "./scripts/clear-docker.sh",
+    "test:security": "dotenv -e .env.local -- tsx scripts/test-admin-api-security.ts",
+    "test:security:docker": "echo '🔒 Docker経由でセキュリティテスト実行中...' && docker run --rm --network host -v $(pwd):/app -w /app -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev node:20-alpine /bin/sh -c 'npm install && npm install tsx dotenv-cli -g && npx dotenv -e .env.local -- npx tsx scripts/test-admin-api-security.ts'"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.4",

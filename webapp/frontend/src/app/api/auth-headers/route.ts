@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getOrGenerateJWT } from '../../../lib/auth/jwt';
-import { generateHMACSignature } from '../../../lib/auth/hmac';
+import { getOrGenerateJWT } from '../../../api/auth/jwt';
+import { generateHMACSignature } from '../../../api/auth/hmac';
 
 export async function POST(request: NextRequest) {
   try {
