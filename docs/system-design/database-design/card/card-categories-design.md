@@ -47,9 +47,22 @@ CREATE TABLE categories (
 );
 ```
 
-### card_categoriesテーブル（中間テーブル）
+### cardsテーブル（カテゴリ直接参照）
 
 ```sql
+-- cardsテーブルでのカテゴリ参照（現在の実装）
+CREATE TABLE cards (
+  -- 他のカラム...
+  category_id INTEGER NULL,             -- カテゴリID（NULL可）
+  -- 他のカラム...
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
+```
+
+### card_categoriesテーブル（中間テーブル - 将来拡張用）
+
+```sql
+-- 将来的な多対多関係での複数カテゴリ対応（オプション）
 CREATE TABLE card_categories (
   card_id VARCHAR(36) NOT NULL,         -- カードID
   category_id INTEGER NOT NULL,         -- カテゴリID

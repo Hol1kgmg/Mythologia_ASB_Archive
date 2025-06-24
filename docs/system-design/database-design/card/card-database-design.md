@@ -68,12 +68,13 @@ CREATE TABLE cards (
   card_number VARCHAR(20) UNIQUE NOT NULL, -- カード番号（例: "10015", "80012"）
   name VARCHAR(100) NOT NULL,           -- カード名
   leader_id INTEGER NULL,               -- リーダーID（1-5、NULL可）
-  tribe_id INTEGER NULL,                -- 種族ID
+  tribe_id INTEGER NULL,                -- 種族ID（NULL可）
+  category_id INTEGER NULL,             -- カテゴリID（NULL可）
   rarity_id INTEGER NOT NULL,           -- レアリティID（1-4）
   card_type_id INTEGER NOT NULL,        -- カードタイプID（1-3）
   cost INTEGER NOT NULL,                -- コスト
   power INTEGER NOT NULL,               -- パワー
-  effects JSON NOT NULL,                -- 効果（JSON配列）
+  effects JSON NULL,                    -- 効果（JSON配列、NULL可）
   flavor_text TEXT NULL,                -- フレーバーテキスト
   image_url VARCHAR(500) NOT NULL,      -- カード画像URL
   artist VARCHAR(100) NULL,             -- イラストレーター
@@ -85,14 +86,14 @@ CREATE TABLE cards (
   
   -- 外部キー制約
   FOREIGN KEY (leader_id) REFERENCES leaders(id) ON DELETE SET NULL,
-  FOREIGN KEY (tribe_id) REFERENCES tribes(id),
-  FOREIGN KEY (card_set_id) REFERENCES card_sets(id)
+  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE SET NULL,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+  FOREIGN KEY (card_set_id) REFERENCES card_sets(id) ON DELETE RESTRICT
   
-  -- Note: カテゴリ情報は中間テーブル card_categories で管理
-  -- 1つのカードに複数のカテゴリを割り当て可能
-  -- 主カテゴリは is_primary フラグで識別
-  -- 中間テーブルは論理削除（is_active, deleted_at）で管理
-  -- 例: カード「魔法騎士」→ カテゴリ「騎士」(primary) + 「魔法使い」(secondary)
+  -- Note: カテゴリは2つのアプローチが可能
+  -- 1. Direct Reference: category_idで直接カテゴリを参照（実装済み）
+  -- 2. Many-to-Many: card_categoriesテーブルで複数カテゴリ管理（将来拡張）
+  -- 現在は1の直接参照アプローチを採用
 );
 ```
 
@@ -318,6 +319,10 @@ CHECK (leader_id IS NULL OR leader_id BETWEEN 1 AND 5);
 ALTER TABLE cards 
 ADD CONSTRAINT chk_tribe_id 
 CHECK (tribe_id IS NULL OR tribe_id > 0);
+
+ALTER TABLE cards 
+ADD CONSTRAINT chk_category_id 
+CHECK (category_id IS NULL OR category_id > 0);
 
 ALTER TABLE cards 
 ADD CONSTRAINT chk_cost 

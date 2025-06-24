@@ -588,15 +588,16 @@ interface CardDomain {
   name: CardName;                // カード名
   
   // 戦略属性
-  leaderId?: number;             // 専用リーダーID（leaders.id）
-  tribeId?: Tribe;               // 種族ID
+  leaderId?: number;             // 専用リーダーID（leaders.id、NULL可）
+  tribeId?: number;              // 種族ID（NULL可）
+  categoryId?: number;           // カテゴリID（NULL可）
   typeId: CardType;              // カードタイプID
   rarityId: Rarity;              // レアリティID
   
   // 戦闘属性
   cost: Cost;                    // コスト
   power: Power;                  // パワー
-  effects: CardEffect[];         // 効果リスト
+  effects?: CardEffect[];        // 効果リスト（NULL可 - バニラカード対応）
   
   // メタ情報
   cardSetId: string;             // 所属カードセットID
