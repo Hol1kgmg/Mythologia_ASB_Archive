@@ -7,6 +7,7 @@ import {
   adminLoginRateLimit,
   adminRefreshRateLimit,
 } from '../infrastructure/auth/middleware/admin-rate-limit.js';
+import { adminSecretURL } from '../infrastructure/auth/middleware/admin-secret-url.js';
 
 const adminAuthRoutes = new Hono();
 const adminAuthController = new AdminAuthController();
@@ -15,6 +16,9 @@ const adminAuthController = new AdminAuthController();
  * Admin Authentication Routes
  * Base path: /api/admin/auth
  */
+
+// Apply secret URL validation to all admin routes
+adminAuthRoutes.use('*', adminSecretURL());
 
 // Public routes (no authentication required, but security-protected)
 adminAuthRoutes.use('/login', adminAPISecurity(), adminLoginRateLimit());

@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import NotFoundPage from '../../../components/page/NotFoundPage';
-import { Alert, BackgroundPattern, Box } from '../../../components/ui';
+import NotFoundPage from "@/components/page/NotFoundPage";
+import { Alert, BackgroundPattern, Box } from "@/components/ui";
 
 // ステージング環境（開発・ステージング両方）でのみUIサンプルページを有効化
 const isUISampleEnabled = process.env.NEXT_PUBLIC_IS_STAGING === 'true';
