@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
-import { adminAPISecurity } from '../infrastructure/auth/middleware/admin-api-security.js';
-import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/admin-auth.js';
-import { adminGeneralRateLimit } from '../infrastructure/auth/middleware/admin-rate-limit.js';
+import { adminAuth, requireAdminRole } from '../infrastructure/auth/middleware/auth.js';
+import { adminGeneralRateLimit } from '../infrastructure/auth/middleware/rate-limit.js';
 import {
+  adminAPISecurity,
   adminSecretURL,
   getAdminAccessStats,
-} from '../infrastructure/auth/middleware/admin-secret-url.js';
+} from '../infrastructure/auth/middleware/security.js';
 import { logger } from '../utils/logger.js';
 
 const adminMonitoringRoutes = new Hono();
