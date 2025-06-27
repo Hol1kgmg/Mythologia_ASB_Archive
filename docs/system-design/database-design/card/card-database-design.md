@@ -67,8 +67,7 @@ CREATE TABLE cards (
   id VARCHAR(36) PRIMARY KEY,           -- カードID（UUID形式）
   card_number VARCHAR(20) UNIQUE NOT NULL, -- カード番号（例: "10015", "80012"）
   name VARCHAR(100) NOT NULL,           -- カード名
-  leader_id INTEGER NULL,               -- リーダーID（1-5、NULL可）
-  tribe_id INTEGER NULL,                -- 種族ID（NULL可）
+  tribe_id INTEGER NOT NULL,            -- 種族ID（必須）
   category_id INTEGER NULL,             -- カテゴリID（NULL可）
   rarity_id INTEGER NOT NULL,           -- レアリティID（1-4）
   card_type_id INTEGER NOT NULL,        -- カードタイプID（1-3）
@@ -76,7 +75,7 @@ CREATE TABLE cards (
   power INTEGER NOT NULL,               -- パワー
   effects JSON NULL,                    -- 効果（JSON配列、NULL可）
   flavor_text TEXT NULL,                -- フレーバーテキスト
-  image_url VARCHAR(500) NOT NULL,      -- カード画像URL
+  image_url VARCHAR(500) NULL,          -- カード画像URL（NULL可）
   artist VARCHAR(100) NULL,             -- イラストレーター
   card_set_id VARCHAR(36) NOT NULL,     -- カードセットID
   is_active BOOLEAN DEFAULT TRUE,       -- アクティブフラグ（論理削除用）
@@ -85,15 +84,12 @@ CREATE TABLE cards (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
   -- 外部キー制約
-  FOREIGN KEY (leader_id) REFERENCES leaders(id) ON DELETE SET NULL,
-  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE SET NULL,
+  FOREIGN KEY (tribe_id) REFERENCES tribes(id) ON DELETE RESTRICT,
   FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
   FOREIGN KEY (card_set_id) REFERENCES card_sets(id) ON DELETE RESTRICT
   
-  -- Note: カテゴリは2つのアプローチが可能
-  -- 1. Direct Reference: category_idで直接カテゴリを参照（実装済み）
-  -- 2. Many-to-Many: card_categoriesテーブルで複数カテゴリ管理（将来拡張）
-  -- 現在は1の直接参照アプローチを採用
+  -- Note: leader_idは削除（サンプルデータ分析により不要と判明）
+  -- カードはリーダーに直接依存せず、種族とカテゴリによる分類のみを使用
 );
 ```
 
@@ -163,8 +159,8 @@ CREATE INDEX idx_cards_name ON cards(name);
 CREATE INDEX idx_cards_card_number ON cards(card_number);
 CREATE INDEX idx_cards_rarity_id ON cards(rarity_id);
 CREATE INDEX idx_cards_card_type_id ON cards(card_type_id);
-CREATE INDEX idx_cards_leader_id ON cards(leader_id);
 CREATE INDEX idx_cards_tribe_id ON cards(tribe_id);
+CREATE INDEX idx_cards_category_id ON cards(category_id);
 CREATE INDEX idx_cards_cost ON cards(cost);
 CREATE INDEX idx_cards_power ON cards(power);
 CREATE INDEX idx_cards_set ON cards(card_set_id);
@@ -173,8 +169,8 @@ CREATE INDEX idx_cards_deleted_at ON cards(deleted_at);
 
 -- 複合インデックス（よく使われる組み合わせ）
 CREATE INDEX idx_cards_rarity_type ON cards(rarity_id, card_type_id);
-CREATE INDEX idx_cards_leader_cost ON cards(leader_id, cost);
 CREATE INDEX idx_cards_tribe_type ON cards(tribe_id, card_type_id);
+CREATE INDEX idx_cards_tribe_category ON cards(tribe_id, category_id);
 CREATE INDEX idx_cards_cost_power ON cards(cost, power);
 CREATE INDEX idx_cards_set_active ON cards(card_set_id, is_active);
 
@@ -313,12 +309,8 @@ ADD CONSTRAINT chk_card_type_id
 CHECK (card_type_id BETWEEN 1 AND 3);
 
 ALTER TABLE cards 
-ADD CONSTRAINT chk_leader_id 
-CHECK (leader_id IS NULL OR leader_id BETWEEN 1 AND 5);
-
-ALTER TABLE cards 
 ADD CONSTRAINT chk_tribe_id 
-CHECK (tribe_id IS NULL OR tribe_id > 0);
+CHECK (tribe_id > 0);
 
 ALTER TABLE cards 
 ADD CONSTRAINT chk_category_id 
@@ -452,11 +444,11 @@ CREATE TABLE card_versions (
 ```sql
 -- よく使われるクエリパターンと最適化
 
--- 1. リーダー別カード検索（leadersテーブル結合）
-SELECT c.*, l.name as leader_name, l.focus as leader_focus
+-- 1. 種族別カード検索（tribesテーブル結合）
+SELECT c.*, t.name as tribe_name
 FROM cards c
-LEFT JOIN leaders l ON c.leader_id = l.id
-WHERE c.leader_id = ? AND c.is_active = TRUE AND l.is_active = TRUE
+LEFT JOIN tribes t ON c.tribe_id = t.id
+WHERE c.tribe_id = ? AND c.is_active = TRUE AND t.isActive = TRUE
 ORDER BY c.cost, c.name;
 
 -- 2. コストレンジ検索
@@ -501,12 +493,13 @@ WHERE card_id = ? AND category_id = ?;
 interface CardCacheKeys {
   all: "cards:all";                     // 全カード（短期キャッシュ）
   bySet: "cards:set:{setId}";          // セット別
-  byLeader: "cards:leader:{leaderId}";  // リーダー別
-  leaders: "leaders:all";              // 全リーダー情報
-  leaderById: "leader:{leaderId}";      // 単体リーダー
+  byTribe: "cards:tribe:{tribeId}";    // 種族別
+  byCategory: "cards:category:{categoryId}"; // カテゴリ別
   byType: "cards:type:{cardType}";     // タイプ別
   single: "card:{cardId}";             // 単体カード（長期キャッシュ）
   search: "cards:search:{query}";       // 検索結果
+  tribes: "tribes:all";                // 全種族情報
+  categories: "categories:all";         // 全カテゴリ情報
 }
 ```
 
