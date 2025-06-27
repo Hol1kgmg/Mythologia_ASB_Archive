@@ -86,3 +86,6 @@ docker/postgres/data/
 # Development databases
 postgres_data/
 redis_data/
+
+# AI Agent directory
+.agent/
