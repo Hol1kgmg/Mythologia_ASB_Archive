@@ -1,10 +1,12 @@
 // Admin system schemas
 export * from './admin.js';
 
-// Game data schemas (future implementation)
-// export * from './cards.js';
+// Game data schemas
+export * from './tribe.js';
+export * from './card.js';
+
+// Future implementation
 // export * from './decks.js';
-// export * from './tribes.js';
 // export * from './leaders.js';
 
 // User system schemas (future implementation)

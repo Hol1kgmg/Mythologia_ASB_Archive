@@ -1,5 +1,7 @@
 // 型定義
 export * from './types/dto/card.dto';
+export * from './types/dto/category.dto';
+export * from './types/dto/card-set.dto';
 export * from './types/dto/leader.dto';
 export * from './types/dto/admin.dto';
 export * from './types/dto/tribe.dto';
@@ -31,3 +33,4 @@ export {
 export * from './constants/game-rules';
 export * from './constants/rarities';
 export * from './constants/card-types';
+export * from './constants/card-effects';
