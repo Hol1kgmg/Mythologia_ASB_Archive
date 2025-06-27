@@ -1,8 +1,5 @@
 import { Hono } from 'hono';
-import {
-  applicationAuth,
-  getAuthInfo,
-} from '../infrastructure/auth/middleware/application-auth.js';
+import { applicationAuth, getAuthInfo } from '../infrastructure/auth/middleware/auth.js';
 
 // Environment variables
 const JWT_SECRET = process.env.JWT_SECRET!;
