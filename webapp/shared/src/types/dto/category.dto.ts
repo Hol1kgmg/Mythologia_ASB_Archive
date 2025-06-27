@@ -1,3 +1,5 @@
+import type { TribeDTO } from './tribe.dto.js';
+
 export interface CategoryDto {
   id: number;
   tribeId: number;
@@ -10,7 +12,7 @@ export interface CategoryDto {
   updatedAt: string;
   
   // 関連データ（JOIN時に含まれる）
-  tribe?: TribeDto;
+  tribe?: TribeDTO;
 }
 
 export interface CategoryListDto {
@@ -22,17 +24,7 @@ export interface CategoryListDto {
   };
 }
 
-// TribeDtoとPaginationDtoは他のファイルからimport
-interface TribeDto {
-  id: number;
-  name: string;
-  thematic?: string;
-  description?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  masterCardId?: string;
-}
+// PaginationDtoは他のファイルからimport
 
 interface PaginationDto {
   page: number;

@@ -9,17 +9,15 @@ export enum EffectType {
   DESTROY = 8,      // 破壊
   SHIELD = 9,       // シールド
   FIELD = 10,       // フィールド変更
+  BP_INCREASE = 11, // BP増加
 }
 
 export enum TriggerType {
-  ON_PLAY = 1,          // プレイ時
-  ON_TURN_START = 2,    // ターン開始時
-  ON_TURN_END = 3,      // ターン終了時
-  ON_DAMAGE = 4,        // ダメージ受信時
-  ON_DESTROY = 5,       // 破壊時
-  ON_SUMMON = 6,        // 召喚時
-  ON_DEATH = 7,         // 死亡時
-  PASSIVE = 8,          // 常時効果
+  ON_SUMMON = 1,        // 召喚時
+  ON_ATTACK_SUCCESS = 2, // 攻撃成功時
+  ON_DEFENSE_SUCCESS = 3, // 防御成功時
+  HAND_ACTIVATE = 4,     // 手札発動
+  FIELD_ACTIVATE = 5,    // 戦場発動
 }
 
 export enum TargetType {
@@ -102,56 +100,55 @@ export const EFFECT_TYPES = {
     description: 'フィールドを変更する',
     icon: '🌍',
   },
+  [EffectType.BP_INCREASE]: {
+    id: EffectType.BP_INCREASE,
+    name: 'BP増加',
+    nameEn: 'BP Increase',
+    description: 'BPを増加させる',
+    icon: '⚡',
+  },
 } as const;
 
 export const TRIGGER_TYPES = {
-  [TriggerType.ON_PLAY]: {
-    id: TriggerType.ON_PLAY,
-    name: 'プレイ時',
-    nameEn: 'On Play',
-    description: 'カードがプレイされた時に発動',
-  },
-  [TriggerType.ON_TURN_START]: {
-    id: TriggerType.ON_TURN_START,
-    name: 'ターン開始時',
-    nameEn: 'Turn Start',
-    description: 'ターン開始時に発動',
-  },
-  [TriggerType.ON_TURN_END]: {
-    id: TriggerType.ON_TURN_END,
-    name: 'ターン終了時',
-    nameEn: 'Turn End',
-    description: 'ターン終了時に発動',
-  },
-  [TriggerType.ON_DAMAGE]: {
-    id: TriggerType.ON_DAMAGE,
-    name: 'ダメージ時',
-    nameEn: 'On Damage',
-    description: 'ダメージを受けた時に発動',
-  },
-  [TriggerType.ON_DESTROY]: {
-    id: TriggerType.ON_DESTROY,
-    name: '破壊時',
-    nameEn: 'On Destroy',
-    description: '破壊された時に発動',
-  },
   [TriggerType.ON_SUMMON]: {
     id: TriggerType.ON_SUMMON,
     name: '召喚時',
     nameEn: 'On Summon',
-    description: '召喚された時に発動',
+    description: 'カードが召喚された時に発動する効果',
+    icon: '✨',
+    color: '#3B88F2',        // ブルー
   },
-  [TriggerType.ON_DEATH]: {
-    id: TriggerType.ON_DEATH,
-    name: '死亡時',
-    nameEn: 'On Death',
-    description: '死亡した時に発動',
+  [TriggerType.ON_ATTACK_SUCCESS]: {
+    id: TriggerType.ON_ATTACK_SUCCESS,
+    name: '攻撃成功時',
+    nameEn: 'On Attack Success',
+    description: '攻撃が成功した時に発動する効果',
+    icon: '⚔️',
+    color: '#D72E21',        // レッド
   },
-  [TriggerType.PASSIVE]: {
-    id: TriggerType.PASSIVE,
-    name: '常時効果',
-    nameEn: 'Passive',
-    description: '常に効果が発動している',
+  [TriggerType.ON_DEFENSE_SUCCESS]: {
+    id: TriggerType.ON_DEFENSE_SUCCESS,
+    name: '防御成功時',
+    nameEn: 'On Defense Success',
+    description: '防御が成功した時に発動する効果',
+    icon: '🛡️',
+    color: '#535351',        // グレー
+  },
+  [TriggerType.HAND_ACTIVATE]: {
+    id: TriggerType.HAND_ACTIVATE,
+    name: '手札発動',
+    nameEn: 'Hand Activate',
+    description: '手札から発動できる効果',
+    icon: '🎴',
+    color: '#CD9814',        // 黄色
+  },
+  [TriggerType.FIELD_ACTIVATE]: {
+    id: TriggerType.FIELD_ACTIVATE,
+    name: '戦場発動',
+    nameEn: 'Field Activate',
+    description: '戦場にいる時に発動できる効果',
+    icon: '🌍',
+    color: '#662FA3',        // パープル
   },
 } as const;
 

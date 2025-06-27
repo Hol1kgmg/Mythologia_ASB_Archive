@@ -1,7 +1,9 @@
 // Import types from other DTOs
-import type { TribeDto } from './tribe.dto.js';
+import type { TribeDTO } from './tribe.dto.js';
 import type { CategoryDto } from './category.dto.js';
 import type { CardSetDto } from './card-set.dto.js';
+import type { RarityDto } from './rarity.dto.js';
+import type { CardTypeDto } from './card-type.dto.js';
 
 export interface CardDto {
   id: string;
@@ -24,9 +26,11 @@ export interface CardDto {
   deletedAt?: string;
   
   // 関連データ（JOIN時に含まれる）
-  tribe?: TribeDto;
+  tribe?: TribeDTO;
   category?: CategoryDto;
   cardSet?: CardSetDto;
+  rarity?: RarityDto;
+  cardType?: CardTypeDto;
   
   // 表示用の計算済みプロパティ
   displayName?: string;        // レアリティプレフィックス付き名前
@@ -34,16 +38,8 @@ export interface CardDto {
 }
 
 export interface CardEffectDto {
-  description?: string;        // 効果説明文
-  abilities?: Array<{
-    type: string;              // 効果タイプ
-    value?: number;            // 効果値
-    target?: string;           // 対象
-  }>;
-  triggers?: Array<{
-    type: string;              // トリガータイプ
-    condition?: string;        // 発動条件
-  }>;
+  type: number;                // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動
+  text: string;                // 効果テキスト
 }
 
 export interface CardListDto {

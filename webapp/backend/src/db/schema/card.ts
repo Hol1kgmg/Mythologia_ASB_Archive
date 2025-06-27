@@ -14,6 +14,8 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { tribes } from './tribe.js';
+import { rarities } from './rarities.js';
+import { cardTypes } from './card-types.js';
 
 // Card sets table (収録パック)
 export const cardSets = pgTable(
@@ -79,18 +81,10 @@ export const cards = pgTable(
     cardTypeId: integer('card_type_id').notNull(),
     cost: integer('cost').notNull(),
     power: integer('power').notNull(),
-    effects: json('effects').$type<{
-      description?: string;
-      abilities?: Array<{
-        type: string;
-        value?: number;
-        target?: string;
-      }>;
-      triggers?: Array<{
-        type: string;
-        condition?: string;
-      }>;
-    }>(),
+    effects: json('effects').$type<Array<{
+      type: number;           // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動
+      text: string;           // 効果テキスト
+    }>>(),
     flavorText: text('flavor_text'),
     imageUrl: varchar('image_url', { length: 500 }),
     artist: varchar('artist', { length: 100 }),
@@ -113,6 +107,14 @@ export const cards = pgTable(
     cardSetFK: foreignKey({
       columns: [table.cardSetId],
       foreignColumns: [cardSets.id],
+    }),
+    rarityFK: foreignKey({
+      columns: [table.rarityId],
+      foreignColumns: [rarities.id],
+    }),
+    cardTypeFK: foreignKey({
+      columns: [table.cardTypeId],
+      foreignColumns: [cardTypes.id],
     }),
     
     // Basic indexes
@@ -162,6 +164,14 @@ export const cardsRelations = relations(cards, ({ one }) => ({
   cardSet: one(cardSets, {
     fields: [cards.cardSetId],
     references: [cardSets.id],
+  }),
+  rarity: one(rarities, {
+    fields: [cards.rarityId],
+    references: [rarities.id],
+  }),
+  cardType: one(cardTypes, {
+    fields: [cards.cardTypeId],
+    references: [cardTypes.id],
   }),
 }));
 
