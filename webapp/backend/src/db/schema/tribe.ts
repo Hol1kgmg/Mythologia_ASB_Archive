@@ -9,6 +9,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { leaders } from './leaders';
 
 // Tribes table (種族テーブル)
 export const tribes = pgTable(
@@ -16,6 +17,7 @@ export const tribes = pgTable(
   {
     id: integer('id').primaryKey(),
     name: varchar('name', { length: 50 }).notNull().unique(),
+    leaderId: integer('leader_id').references(() => leaders.id, { onDelete: 'set null' }), // リーダーID外部キー
     thematic: varchar('thematic', { length: 100 }),
     description: text('description'),
     isActive: boolean('is_active').default(true).notNull(),
@@ -26,6 +28,7 @@ export const tribes = pgTable(
   (table) => ({
     nameIdx: index('tribes_name_idx').on(table.name),
     activeIdx: index('tribes_active_idx').on(table.isActive),
+    leaderIdx: index('tribes_leader_idx').on(table.leaderId), // リーダーIDインデックス
   })
 );
 

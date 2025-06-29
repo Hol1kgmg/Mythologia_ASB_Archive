@@ -13,9 +13,9 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { tribes } from './tribe.js';
-import { rarities } from './rarities.js';
-import { cardTypes } from './card-types.js';
+import { tribes } from './tribe';
+import { rarities } from './rarities';
+import { cardTypes } from './card-types';
 
 // Card sets table (収録パック)
 export const cardSets = pgTable(
