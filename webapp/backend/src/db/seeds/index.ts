@@ -8,6 +8,7 @@
 import { logger } from '../../utils/logger.js';
 import { db } from '../client.js';
 import { seedAdmins } from './admin-seeds.js';
+import { seedCardSystem } from './card-system-seeds.js';
 
 // シード実行のオプション
 export interface SeedOptions {
@@ -44,7 +45,7 @@ export async function runAllSeeds(options: SeedOptions = {}) {
         cards: options.counts?.cards ?? 500,
         decks: options.counts?.decks ?? 50,
       },
-      tables: options.tables ?? ['admins', 'users', 'cards', 'decks'],
+      tables: options.tables ?? ['admins', 'card-system', 'users', 'cards', 'decks'],
     };
 
     // 管理者データのシード
@@ -54,6 +55,12 @@ export async function runAllSeeds(options: SeedOptions = {}) {
         clearExisting: opts.clearExisting,
         count: opts.counts.admins,
       });
+    }
+
+    // カードシステム基盤データのシード
+    if (opts.tables.includes('card-system')) {
+      logger.info('Seeding card system data...');
+      await seedCardSystem();
     }
 
     // TODO: ユーザーデータのシード
@@ -131,6 +138,10 @@ if (isMainModule) {
 
   if (args.includes('--admins-only')) {
     options.tables = ['admins'];
+  }
+
+  if (args.includes('--card-system-only')) {
+    options.tables = ['card-system'];
   }
 
   // カウントの指定例: --count-admins=10

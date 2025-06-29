@@ -13,9 +13,9 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { tribes } from './tribe';
-import { rarities } from './rarities';
 import { cardTypes } from './card-types';
+import { rarities } from './rarities';
+import { tribes } from './tribe';
 
 // Card sets table (収録パック)
 export const cardSets = pgTable(
@@ -81,10 +81,13 @@ export const cards = pgTable(
     cardTypeId: integer('card_type_id').notNull(),
     cost: integer('cost').notNull(),
     power: integer('power').notNull(),
-    effects: json('effects').$type<Array<{
-      type: number;           // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動
-      text: string;           // 効果テキスト
-    }>>(),
+    effects:
+      json('effects').$type<
+        Array<{
+          type: number; // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動
+          text: string; // 効果テキスト
+        }>
+      >(),
     flavorText: text('flavor_text'),
     imageUrl: varchar('image_url', { length: 500 }),
     artist: varchar('artist', { length: 100 }),
@@ -116,7 +119,7 @@ export const cards = pgTable(
       columns: [table.cardTypeId],
       foreignColumns: [cardTypes.id],
     }),
-    
+
     // Basic indexes
     nameIdx: index('cards_name_idx').on(table.name),
     cardNumberIdx: index('cards_card_number_idx').on(table.cardNumber),
@@ -129,7 +132,7 @@ export const cards = pgTable(
     cardSetIdx: index('cards_card_set_idx').on(table.cardSetId),
     activeIdx: index('cards_active_idx').on(table.isActive),
     deletedAtIdx: index('cards_deleted_at_idx').on(table.deletedAt),
-    
+
     // Composite indexes (よく使われる組み合わせ)
     rarityTypeIdx: index('cards_rarity_type_idx').on(table.rarityId, table.cardTypeId),
     tribeTypeIdx: index('cards_tribe_type_idx').on(table.tribeId, table.cardTypeId),
