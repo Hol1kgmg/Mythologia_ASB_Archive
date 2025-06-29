@@ -9,6 +9,7 @@ import { logger } from '../../utils/logger.js';
 import { db } from '../client.js';
 import { seedAdmins } from './admin-seeds.js';
 import { seedCardSystem } from './card-system-seeds.js';
+import { seedSampleCardData } from './sample-card-data.js';
 
 // シード実行のオプション
 export interface SeedOptions {
@@ -45,7 +46,7 @@ export async function runAllSeeds(options: SeedOptions = {}) {
         cards: options.counts?.cards ?? 500,
         decks: options.counts?.decks ?? 50,
       },
-      tables: options.tables ?? ['admins', 'card-system', 'users', 'cards', 'decks'],
+      tables: options.tables ?? ['admins', 'card-system', 'sample-cards', 'users', 'cards', 'decks'],
     };
 
     // 管理者データのシード
@@ -61,6 +62,12 @@ export async function runAllSeeds(options: SeedOptions = {}) {
     if (opts.tables.includes('card-system')) {
       logger.info('Seeding card system data...');
       await seedCardSystem();
+    }
+
+    // サンプルカードデータのシード
+    if (opts.tables.includes('sample-cards')) {
+      logger.info('Seeding sample card data...');
+      await seedSampleCardData();
     }
 
     // TODO: ユーザーデータのシード
@@ -142,6 +149,14 @@ if (isMainModule) {
 
   if (args.includes('--card-system-only')) {
     options.tables = ['card-system'];
+  }
+
+  if (args.includes('--sample-cards-only')) {
+    options.tables = ['sample-cards'];
+  }
+
+  if (args.includes('--card-system') && args.includes('--sample-cards')) {
+    options.tables = ['card-system', 'sample-cards'];
   }
 
   // カウントの指定例: --count-admins=10

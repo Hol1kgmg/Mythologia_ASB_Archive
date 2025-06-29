@@ -10,6 +10,7 @@ ARGS="$*"
 
 docker run --rm --network host \
   -v "$(pwd):/app" \
+  -v "$(pwd)/../../.agent:/workspace/.agent" \
   -w /app \
   -e DATABASE_URL=postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev \
   node:20-alpine \
