@@ -18,6 +18,7 @@ export enum TriggerType {
   ON_DEFENSE_SUCCESS = 3, // 防御成功時
   HAND_ACTIVATE = 4,     // 手札発動
   FIELD_ACTIVATE = 5,    // 戦場発動
+  TRAIT = 6,            // 特性
 }
 
 export enum TargetType {
@@ -149,6 +150,14 @@ export const TRIGGER_TYPES = {
     description: '戦場にいる時に発動できる効果',
     icon: '🌍',
     color: '#662FA3',        // パープル
+  },
+  [TriggerType.TRAIT]: {
+    id: TriggerType.TRAIT,
+    name: '特性',
+    nameEn: 'Trait',
+    description: '常時発動している特性効果',
+    icon: '🔮',
+    color: '#8B4B8C',        // 深紫色
   },
 } as const;
 

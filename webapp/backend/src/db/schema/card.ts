@@ -84,7 +84,7 @@ export const cards = pgTable(
     effects:
       json('effects').$type<
         Array<{
-          type: number; // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動
+          type: number; // TriggerType: 1:召喚時, 2:攻撃成功時, 3:防御成功時, 4:手札発動, 5:戦場発動, 6:特性
           text: string; // 効果テキスト
         }>
       >(),

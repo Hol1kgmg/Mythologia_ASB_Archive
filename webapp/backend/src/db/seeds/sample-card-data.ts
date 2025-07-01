@@ -1,29 +1,26 @@
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import { db } from '../client.js';
 import { cards } from '../schema/index.js';
 
 /**
  * サンプルカードデータ投入スクリプト
- * 
+ *
  * .agent/mythologia_card.csvからサンプルカードデータを読み込み、
  * データベースに投入する
  */
 
 interface CsvCardData {
-  No: string;
   CardNum: string;
   name: string;
-  leader_id: string;
   tribe_id: string;
   category_id: string;
   rarity_id: string;
   card_type_id: string;
   cost: string;
   power: string;
-  card_set_id: string;
   effect1_type: string;
   effect1: string;
   effect2_type: string;
@@ -36,28 +33,29 @@ interface CsvCardData {
 function parseCsvCardData(csvContent: string): CsvCardData[] {
   const lines = csvContent.split('\n');
   const headers = lines[0].split(',');
-  
-  return lines.slice(1)
-    .filter(line => line.trim() && !line.startsWith(','))
-    .map(line => {
+
+  return lines
+    .slice(1)
+    .filter((line) => line.trim()) // 空行のみ除外
+    .map((line) => {
       // CSVの値解析（カンマが含まれる可能性を考慮）
-      const values = line.split(',').map(v => v.trim());
+      const values = line.split(',').map((v) => v.trim());
       const data: any = {};
-      
+
       headers.forEach((header, index) => {
         data[header.trim()] = values[index] || '';
       });
-      
+
       return data as CsvCardData;
     })
-    .filter(data => data.CardNum && data.name); // 有効なデータのみ
+    .filter((data) => data.CardNum && data.name); // 有効なデータのみ
 }
 
 /**
  * CSVデータをデータベース形式に変換
  */
 function transformCardData(csvData: CsvCardData[]): any[] {
-  return csvData.map((row, index) => {
+  return csvData.map((row, _index) => {
     // エフェクトをJSON形式に変換
     const effects: any[] = [];
     if (row.effect1 && row.effect1_type) {
@@ -100,12 +98,12 @@ function transformCardData(csvData: CsvCardData[]): any[] {
  */
 export async function seedSampleCardData() {
   console.log('🎴 Loading sample card data from CSV...');
-  
+
   try {
     // CSVファイルのパス解決（環境に応じて）
     const basePath = process.cwd();
     let csvPath: string;
-    
+
     // Dockerコンテナ内の場合、Volume mountされたパスを確認
     if (fs.existsSync('/workspace/.agent/mythologia_card.csv')) {
       csvPath = '/workspace/.agent/mythologia_card.csv';
@@ -114,29 +112,32 @@ export async function seedSampleCardData() {
     } else if (fs.existsSync(path.join(basePath, '../../.agent/mythologia_card.csv'))) {
       csvPath = path.join(basePath, '../../.agent/mythologia_card.csv');
     } else {
-      throw new Error('mythologia_card.csv not found. Please ensure the file exists in .agent directory');
+      throw new Error(
+        'mythologia_card.csv not found. Please ensure the file exists in .agent directory'
+      );
     }
-    
+
     console.log(`  📂 Reading CSV from: ${csvPath}`);
     const csvContent = fs.readFileSync(csvPath, 'utf-8');
-    
+
     // CSVデータの解析
     const csvData = parseCsvCardData(csvContent);
     console.log(`  📄 Parsed ${csvData.length} cards from CSV`);
-    
+
     // データ変換
     const cardData = transformCardData(csvData);
     console.log(`  🔄 Transformed ${cardData.length} cards for database`);
-    
+
     // バッチ投入（重複スキップ）
     await db.insert(cards).values(cardData).onConflictDoNothing();
-    
+
     console.log('✅ Sample card data seeded successfully!');
     console.log(`  📊 Cards processed: ${cardData.length}`);
-    console.log(`  🎯 Card types: ${new Set(cardData.map(c => c.cardTypeId)).size} types`);
-    console.log(`  🏆 Rarities: ${new Set(cardData.map(c => c.rarityId)).size} rarities`);
-    console.log(`  🐉 Tribes: ${new Set(cardData.map(c => c.tribeId).filter(Boolean)).size} tribes`);
-    
+    console.log(`  🎯 Card types: ${new Set(cardData.map((c) => c.cardTypeId)).size} types`);
+    console.log(`  🏆 Rarities: ${new Set(cardData.map((c) => c.rarityId)).size} rarities`);
+    console.log(
+      `  🐉 Tribes: ${new Set(cardData.map((c) => c.tribeId).filter(Boolean)).size} tribes`
+    );
   } catch (error) {
     console.error('❌ Error seeding sample card data:', error);
     throw error;
@@ -148,11 +149,11 @@ export async function seedSampleCardData() {
  */
 export async function clearSampleCardData() {
   console.log('🧹 Clearing sample card data...');
-  
+
   try {
     // カード番号が5桁の数字形式のカードを削除（サンプルデータの特徴）
     await db.delete(cards).where(sql`${cards.cardNumber} ~ '^[0-9]{5}$'`);
-    
+
     console.log('✅ Sample card data cleared successfully!');
   } catch (error) {
     console.error('❌ Error clearing sample card data:', error);

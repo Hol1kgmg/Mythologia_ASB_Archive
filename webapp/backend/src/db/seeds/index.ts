@@ -46,7 +46,14 @@ export async function runAllSeeds(options: SeedOptions = {}) {
         cards: options.counts?.cards ?? 500,
         decks: options.counts?.decks ?? 50,
       },
-      tables: options.tables ?? ['admins', 'card-system', 'sample-cards', 'users', 'cards', 'decks'],
+      tables: options.tables ?? [
+        'admins',
+        'card-system',
+        'sample-cards',
+        'users',
+        'cards',
+        'decks',
+      ],
     };
 
     // 管理者データのシード
