@@ -1,6 +1,6 @@
 import { boolean, index, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { leaders } from './leaders';
+import { leaders } from './leaders.js';
 
 // Tribes table (種族テーブル)
 export const tribes = pgTable(

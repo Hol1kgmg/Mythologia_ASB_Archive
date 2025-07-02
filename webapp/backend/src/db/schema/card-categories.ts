@@ -1,5 +1,5 @@
 import { boolean, index, integer, pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { cards, categories } from './card';
+import { cards, categories } from './card.js';
 
 /**
  * Card Categoriesテーブル - カードとカテゴリの多対多関係
