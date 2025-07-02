@@ -1,4 +1,32 @@
 import 'dotenv/config';
+
+// Debug information for Railway ESM troubleshooting
+console.log('🔍 Starting Mythologia Backend...');
+console.log('Node.js version:', process.version);
+console.log('Working directory:', process.cwd());
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Module resolution debug:');
+console.log('- Current file URL:', import.meta.url);
+
+// ESM-compatible debug info
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log('- __dirname:', __dirname);
+console.log('- dist/index.js exists:', existsSync('./dist/index.js'));
+console.log('- Directory contents:', readdirSync('.'));
+
+try {
+  const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
+  console.log('- package.json type:', packageJson.type);
+} catch (e) {
+  console.log('- package.json read error:', e instanceof Error ? e.message : String(e));
+}
+
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';

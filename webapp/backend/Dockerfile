@@ -1,5 +1,5 @@
-# Backend Build Image
-FROM node:20-alpine AS base
+# Backend Build Image - Node.js 20 LTS for stability
+FROM node:20.11.1-alpine AS base
 
 # Set working directory from the start
 WORKDIR /app
