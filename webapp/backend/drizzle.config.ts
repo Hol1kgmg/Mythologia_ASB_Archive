@@ -6,15 +6,15 @@ dotenv.config({ path: '.env.local' });
 const databaseUrl = process.env.DATABASE_URL || 'postgresql://mythologia_user:mythologia_pass@localhost:5432/mythologia_dev';
 
 export default {
-  // 全スキーマファイルを含める
+  // 全スキーマファイルを含める（ESM対応のため.js拡張子使用）
   schema: [
-    './src/db/schema/admin.ts',        // 管理者システム
-    './src/db/schema/leaders.ts',      // リーダー管理
-    './src/db/schema/tribe.ts',        // 種族管理  
-    './src/db/schema/card.ts',         // カード関連（card_sets, cards, categories）
-    './src/db/schema/rarities.ts',     // レアリティ管理
-    './src/db/schema/card-types.ts',   // カードタイプ管理
-    './src/db/schema/card-categories.ts', // カード・カテゴリ中間テーブル
+    './dist/db/schema/admin.js',        // 管理者システム
+    './dist/db/schema/leaders.js',      // リーダー管理
+    './dist/db/schema/tribe.js',        // 種族管理  
+    './dist/db/schema/card.js',         // カード関連（card_sets, cards, categories）
+    './dist/db/schema/rarities.js',     // レアリティ管理
+    './dist/db/schema/card-types.js',   // カードタイプ管理
+    './dist/db/schema/card-categories.js', // カード・カテゴリ中間テーブル
   ],
   out: './drizzle',
   dialect: 'postgresql',
