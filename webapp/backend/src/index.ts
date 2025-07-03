@@ -47,7 +47,7 @@ app.use(
   '*',
   cors({
     origin: allowedOrigins,
-    allowHeaders: ['Authorization', 'Content-Type', 'X-HMAC-Signature', 'X-Timestamp'],
+    allowHeaders: ['Authorization', 'Content-Type', 'X-HMAC-Signature', 'X-Timestamp', 'X-Admin-Secret-Path'],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
