@@ -70,8 +70,8 @@ function handleAdminPath(request: NextRequest, pathname: string): NextResponse {
  */
 function getAdminPathInfo(): AdminPathInfo {
   return {
-    secretPath: process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH || null,
-    nextSecretPath: process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH_NEXT || null,
+    secretPath: process.env.ADMIN_SECRET_PATH || null,
+    nextSecretPath: process.env.ADMIN_SECRET_PATH_NEXT || null,
     isSecretURLEnabled: true, // 常に有効、secretPathがなければ開発環境として扱う
   };
 }

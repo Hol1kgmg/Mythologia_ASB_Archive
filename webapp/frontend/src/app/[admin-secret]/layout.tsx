@@ -13,8 +13,8 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
   const secret = (await params)['admin-secret'];
   
   // 環境変数から現在の秘匿パスを取得
-  const currentSecretPath = process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH;
-  const nextSecretPath = process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH_NEXT;
+  const currentSecretPath = process.env.ADMIN_SECRET_PATH;
+  const nextSecretPath = process.env.ADMIN_SECRET_PATH_NEXT;
   
   // デバッグ情報を出力
   console.log('AdminLayout Debug:', {
