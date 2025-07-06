@@ -93,10 +93,28 @@ export function JsonLdScripts() {
       '@type': 'Organization',
       '@id': 'https://methologia-oracle-admiral-ship-bridge.com#organization',
       name: 'Mythologia Admiral Ship Bridge Community',
+      alternateName: '神託のメソロギア Admiral Ship Bridge コミュニティ',
       description: '有志による神託のメソロギア非公式ファンサイト運営コミュニティ',
       url: 'https://methologia-oracle-admiral-ship-bridge.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://methologia-oracle-admiral-ship-bridge.com/logo.png',
+        width: 512,
+        height: 512
+      },
+      image: 'https://methologia-oracle-admiral-ship-bridge.com/og-image.png',
+      foundingDate: '2024',
+      slogan: 'Admiral Ship Bridge - 神託の海を渡る提督たちの架け橋',
       sameAs: ['https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge'],
-      areaServed: { '@type': 'Country', name: 'Japan' }
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'Community Support',
+        url: 'https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge/issues'
+      },
+      areaServed: { '@type': 'Country', name: 'Japan' },
+      knowsLanguage: ['ja-JP', 'en-US'],
+      nonprofitStatus: 'https://schema.org/Nonprofit',
+      seeks: '神託のメソロギアファンコミュニティの発展と情報共有'
     }
   };
 
