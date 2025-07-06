@@ -125,10 +125,17 @@ export default function RootLayout({
         <meta name="twitter:creator" content="@mythologia_asb" />
         <meta name="twitter:title" content={siteConfig.title} />
         <meta name="twitter:description" content={siteConfig.description} />
-        <meta name="twitter:image" content={siteConfig.ogImage} />
+        <meta name="twitter:image" content={`${siteConfig.ogImage}?v=${Date.now()}`} />
         <meta name="twitter:image:alt" content={siteConfig.title} />
         <meta name="twitter:image:width" content="1200" />
         <meta name="twitter:image:height" content="630" />
+        
+        {/* 明示的なOGPタグ追加（スマホ表示改善） */}
+        <meta property="og:image" content={`${siteConfig.ogImage}?v=${Date.now()}`} />
+        <meta property="og:image:secure_url" content={`${siteConfig.ogImage}?v=${Date.now()}`} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
