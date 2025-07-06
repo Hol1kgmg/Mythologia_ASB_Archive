@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface JsonLdScriptProps {
   data: object;
@@ -8,23 +8,39 @@ interface JsonLdScriptProps {
 }
 
 export default function JsonLdScript({ data, id }: JsonLdScriptProps) {
+  const hasInjected = useRef(false);
+
   useEffect(() => {
-    // クライアントサイドでのみJSON-LDスクリプトを注入
-    const existingScript = document.getElementById(id);
-    if (existingScript) {
-      existingScript.remove();
+    // 重複実行を防ぐ
+    if (hasInjected.current) return;
+    
+    // DOM完全ロード後に実行
+    const injectScript = () => {
+      const existingScript = document.getElementById(id);
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      const script = document.createElement('script');
+      script.id = id;
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(data, null, 0);
+      
+      // headに追加するのが理想的だが、bodyでもSEO効果はある
+      document.head.appendChild(script);
+      hasInjected.current = true;
+    };
+
+    // DOMContentLoadedイベントまたは既にロード済みの場合は即実行
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', injectScript);
+    } else {
+      // 微小なディレイを入れてブラウザ拡張機能との競合を回避
+      setTimeout(injectScript, 100);
     }
 
-    const script = document.createElement('script');
-    script.id = id;
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(data, null, 0);
-    
-    // headに追加するのが理想的だが、bodyでもSEO効果はある
-    document.head.appendChild(script);
-
     return () => {
-      // クリーンアップ
+      document.removeEventListener('DOMContentLoaded', injectScript);
       const scriptToRemove = document.getElementById(id);
       if (scriptToRemove) {
         scriptToRemove.remove();
