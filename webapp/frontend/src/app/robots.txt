@@ -1,0 +1,40 @@
+# Robots.txt for Mythologia Admiral Ship Bridge
+# 神託のメソロギア - 非公式ファンサイト
+
+User-agent: *
+Allow: /
+Disallow: /x7k9m2p5w8t3q6r1/
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /dashboard/admin/
+Disallow: /_next/
+Disallow: /_vercel/
+Disallow: /404
+Disallow: /500
+Disallow: /error
+
+# SEO優先ページ
+Allow: /
+Allow: /cards/
+Allow: /decks/
+Allow: /search/
+Allow: /about/
+
+# 検索エンジン固有設定
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 3
+
+# サイトマップの場所
+Sitemap: https://mythologia-production.vercel.app/sitemap.xml
+
+# ホスト指定（正規URL）
+Host: https://mythologia-production.vercel.app
