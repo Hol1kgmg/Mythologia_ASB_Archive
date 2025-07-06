@@ -29,7 +29,6 @@ const siteConfig = {
   description: "神託のメソロギア（Mythologia）のカード情報データベースとデッキ構築をサポートする非公式Webアプリケーション。カード検索、デッキ構築ツールを提供します。",
   url: "https://methologia-oracle-admiral-ship-bridge.com", // TODO: 環境別URL対応
   ogImage: "https://methologia-oracle-admiral-ship-bridge.com/og-image.png", // TODO: 画像作成・配置後にパス更新
-  twitterImage: "https://methologia-oracle-admiral-ship-bridge.com/twitter-image.png", // TODO: 画像作成・配置後にパス更新
   // TODO: キーワードは実装機能・SEO戦略に合わせて調整
   keywords: [
     "神託のメソロギア",      // コアキーワード
@@ -100,13 +99,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [siteConfig.twitterImage],
-    creator: '@mythologia_asb',
-  },
   // TODO: 検索エンジン検証コードは実際の設定時に更新
   verification: {
     google: 'verification-code-here', // TODO: Google Search Console設定時に実際のコードに変更
@@ -126,6 +118,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        {/* Twitter Cards - name属性で指定 */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@mythologia_asb" />
+        <meta name="twitter:creator" content="@mythologia_asb" />
+        <meta name="twitter:title" content={siteConfig.title} />
+        <meta name="twitter:description" content={siteConfig.description} />
+        <meta name="twitter:image" content={siteConfig.ogImage} />
+        <meta name="twitter:image:alt" content={siteConfig.title} />
+        <meta name="twitter:image:width" content="1200" />
+        <meta name="twitter:image:height" content="630" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning={true}
