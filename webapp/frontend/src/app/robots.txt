@@ -1,6 +1,12 @@
 # Robots.txt for Mythologia Admiral Ship Bridge
 # 神託のメソロギア - 非公式ファンサイト
 
+# TODO: ページリンク構造は今後変更される可能性があります
+# 新しいページの追加や既存ページのパス変更時は以下を更新してください：
+# 1. Allow/Disallow ルールの更新
+# 2. 管理者ページの秘匿パス変更時はDisallowルールを更新
+# 3. サイトマップURLの更新（ドメイン変更時）
+
 User-agent: *
 Allow: /
 Disallow: /x7k9m2p5w8t3q6r1/
@@ -18,10 +24,18 @@ Allow: /
 Allow: /dashboard/
 
 # 将来実装予定ページ（実装後にコメントアウト解除）
-# Allow: /cards/
-# Allow: /decks/
-# Allow: /search/
-# Allow: /about/
+# TODO: パス構造は変更される可能性があります - 実装時に適切なパスで更新
+# Allow: /cards/           → /database/cards/ や /collection/ に変更の可能性
+# Allow: /decks/           → /builder/decks/ や /collection/decks/ に変更の可能性  
+# Allow: /search/          → /find/ や /query/ に変更の可能性
+# Allow: /about/           → /info/ や /project/ に変更の可能性
+# Allow: /rules/           → /game/rules/ や /help/rules/ に変更の可能性
+# Allow: /leaders/         → /database/leaders/ や /game/leaders/ に変更の可能性
+# Allow: /tribes/          → /database/tribes/ や /game/tribes/ に変更の可能性
+# Allow: /privacy/         → /legal/privacy/ に変更の可能性
+# Allow: /terms/           → /legal/terms/ に変更の可能性
+# Allow: /help/            → /support/ や /faq/ に変更の可能性
+# Allow: /guide/           → /tutorial/ や /help/guide/ に変更の可能性
 
 # 検索エンジン固有設定
 User-agent: Googlebot

@@ -1,5 +1,11 @@
 import { MetadataRoute } from 'next';
 
+// TODO: ページリンク構造は今後変更される可能性があります
+// 新しいページの追加や既存ページのパス変更時は以下を更新してください：
+// 1. 実際のページ実装状況に合わせてURL追加/削除
+// 2. changeFrequency と priority の適切な設定
+// 3. lastModified の動的更新（将来的にはCMSやDBから取得）
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://methologia-oracle-admiral-ship-bridge.com';
   const lastModified = new Date();
@@ -24,20 +30,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     
     // 将来実装予定のページは実装後に追加
-    // TODO: 以下のページは実装後にsitemapに追加
-    // - /cards (カード一覧)
-    // - /cards/search (カード検索)
-    // - /decks (デッキ一覧)
-    // - /decks/builder (デッキ構築)
-    // - /search (統合検索)
-    // - /about (サイト情報)
-    // - /rules (ゲームルール)
-    // - /leaders (リーダー一覧)
-    // - /tribes (種族一覧)
-    // - /privacy (プライバシーポリシー)
-    // - /terms (利用規約)
-    // - /help (ヘルプ)
-    // - /guide (使い方ガイド)
+    // TODO: 以下のページは実装後にsitemapに追加（パス構造は変更される可能性があります）
+    // - /cards (カード一覧) → 将来的に /database/cards や /collection に変更の可能性
+    // - /cards/search (カード検索) → /search/cards に統合される可能性
+    // - /decks (デッキ一覧) → /builder/decks や /collection/decks に変更の可能性
+    // - /decks/builder (デッキ構築) → /builder や /deck-builder に変更の可能性
+    // - /search (統合検索) → /find や /query に変更の可能性
+    // - /about (サイト情報) → /info や /project に変更の可能性
+    // - /rules (ゲームルール) → /game/rules や /help/rules に変更の可能性
+    // - /leaders (リーダー一覧) → /database/leaders や /game/leaders に変更の可能性
+    // - /tribes (種族一覧) → /database/tribes や /game/tribes に変更の可能性
+    // - /privacy (プライバシーポリシー) → /legal/privacy に変更の可能性
+    // - /terms (利用規約) → /legal/terms に変更の可能性
+    // - /help (ヘルプ) → /support や /faq に変更の可能性
+    // - /guide (使い方ガイド) → /tutorial や /help/guide に変更の可能性
   ];
 }
 
