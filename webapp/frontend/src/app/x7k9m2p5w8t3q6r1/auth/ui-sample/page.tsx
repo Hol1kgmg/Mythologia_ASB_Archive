@@ -13,43 +13,43 @@ export default function UISampleIndexPage() {
 
   const samplePages = [
     {
-      href: '/auth/ui-sample/components',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/components',
       title: 'Phase 1: 基盤コンポーネント',
       description: 'Button, Input, Select, Box - 基本的なUIコンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/form',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/form',
       title: 'Phase 2: フォーム系',
       description: 'Textarea, Checkbox, Radio - フォーム関連コンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/layout',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/layout',
       title: 'Phase 3: レイアウト系',
       description: 'Card, Grid, Stack - レイアウト用コンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/interaction',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/interaction',
       title: 'Phase 4: インタラクション系',
       description: 'Modal, Tabs, Popover, Accordion - インタラクティブコンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/feedback',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/feedback',
       title: 'Phase 5: フィードバック系',
       description: 'Alert, Toast, Progress, Skeleton, Spinner - フィードバック表示コンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/typography',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/typography',
       title: 'Phase 6: タイポグラフィ系',
       description: 'Heading, Text, Label, Caption, Code - テキスト表示コンポーネント',
       status: 'completed',
     },
     {
-      href: '/auth/ui-sample/common',
+      href: '/x7k9m2p5w8t3q6r1/auth/ui-sample/common',
       title: 'Phase 7: 背景・共通コンポーネント',
       description: 'BackgroundPattern, Container, Section - 背景とレイアウトコンポーネント',
       status: 'completed',
