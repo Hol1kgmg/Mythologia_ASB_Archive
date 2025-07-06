@@ -68,6 +68,8 @@ Thumbs.db
 /data/
 /uploads/
 /public/uploads/
+**/backups/
+backups/
 
 # Local development
 .local/
@@ -86,3 +88,9 @@ docker/postgres/data/
 # Development databases
 postgres_data/
 redis_data/
+
+# AI Agent directory
+.agent/
+
+# Vercel CLI
+.vercel/
