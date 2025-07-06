@@ -16,11 +16,12 @@ export default function StructuredData({ type = 'all' }: StructuredDataProps) {
     url: baseUrl,
     inLanguage: 'ja-JP',
     isAccessibleForFree: true,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${baseUrl}/search?q={search_term_string}`,
-      'query-input': 'required name=search_term_string'
-    },
+    // 検索機能実装後に有効化
+    // potentialAction: {
+    //   '@type': 'SearchAction',
+    //   target: `${baseUrl}/search?q={search_term_string}`,
+    //   'query-input': 'required name=search_term_string'
+    // },
     author: {
       '@type': 'Organization',
       name: 'Mythologia Admiral Ship Bridge Community'

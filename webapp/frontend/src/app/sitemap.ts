@@ -5,97 +5,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   return [
-    // トップページ（最高優先度）
+    // 実際に存在するページのみ
+    
+    // トップページ（最高優先度） - メンテナンス画面
     {
       url: baseUrl,
       lastModified,
       changeFrequency: 'weekly',
       priority: 1.0,
     },
-    // カード関連ページ
+    
+    // ダッシュボードページ（存在確認済み）
     {
-      url: `${baseUrl}/cards`,
-      lastModified,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/cards/search`,
-      lastModified,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    // デッキ関連ページ
-    {
-      url: `${baseUrl}/decks`,
+      url: `${baseUrl}/dashboard`,
       lastModified,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/decks/builder`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    // 検索ページ
-    {
-      url: `${baseUrl}/search`,
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    // 情報ページ
-    {
-      url: `${baseUrl}/about`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/rules`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/leaders`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/tribes`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    // ユーティリティページ
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    // ヘルプ・ガイドページ
-    {
-      url: `${baseUrl}/help`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/guide`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.4,
-    },
+    
+    // 将来実装予定のページは実装後に追加
+    // TODO: 以下のページは実装後にsitemapに追加
+    // - /cards (カード一覧)
+    // - /cards/search (カード検索)
+    // - /decks (デッキ一覧)
+    // - /decks/builder (デッキ構築)
+    // - /search (統合検索)
+    // - /about (サイト情報)
+    // - /rules (ゲームルール)
+    // - /leaders (リーダー一覧)
+    // - /tribes (種族一覧)
+    // - /privacy (プライバシーポリシー)
+    // - /terms (利用規約)
+    // - /help (ヘルプ)
+    // - /guide (使い方ガイド)
   ];
 }
 

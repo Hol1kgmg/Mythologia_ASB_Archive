@@ -13,12 +13,15 @@ Disallow: /404
 Disallow: /500
 Disallow: /error
 
-# SEO優先ページ
+# 実際に存在するページ
 Allow: /
-Allow: /cards/
-Allow: /decks/
-Allow: /search/
-Allow: /about/
+Allow: /dashboard/
+
+# 将来実装予定ページ（実装後にコメントアウト解除）
+# Allow: /cards/
+# Allow: /decks/
+# Allow: /search/
+# Allow: /about/
 
 # 検索エンジン固有設定
 User-agent: Googlebot
