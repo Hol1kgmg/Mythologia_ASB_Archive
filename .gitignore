@@ -89,3 +89,6 @@ redis_data/
 
 # AI Agent directory
 .agent/
+
+# Vercel CLI
+.vercel/
