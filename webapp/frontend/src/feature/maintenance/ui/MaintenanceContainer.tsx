@@ -221,6 +221,14 @@ const MaintenanceContainer: React.FC = () => {
           >
             公式X
           </a>
+          <a 
+            href="https://discord.gg/GFaEAxjJES" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-slate-400 no-underline py-2 px-4 border border-white border-opacity-20 rounded-md transition-all duration-300 text-sm hover:text-yellow-400 hover:border-yellow-400 hover:bg-opacity-5"
+          >
+            公式Discordサーバー
+          </a>
         </div>
       </div>
 
