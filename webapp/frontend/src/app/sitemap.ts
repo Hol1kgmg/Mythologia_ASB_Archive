@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://mythologia-production.vercel.app';
+  const baseUrl = 'https://methologia-oracle-admiral-ship-bridge.com';
   const lastModified = new Date();
 
   return [
@@ -101,7 +101,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 // 動的サイトマップ生成用のヘルパー関数（将来的な拡張用）
 export async function generateDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
-  // const baseUrl = 'https://mythologia-production.vercel.app';
+  // const baseUrl = 'https://methologia-oracle-admiral-ship-bridge.com';
   // const lastModified = new Date();
   
   // 将来的にカードやデッキの個別ページが追加された際に使用

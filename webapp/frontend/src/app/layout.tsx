@@ -18,9 +18,9 @@ const siteConfig = {
   name: "神託のメソロギア - 非公式ファンサイト",
   title: "神託のメソロギア - Admiral Ship Bridge",
   description: "神託のメソロギア（Mythologia）のカード情報データベースとデッキ構築をサポートする非公式Webアプリケーション。カード検索、デッキ構築ツールを提供します。",
-  url: "https://mythologia-production.vercel.app",
-  ogImage: "https://mythologia-production.vercel.app/og-image.png",
-  twitterImage: "https://mythologia-production.vercel.app/twitter-image.png",
+  url: "https://methologia-oracle-admiral-ship-bridge.com",
+  ogImage: "https://methologia-oracle-admiral-ship-bridge.com/og-image.png",
+  twitterImage: "https://methologia-oracle-admiral-ship-bridge.com/twitter-image.png",
   keywords: [
     "神託のメソロギア",
     "Mythologia",

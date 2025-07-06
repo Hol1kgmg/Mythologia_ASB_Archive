@@ -34,7 +34,7 @@ Allow: /
 Crawl-delay: 3
 
 # サイトマップの場所
-Sitemap: https://mythologia-production.vercel.app/sitemap.xml
+Sitemap: https://methologia-oracle-admiral-ship-bridge.com/sitemap.xml
 
 # ホスト指定（正規URL）
-Host: https://mythologia-production.vercel.app
+Host: https://methologia-oracle-admiral-ship-bridge.com

@@ -5,7 +5,7 @@ interface StructuredDataProps {
 }
 
 export default function StructuredData({ type = 'all' }: StructuredDataProps) {
-  const baseUrl = 'https://mythologia-production.vercel.app';
+  const baseUrl = 'https://methologia-oracle-admiral-ship-bridge.com';
   
   // WebSiteスキーマ
   const websiteSchema = {
