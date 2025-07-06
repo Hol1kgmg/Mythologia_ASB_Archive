@@ -16,9 +16,24 @@ interface AdminPathInfo {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // 🚨 VERCEL DEBUG: Middleware実行確認（Vercel Function Logs用）
+  console.log('🚨 VERCEL MIDDLEWARE START:', { 
+    pathname, 
+    timestamp: new Date().toISOString(),
+    userAgent: request.headers.get('user-agent')?.substring(0, 50),
+    host: request.headers.get('host')
+  });
+
   // 管理パスのパターンマッチング（動的ルート対応）
   const adminPathPattern = /^\/[a-zA-Z0-9]+\/auth/;
   const isAdminPath = adminPathPattern.test(pathname);
+
+  console.log('🚨 VERCEL ADMIN PATH CHECK:', { 
+    pathname, 
+    isAdminPath, 
+    pattern: adminPathPattern.toString(),
+    matchResult: pathname.match(adminPathPattern)
+  });
 
   if (isAdminPath) {
     return handleAdminPath(request, pathname);
@@ -32,11 +47,17 @@ export function middleware(request: NextRequest) {
  * 管理パスのアクセス制御
  */
 function handleAdminPath(request: NextRequest, pathname: string): NextResponse {
-  console.log('Middleware handleAdminPath called:', { pathname });
+  console.log('🚨 VERCEL handleAdminPath called:', { pathname });
   
   const adminPathInfo = getAdminPathInfo();
   
-  console.log('Admin path info:', adminPathInfo);
+  console.log('🚨 VERCEL Admin path info:', { 
+    ...adminPathInfo,
+    envVars: {
+      ADMIN_SECRET_PATH: process.env.ADMIN_SECRET_PATH ? 'SET' : 'NOT_SET',
+      ADMIN_SECRET_PATH_NEXT: process.env.ADMIN_SECRET_PATH_NEXT ? 'SET' : 'NOT_SET'
+    }
+  });
   
   // 正しい秘匿URLかチェック
   const isValidSecretURL = validateAdminSecretURL(pathname, adminPathInfo);
@@ -171,17 +192,14 @@ function isSuspiciousUserAgent(userAgent: string): boolean {
   return suspiciousPatterns.some(pattern => pattern.test(userAgent));
 }
 
-// Middleware configuration
+// Middleware configuration - 管理者認証パス専用（Vercel Edge Runtime最適化）
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public directory)
+     * 管理者認証パスのみを対象とする
+     * パターン: /star/auth/star (Vercel Edge Runtime確実動作)
+     * 用途: カード/ユーザーCRUD、管理UI、認証機能
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/*/auth/*',
   ],
 };
