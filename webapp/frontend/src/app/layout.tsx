@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import StructuredData from "../components/seo/StructuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +44,58 @@ const siteConfig = {
     // "カード検索", "デッキシミュレーター", "戦略ガイド", 
     // "リーダー", "種族", "コンボ", "メタ", "攻略"
   ]
+};
+
+// JSON-LD構造化データ
+const structuredData = {
+  website: {
+    '@context': 'https://schema.org/',
+    '@type': 'WebSite',
+    name: '神託のメソロギア - 非公式ファンサイト',
+    description: '神託のメソロギア（Mythologia）のカード情報データベースとデッキ構築をサポートする非公式Webアプリケーション',
+    url: siteConfig.url,
+    inLanguage: 'ja-JP',
+    isAccessibleForFree: true,
+    author: {
+      '@type': 'Organization',
+      name: 'Mythologia Admiral Ship Bridge Community'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Mythologia Admiral Ship Bridge Community'
+    },
+    keywords: siteConfig.keywords
+  },
+  webApplication: {
+    '@context': 'https://schema.org/',
+    '@type': 'WebApplication',
+    name: '神託のメソロギア - Admiral Ship Bridge',
+    description: 'カード情報検索とデッキ構築ツール。神託のメソロギアの非公式ファンサイト',
+    url: siteConfig.url,
+    applicationCategory: 'Game',
+    operatingSystem: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'JPY'
+    },
+    featureList: [
+      'カード情報検索',
+      'デッキ構築ツール',
+      'カードデータベース閲覧',
+      'レスポンシブデザイン'
+    ]
+  },
+  organization: {
+    '@context': 'https://schema.org/',
+    '@type': 'Organization',
+    '@id': `${siteConfig.url}#organization`,
+    name: 'Mythologia Admiral Ship Bridge Community',
+    description: '有志による神託のメソロギア非公式ファンサイト運営コミュニティ',
+    url: siteConfig.url,
+    sameAs: ['https://github.com/Hol1kgmg/Mythologia_AdmiralsShipBridge'],
+    areaServed: { '@type': 'Country', name: 'Japan' }
+  }
 };
 
 export const metadata: Metadata = {
@@ -124,12 +175,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <head>
-        <StructuredData />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* JSON-LD構造化データ */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.website) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.webApplication) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData.organization) }}
+        />
         {children}
       </body>
     </html>
