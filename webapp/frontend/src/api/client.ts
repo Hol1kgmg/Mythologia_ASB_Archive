@@ -120,11 +120,10 @@ export class ApiError extends Error {
 
 // Create default API client instance
 export function createApiClient(): ApiClient {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
-
-  if (!baseURL) {
-    throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
-  }
+  // セキュリティ修正 (Issue #72): 
+  // NEXT_PUBLIC_API_URLの使用を廃止し、サーバーサイドプロキシ経由でアクセス
+  // 内部API URLの露出を防止
+  const baseURL = '/api/proxy';  // Always use server-side proxy
 
   return new ApiClient({
     baseURL,
