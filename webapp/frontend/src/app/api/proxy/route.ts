@@ -11,7 +11,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const backendApiUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL;
+    // 🔒 セキュリティ修正 (Issue #72): NEXT_PUBLIC_API_URLフォールバックを削除
+    const backendApiUrl = process.env.BACKEND_API_URL;
     
     if (!backendApiUrl) {
       return NextResponse.json(
@@ -63,7 +64,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const backendApiUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL;
+    // 🔒 セキュリティ修正 (Issue #72): NEXT_PUBLIC_API_URLフォールバックを削除
+    const backendApiUrl = process.env.BACKEND_API_URL;
     
     if (!backendApiUrl) {
       return NextResponse.json(
