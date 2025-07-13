@@ -1,3 +1,16 @@
+/**
+ * ⚠️ DEPRECATED: セキュリティホールあり - 使用禁止
+ * 
+ * 🚨 セキュリティ問題 (Issue #65):
+ * - NEXT_PUBLIC_環境変数による認証情報露出
+ * - ブラウザから HMAC_SECRET と VERCEL_API_KEY が閲覧可能
+ * 
+ * 🔒 新しいセキュアAPI を使用してください:
+ * import { adminLogin, adminAPIFetch } from './admin-api-secure';
+ * 
+ * この ファイルは段階的に削除予定です。
+ */
+
 import { generateHMACSignature } from './hmac';
 
 export interface AdminAPIRequestOptions {
