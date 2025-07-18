@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     // サーバーサイド専用環境変数から取得（NEXT_PUBLIC_なし）
     const hmacSecret = process.env.ADMIN_HMAC_SECRET;
     const apiKey = process.env.VERCEL_API_KEY;
-    const backendUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
 
     // 環境変数の存在確認
     if (!hmacSecret) {
