@@ -27,7 +27,9 @@ export async function POST(request: NextRequest) {
     // Environment variables (server-side only)
     const jwtSecret = process.env.JWT_SECRET;
     const hmacSecret = process.env.HMAC_SECRET;
-    const appId = process.env.NEXT_PUBLIC_APP_ID || 'mythologia-frontend';
+    // 🔒 セキュリティ修正 (Issue #72): NEXT_PUBLIC_APP_IDを削除してハードコード化
+    // アプリケーションIDは機密情報ではないが、サーバーサイド専用に統一
+    const appId = 'mythologia-frontend';
 
     if (!jwtSecret || !hmacSecret) {
       return NextResponse.json({ error: 'Missing authentication configuration' }, { status: 500 });
