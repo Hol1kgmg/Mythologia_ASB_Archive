@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { ApiError, createApiClient } from '../../../../api/client';
+import { ApiError } from '../../../../api/client';
 
 interface AuthTestResult {
   success: boolean;
