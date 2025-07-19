@@ -15,6 +15,54 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🔍 Proxy POST request started');
     
+    // 🔒 セキュリティ検証: フロントエンドからのリクエストのみ許可
+    const origin = request.headers.get('origin');
+    const referer = request.headers.get('referer');
+    const userAgent = request.headers.get('user-agent');
+    
+    console.log('🔍 Request headers:', { origin, referer, userAgent: userAgent?.slice(0, 50) });
+    
+    // Origin検証（開発環境では localhost を許可）
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001', 
+      process.env.NEXT_PUBLIC_FRONTEND_URL,
+      'https://mythologia-admirals-ship-bridge-git-feat-5db748-shojos-projects.vercel.app' // Vercelプレビュー
+    ].filter(Boolean);
+    
+    if (!origin || !allowedOrigins.includes(origin)) {
+      console.warn('❌ Unauthorized origin:', origin);
+      return NextResponse.json(
+        { error: 'Unauthorized origin' },
+        { status: 403 }
+      );
+    }
+    
+    // Referer検証（認証テストページからのリクエストのみ許可）
+    if (referer) {
+      const refererUrl = new URL(referer);
+      const isFromAuthTest = refererUrl.pathname.includes('/x7k9m2p5w8t3q6r1/auth/');
+      const isFromAllowedPath = refererUrl.pathname.includes('/dashboard') || 
+                               refererUrl.pathname.includes('/admin');
+      
+      if (!isFromAuthTest && !isFromAllowedPath) {
+        console.warn('❌ Unauthorized referer path:', refererUrl.pathname);
+        return NextResponse.json(
+          { error: 'Unauthorized access path' },
+          { status: 403 }
+        );
+      }
+    }
+    
+    // User-Agent検証（ブラウザからのリクエストのみ許可）
+    if (!userAgent || userAgent.includes('curl') || userAgent.includes('wget') || userAgent.includes('python')) {
+      console.warn('❌ Unauthorized user agent:', userAgent);
+      return NextResponse.json(
+        { error: 'Browser access only' },
+        { status: 403 }
+      );
+    }
+    
     // 🔒 セキュリティ修正 (Issue #72): NEXT_PUBLIC_API_URLフォールバックを削除
     const backendApiUrl = process.env.BACKEND_API_URL;
     console.log('🔍 Backend API URL:', backendApiUrl ? 'configured' : 'NOT configured');
@@ -31,6 +79,23 @@ export async function POST(request: NextRequest) {
     const requestData = await request.json();
     const { method, path, body, headers = {} } = requestData;
     console.log('🔍 Request data:', { method, path, bodyExists: !!body, headersCount: Object.keys(headers).length });
+    
+    // 🔒 CSRF保護: フロントエンドからの正当なリクエストかチェック
+    const expectedTimestamp = request.headers.get('x-frontend-timestamp');
+    const currentTime = Date.now();
+    
+    if (expectedTimestamp) {
+      const timestamp = parseInt(expectedTimestamp);
+      const timeDiff = Math.abs(currentTime - timestamp);
+      // 1分以内のリクエストのみ許可
+      if (timeDiff > 60000) {
+        console.warn('❌ Request timestamp too old:', timeDiff);
+        return NextResponse.json(
+          { error: 'Request expired' },
+          { status: 403 }
+        );
+      }
+    }
 
     // 認証が必要なエンドポイントかチェック
     const requiresAuth = path.includes('/auth-test') || path.includes('/admin/');
