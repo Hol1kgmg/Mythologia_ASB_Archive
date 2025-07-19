@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { generateHMACSignature } from '../../../api/auth/hmac';
+import { getOrGenerateJWT } from '../../../api/auth/jwt';
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,18 +44,25 @@ export async function POST(request: NextRequest) {
     // 認証が必要な場合は認証ヘッダーを生成
     if (requiresAuth) {
       console.log('🔐 Generating auth headers...');
-      const hmacSecret = process.env.ADMIN_HMAC_SECRET;
+      const hmacSecret = process.env.ADMIN_HMAC_SECRET || process.env.HMAC_SECRET;
       const apiKey = process.env.VERCEL_API_KEY;
+      const jwtSecret = process.env.JWT_SECRET;
       console.log('🔍 Auth config:', { 
         hmacSecretExists: !!hmacSecret, 
-        apiKeyExists: !!apiKey 
+        apiKeyExists: !!apiKey,
+        jwtSecretExists: !!jwtSecret
       });
 
-      if (hmacSecret && apiKey) {
+      if (hmacSecret && jwtSecret) {
         try {
-          // HMAC署名の生成と認証ヘッダーの追加
+          // JWT生成
+          console.log('🔍 Generating JWT token...');
+          const appId = 'mythologia-frontend';
+          const token = await getOrGenerateJWT(appId, jwtSecret);
+          console.log('🔍 JWT token generated:', { tokenExists: !!token });
+
+          // HMAC署名の生成
           console.log('🔍 Generating HMAC signature...');
-          
           const { signature, timestamp } = await generateHMACSignature(
             method, 
             path, 
@@ -65,10 +73,16 @@ export async function POST(request: NextRequest) {
 
           finalHeaders = {
             ...finalHeaders,
+            'Authorization': `Bearer ${token}`,
             'X-HMAC-Signature': signature,
             'X-Timestamp': timestamp,
-            'X-API-Key': apiKey,
           };
+
+          // APIキーも追加（管理者API用）
+          if (apiKey) {
+            finalHeaders['X-API-Key'] = apiKey;
+          }
+
           console.log('✅ Auth headers added to request');
         } catch (authError) {
           console.error('❌ Error generating auth headers:', authError);
@@ -154,11 +168,16 @@ export async function GET(request: NextRequest) {
 
     // 認証が必要な場合は認証ヘッダーを生成
     if (requiresAuth) {
-      const hmacSecret = process.env.ADMIN_HMAC_SECRET;
+      const hmacSecret = process.env.ADMIN_HMAC_SECRET || process.env.HMAC_SECRET;
       const apiKey = process.env.VERCEL_API_KEY;
+      const jwtSecret = process.env.JWT_SECRET;
 
-      if (hmacSecret && apiKey) {
-        // HMAC署名の生成と認証ヘッダーの追加
+      if (hmacSecret && jwtSecret) {
+        // JWT生成
+        const appId = 'mythologia-frontend';
+        const token = await getOrGenerateJWT(appId, jwtSecret);
+
+        // HMAC署名の生成
         const { signature, timestamp } = await generateHMACSignature(
           'GET', 
           path, 
@@ -168,10 +187,15 @@ export async function GET(request: NextRequest) {
 
         finalHeaders = {
           ...finalHeaders,
+          'Authorization': `Bearer ${token}`,
           'X-HMAC-Signature': signature,
           'X-Timestamp': timestamp,
-          'X-API-Key': apiKey,
         };
+
+        // APIキーも追加（管理者API用）
+        if (apiKey) {
+          finalHeaders['X-API-Key'] = apiKey;
+        }
       }
     }
 
