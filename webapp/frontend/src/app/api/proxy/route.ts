@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
 
     // 認証が必要なエンドポイントかチェック
     const requiresAuth = path.includes('/auth-test') || path.includes('/admin/');
-    console.log('🔍 Requires auth:', requiresAuth);
+    const isAdminAPI = path.includes('/admin/');
+    console.log('🔍 Requires auth:', requiresAuth, 'Is admin API:', isAdminAPI);
     
     let finalHeaders = {
       'Content-Type': 'application/json',
@@ -44,7 +45,8 @@ export async function POST(request: NextRequest) {
     // 認証が必要な場合は認証ヘッダーを生成
     if (requiresAuth) {
       console.log('🔐 Generating auth headers...');
-      const hmacSecret = process.env.ADMIN_HMAC_SECRET || process.env.HMAC_SECRET;
+      // 管理者APIは ADMIN_HMAC_SECRET、その他は HMAC_SECRET を使用
+      const hmacSecret = isAdminAPI ? process.env.ADMIN_HMAC_SECRET : process.env.HMAC_SECRET;
       const apiKey = process.env.VERCEL_API_KEY;
       const jwtSecret = process.env.JWT_SECRET;
       console.log('🔍 Auth config:', { 
@@ -161,6 +163,7 @@ export async function GET(request: NextRequest) {
 
     // 認証が必要なエンドポイントかチェック
     const requiresAuth = path.includes('/auth-test') || path.includes('/admin/');
+    const isAdminAPI = path.includes('/admin/');
     
     let finalHeaders = {
       'Content-Type': 'application/json',
@@ -168,7 +171,8 @@ export async function GET(request: NextRequest) {
 
     // 認証が必要な場合は認証ヘッダーを生成
     if (requiresAuth) {
-      const hmacSecret = process.env.ADMIN_HMAC_SECRET || process.env.HMAC_SECRET;
+      // 管理者APIは ADMIN_HMAC_SECRET、その他は HMAC_SECRET を使用
+      const hmacSecret = isAdminAPI ? process.env.ADMIN_HMAC_SECRET : process.env.HMAC_SECRET;
       const apiKey = process.env.VERCEL_API_KEY;
       const jwtSecret = process.env.JWT_SECRET;
 
