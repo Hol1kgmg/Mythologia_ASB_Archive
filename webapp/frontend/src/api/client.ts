@@ -20,6 +20,37 @@ export class ApiClient {
     const { method = 'GET', path, body, headers = {} } = requestOptions;
 
     try {
+      // プロキシ経由の場合は、プロキシにリクエスト情報を送信
+      if (this.options.baseURL === '/api/proxy') {
+        const requestBody = {
+          method,
+          path,
+          body,
+          headers,
+        };
+
+        const response = await fetch('/api/proxy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        // Handle response
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new ApiError(
+            `Request failed: ${response.status} ${response.statusText}`,
+            response.status,
+            errorData
+          );
+        }
+
+        return await response.json();
+      }
+
+      // 従来の直接アクセス方式（バックアップ）
       // Prepare request body
       const requestBody = body ? JSON.stringify(body) : undefined;
 
