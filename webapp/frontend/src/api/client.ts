@@ -33,7 +33,6 @@ export class ApiClient {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Frontend-Timestamp': Date.now().toString(),
           },
           body: JSON.stringify(requestBody),
         });

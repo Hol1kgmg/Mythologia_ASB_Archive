@@ -20,13 +20,25 @@ const AuthTestButton: React.FC = () => {
     setResult(null);
 
     try {
-      const apiClient = createApiClient();
-      const response = await apiClient.get('/api/health/auth-test');
+      // 認証テスト専用エンドポイント使用
+      const response = await fetch('/api/auth-test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorData)}`);
+      }
+
+      const data = await response.json();
 
       setResult({
         success: true,
         message: 'Authentication successful!',
-        data: response,
+        data: data,
       });
     } catch (error) {
       if (error instanceof ApiError) {
