@@ -24,13 +24,42 @@ export async function POST(request: NextRequest) {
     // リクエストボディから転送情報を取得
     const { method, path, body, headers = {} } = await request.json();
 
+    // 認証が必要なエンドポイントかチェック
+    const requiresAuth = path.includes('/auth-test') || path.includes('/admin/');
+    
+    let finalHeaders = {
+      'Content-Type': 'application/json',
+      ...headers,
+    };
+
+    // 認証が必要な場合は認証ヘッダーを生成
+    if (requiresAuth) {
+      const hmacSecret = process.env.ADMIN_HMAC_SECRET;
+      const apiKey = process.env.VERCEL_API_KEY;
+
+      if (hmacSecret && apiKey) {
+        // HMAC署名の生成と認証ヘッダーの追加
+        const { generateHMACSignature } = await import('../../../../api/auth/hmac');
+        const { signature, timestamp } = await generateHMACSignature(
+          method, 
+          path, 
+          body ? JSON.stringify(body) : undefined, 
+          hmacSecret
+        );
+
+        finalHeaders = {
+          ...finalHeaders,
+          'X-HMAC-Signature': signature,
+          'X-Timestamp': timestamp,
+          'X-API-Key': apiKey,
+        };
+      }
+    }
+
     // バックエンドAPIにリクエストを転送
     const response = await fetch(`${backendApiUrl}${path}`, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
+      headers: finalHeaders,
       body: body ? JSON.stringify(body) : undefined,
     });
 
@@ -74,11 +103,40 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // 認証が必要なエンドポイントかチェック
+    const requiresAuth = path.includes('/auth-test') || path.includes('/admin/');
+    
+    let finalHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    // 認証が必要な場合は認証ヘッダーを生成
+    if (requiresAuth) {
+      const hmacSecret = process.env.ADMIN_HMAC_SECRET;
+      const apiKey = process.env.VERCEL_API_KEY;
+
+      if (hmacSecret && apiKey) {
+        // HMAC署名の生成と認証ヘッダーの追加
+        const { generateHMACSignature } = await import('../../../../api/auth/hmac');
+        const { signature, timestamp } = await generateHMACSignature(
+          'GET', 
+          path, 
+          undefined, 
+          hmacSecret
+        );
+
+        finalHeaders = {
+          ...finalHeaders,
+          'X-HMAC-Signature': signature,
+          'X-Timestamp': timestamp,
+          'X-API-Key': apiKey,
+        };
+      }
+    }
+
     const response = await fetch(`${backendApiUrl}${path}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: finalHeaders,
     });
 
     const responseData = await response.json().catch(() => ({}));
